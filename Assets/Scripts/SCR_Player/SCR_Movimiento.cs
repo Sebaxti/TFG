@@ -1,202 +1,206 @@
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Rigidbody))]
 public class SCR_Movimiento : MonoBehaviour
 {
-    [Header("Configuración de movimiento")]
-    [SerializeField] private float velocidadMovimiento;
-    [SerializeField] private float aceleracion;
-    [SerializeField] private float desaceleracion;
+    [Header("Referencias Inputs")]
+    [SerializeField] private string nombreAccionMover = "Move";
+    [SerializeField] private string nombreAccionSaltar = "Jump";
 
-    [Header("Configuración de rotación")]
-    [SerializeField] private float velocidadRotacion;
+    [Header("Configuración Movimiento")]
+    [SerializeField] private float velocidadMovimiento = 8f;
+    [SerializeField] private float suavizadoMovimiento = 15f;
+    [SerializeField] private float suavizadoAire = 5f;
+    [SerializeField] private float velocidadRotacion = 20f;
 
-    [Header("Configuración de Salto")]
-    [SerializeField] private float fuerzaSalto;
-    [SerializeField] private float gravedad;
-    [SerializeField] private float cayoteTiempo; //Esta es como un tiempo en que sales de la plataforma y aun puedes saltar (para que no se corte al instante la opcion de salto
-    [SerializeField] private float bufferSaltoTiempo; //Esta es para cuando vas cayendoo y das espacio registre el salto antes de tocar el suelo (Bunny hop)
+    [Header("Salto")]
+    [SerializeField] private float fuerzaSalto = 14f;
+    [SerializeField] private float gravedadAscenso = 2.5f;
+    [SerializeField] private float multiplicadorCaida = 4.5f;
+    [SerializeField] private float multiplicadorSaltoCorto = 4f;
+    [SerializeField] private float velocidadTerminal = -20f;
+    [SerializeField] private int saltosMaximos = 2;
 
-    [Header("Doble salto")]
-    [SerializeField] private bool dobleSaltoHabilitado;
-    [SerializeField] private float fuerzaDobleSalto = 9f;
+    [Header("Detección de Suelo")]
+    [SerializeField] private LayerMask capaSuelo;
+    [SerializeField] private float longitudRayoSuelo = 1.1f;
 
-    private CharacterController controlador;
+    [Header("Refinamiento")]
+    [SerializeField] private float suavizadoAterrizaje = 5f;
+    [SerializeField] private float tiempoCoyote = 0.15f;
+    [SerializeField] private float tiempoBufferSalto = 0.1f;
+
+    private Rigidbody rb;
     private PlayerInput playerInput;
     private InputAction moveAction;
     private InputAction jumpAction;
-
-    private Vector3 velocidadActual;
-    private Vector2 moveInput;
-    private float velocidadVertical;
-
+    private Vector2 inputVector;
     private bool enSuelo;
-    private bool estabaEnSuelo;
-    private float tiempoUltimoSuelo;
-    private float tiempoUltimoSalto;
     private int saltosRestantes;
+    private Transform camaraTransform;
+    private float contadorCoyote;
+    private float contadorBufferSalto;
+
+    // Variables de plataforma (Detectadas solo desde arriba vía Raycast)
+    private Transform plataformaActual;
+    private Vector3 posicionPreviaPlataforma;
+    private Vector3 velocidadPlataforma;
 
     private void Awake()
     {
-        controlador = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
+        camaraTransform = Camera.main.transform;
 
+        rb.freezeRotation = true;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-        //obtener accion de movimiento del Input System
-        moveAction = playerInput.actions["Move"];
-        jumpAction = playerInput.actions["Jump"];
-
+        moveAction = playerInput.actions[nombreAccionMover];
+        jumpAction = playerInput.actions[nombreAccionSaltar];
     }
 
-    private void OnEnable()
-    {
-        moveAction.Enable();
-        jumpAction.Enable();
-    }
-
-    private void OnDisable()
-    {
-        moveAction.Disable();
-        jumpAction.Disable();
-    }
+    private void OnEnable() => playerInput.actions.Enable();
+    private void OnDisable() => playerInput.actions.Disable();
 
     private void Update()
     {
-        DetectarSuelo();
-        MovimientoContolador();
-        SaltoControlador();
-        AplicarGravedad();
-        AplicarMovimiento();
-        RotacionControlador();
-    }
+        inputVector = moveAction.ReadValue<Vector2>();
+        VerificarSuelo();
 
-    private void MovimientoContolador()
-    {
-        moveInput = moveAction.ReadValue<Vector2>();
-    }
+        if (enSuelo) contadorCoyote = tiempoCoyote;
+        else contadorCoyote -= Time.deltaTime;
 
-    private void AplicarMovimiento()
-    {
-        Vector3 direccionObjetivo = ObtenerDireccionMovimiento();
-        Vector3 velocidadObjetivo = direccionObjetivo * velocidadMovimiento;
+        if (jumpAction.WasPressedThisFrame()) contadorBufferSalto = tiempoBufferSalto;
+        else contadorBufferSalto -= Time.deltaTime;
 
-        //Interpolación suave entre velocidades
-
-        float lerpVelocidad = direccionObjetivo.magnitude > 0 ? aceleracion : desaceleracion;
-        velocidadActual = Vector3.Lerp (velocidadActual, velocidadObjetivo, lerpVelocidad * Time.deltaTime);
-
-        Vector3 movimientoFinal = velocidadActual + Vector3.up * velocidadVertical;
-        controlador.Move ( movimientoFinal * Time.deltaTime);
-    }
-
-    private Vector3 ObtenerDireccionMovimiento()
-    {
-        Vector3 forward = Camera.main.transform.forward;
-        Vector3 right = Camera.main.transform.right;
-
-        //proyección en el plano horizontal
-        forward.y = 0f;
-        right.y = 0f;
-
-        forward.Normalize();
-        right.Normalize();
-
-        return(forward * moveInput.y + right * moveInput.x).normalized;
-    }
-
-    private void RotacionControlador()
-    {
-        if (velocidadActual.magnitude < 0.1f) return;
-
-        Vector3 direccionObjetivo = new Vector3(velocidadActual.x,0f,velocidadActual.z);
-        Quaternion rotacionObjetivo = Quaternion.LookRotation(direccionObjetivo);
-
-        transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            rotacionObjetivo,
-            velocidadRotacion * Time.deltaTime
-            );
-    }
-
-    private void DetectarSuelo() 
-    {
-        enSuelo= controlador.isGrounded;
-
-        if (enSuelo)
+        if (contadorBufferSalto > 0)
         {
-            saltosRestantes = dobleSaltoHabilitado ? 2 : 1;
-        }
-
-        if (estabaEnSuelo && !enSuelo) 
-        {
-            tiempoUltimoSuelo = Time.time;
-        }
-
-        estabaEnSuelo = enSuelo;
-    }
-
-    private void SaltoControlador() 
-    {
-        //Registra intento de saltar (jumpe buffer)
-        if (jumpAction.WasPressedThisFrame()) 
-        {
-            tiempoUltimoSalto = Time.time;
-        }
-
-        // Cayote Time
-        float tiempoDesdeQueDejeSuelo = Time.time - tiempoUltimoSuelo;
-        bool cayoteDisponible = !enSuelo && tiempoDesdeQueDejeSuelo < cayoteTiempo;
-
-        // Jump Buffer
-        float tiempoDesdeUltimoInput = Time.time - tiempoUltimoSalto;
-        bool inputReciente = tiempoDesdeUltimoInput < bufferSaltoTiempo;
-
-        // Condiciones para saltar
-        bool primerSalto = (enSuelo || cayoteDisponible) && saltosRestantes > 0;
-        bool dobleSalto = !enSuelo && !cayoteDisponible && saltosRestantes > 0 && dobleSaltoHabilitado;
-
-        if (inputReciente && (primerSalto || dobleSalto))
-        {
-            EjecutarSalto(dobleSalto);
-            tiempoUltimoSalto = -999f; // Invalida el buffer
-        }
-
-        // Salto variable: soltar espacio = caer más rápido
-        if (jumpAction.WasReleasedThisFrame() && velocidadVertical > 0f)
-        {
-            velocidadVertical *= 0.5f;
+            if (contadorCoyote > 0 || (jumpAction.WasPressedThisFrame() && saltosRestantes > 0))
+            {
+                RealizarSalto();
+            }
         }
     }
 
-    private void EjecutarSalto(bool esDobleSalto)
+    private void FixedUpdate()
     {
-        // Aplicar la fuerza correspondiente
-        velocidadVertical = esDobleSalto ? fuerzaDobleSalto : fuerzaSalto;
-
-        // Consumir un salto
-        saltosRestantes--;
+        CalcularMovimientoPlataforma();
+        ProcesarMovimiento();
+        ProcesarRotacion();
+        AplicarFisicaSalto();
     }
 
-    private void AplicarGravedad()
+    private void CalcularMovimientoPlataforma()
     {
-        if (enSuelo && velocidadVertical < 0f)
+        // Solo si estamos realmente apoyados encima (enSuelo) calculamos la velocidad
+        if (enSuelo && plataformaActual != null)
         {
-            velocidadVertical = -2f; // Pequeña fuerza para mantener pegado al suelo
+            velocidadPlataforma = (plataformaActual.position - posicionPreviaPlataforma) / Time.fixedDeltaTime;
+            posicionPreviaPlataforma = plataformaActual.position;
         }
         else
         {
-            // Aplicar gravedad constante
-            velocidadVertical += gravedad * Time.deltaTime;
+            velocidadPlataforma = Vector3.zero;
+            // Reseteamos plataformaActual si no hay suelo para evitar arrastres fantasma
+            if (!enSuelo) plataformaActual = null;
         }
     }
-    private void OnDrawGizmosSelected()
+
+    private void ProcesarMovimiento()
     {
-        if (Application.isPlaying)
+        Vector3 forward = camaraTransform.forward;
+        Vector3 right = camaraTransform.right;
+        forward.y = 0f; right.y = 0f;
+        forward.Normalize(); right.Normalize();
+
+        Vector3 direccionDeseada = (forward * inputVector.y + right * inputVector.x).normalized;
+        Vector3 velocidadObjetivo = direccionDeseada * velocidadMovimiento;
+
+        // --- VELOCIDAD RELATIVA ---
+        // Restamos la velocidad de la plataforma para que el Lerp no se vuelva loco
+        Vector3 velocidadRelativa = rb.linearVelocity - velocidadPlataforma;
+
+        float lerpUso = enSuelo ? (inputVector.sqrMagnitude > 0.01f ? 50f : suavizadoAterrizaje) : suavizadoAire;
+
+        float nuevaX = Mathf.Lerp(velocidadRelativa.x, velocidadObjetivo.x, lerpUso * Time.fixedDeltaTime);
+        float nuevaZ = Mathf.Lerp(velocidadRelativa.z, velocidadObjetivo.z, lerpUso * Time.fixedDeltaTime);
+
+        // Sumamos la velocidad de la plataforma al final para movernos CON ella
+        rb.linearVelocity = new Vector3(nuevaX + velocidadPlataforma.x, rb.linearVelocity.y, nuevaZ + velocidadPlataforma.z);
+    }
+
+    private void ProcesarRotacion()
+    {
+        if (inputVector.sqrMagnitude < 0.01f) return;
+        Vector3 forward = camaraTransform.forward;
+        Vector3 right = camaraTransform.right;
+        forward.y = 0f; right.y = 0f;
+        Vector3 direccion = (forward * inputVector.y + right * inputVector.x).normalized;
+
+        if (direccion != Vector3.zero)
         {
-            Gizmos.color = enSuelo ? Color.green : Color.red;
-            Gizmos.DrawWireSphere(transform.position, 0.3f);
+            Quaternion rotacionObjetivo = Quaternion.LookRotation(direccion);
+            rb.rotation = Quaternion.Slerp(rb.rotation, rotacionObjetivo, velocidadRotacion * Time.fixedDeltaTime);
         }
+    }
+
+    private void RealizarSalto()
+    {
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        rb.AddForce(Vector3.up * fuerzaSalto, ForceMode.Impulse);
+        saltosRestantes--;
+        contadorCoyote = 0;
+        contadorBufferSalto = 0;
+        enSuelo = false;
+        plataformaActual = null; // Al saltar nos desvinculamos
+    }
+
+    private void AplicarFisicaSalto()
+    {
+        float velY = rb.linearVelocity.y;
+        if (velY > 0)
+        {
+            float multi = !jumpAction.IsPressed() ? multiplicadorSaltoCorto : (velY < 2f ? gravedadAscenso * 0.5f : gravedadAscenso);
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (multi - 1) * Time.fixedDeltaTime;
+        }
+        else if (velY < 0)
+        {
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (multiplicadorCaida - 1) * Time.fixedDeltaTime;
+            if (rb.linearVelocity.y < velocidadTerminal) rb.linearVelocity = new Vector3(rb.linearVelocity.x, velocidadTerminal, rb.linearVelocity.z);
+        }
+    }
+
+    private void VerificarSuelo()
+    {
+        bool estabaEnSuelo = enSuelo;
+
+        // Lanzamos el rayo un poco más corto y centrado
+        if (Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, longitudRayoSuelo, capaSuelo))
+        {
+            // VERIFICACIÓN DE ÁNGULO: Solo es suelo si la superficie es plana (ángulo menor a 45 grados)
+            if (Vector3.Angle(hit.normal, Vector3.up) < 45f)
+            {
+                enSuelo = true;
+                if (plataformaActual != hit.collider.transform)
+                {
+                    plataformaActual = hit.collider.transform;
+                    posicionPreviaPlataforma = plataformaActual.position;
+                }
+            }
+            else // Si es una pared o lateral, no somos "hijos" ni estamos en el suelo
+            {
+                enSuelo = false;
+                plataformaActual = null;
+            }
+        }
+        else
+        {
+            enSuelo = false;
+            plataformaActual = null;
+        }
+
+        if (enSuelo && !estabaEnSuelo) saltosRestantes = saltosMaximos - 1;
     }
 }
