@@ -10,7 +10,6 @@ public class SCR_Movimiento : MonoBehaviour
 
     [Header("Configuración Movimiento")]
     [SerializeField] private float velocidadMovimiento = 8f;
-    [SerializeField] private float suavizadoMovimiento = 15f;
     [SerializeField] private float suavizadoAire = 5f;
     [SerializeField] private float velocidadRotacion = 20f;
 
@@ -118,7 +117,7 @@ public class SCR_Movimiento : MonoBehaviour
         Vector3 direccionDeseada = (forward * inputVector.y + right * inputVector.x).normalized;
         Vector3 velocidadObjetivo = direccionDeseada * velocidadMovimiento;
 
-        // --- VELOCIDAD RELATIVA ---
+        // VELOCIDAD RELATIVA
         // Restamos la velocidad de la plataforma para que el Lerp no se vuelva loco
         Vector3 velocidadRelativa = rb.linearVelocity - velocidadPlataforma;
 
