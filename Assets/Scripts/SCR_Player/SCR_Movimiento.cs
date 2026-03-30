@@ -56,6 +56,17 @@ public class SCR_Movimiento : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         posRespawnPlayer = transform.position;
     }
+    private void Start()
+    {
+        posRespawnPlayer = transform.position;
+
+        // BUSCAMOS AL ENEMIGO PARA GUARDAR SU SITIO ORIGINAL
+        GameObject enemigo = GameObject.FindGameObjectWithTag("Enemigo"); // Asegúrate de que el enemigo tenga el Tag "Enemigo"
+        if (enemigo != null)
+        {
+            posRespawnEnemigo = enemigo.transform.position;
+        }
+    }
 
     private void Update()
     {
