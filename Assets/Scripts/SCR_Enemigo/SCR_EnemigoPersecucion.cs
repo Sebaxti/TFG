@@ -84,9 +84,6 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
         // --- SEGUIMIENTO ORGÁNICO DEL AVISO LATERAL CON RETENCIÓN DE X e Y ---
         if (avisoLateralActivo != null)
         {
-            // NUEVA LÓGICA ORGÁNICA TOTAL:
-            // Forzamos que la X y la Y sean EXACTAMENTE las que guardamos al instanciar (xMundoRetenida, yMundoRetenida).
-            // Calculamos cuánto ha avanzado el enemigo en Z desde que creamos el aviso y se lo sumamos a la Z del aviso.
             float avanceZ = transform.position.z - zEnemigoAlInstanciar;
             float nuevaZPos = avisoLateralActivo.transform.position.z + avanceZ;
 
@@ -222,7 +219,7 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
         Resetting = true;
         StopAllCoroutines();
 
-        // LIMPIEZA TOTAL: Borramos los objetos físicos
+
         if (indicadorActivo != null) Destroy(indicadorActivo);
         if (trampaActiva != null) Destroy(trampaActiva);
         if (avisoLateralActivo != null) Destroy(avisoLateralActivo);
@@ -230,7 +227,6 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
         if (playerScript != null)
         {
             Vector3 puntoRespawn = playerScript.GetEnemigoRespawn();
-            // RESPETO DE ALTURA: Mantenemos la altura guardada en Awake
             transform.position = new Vector3(puntoRespawn.x, alturaOriginal, puntoRespawn.z);
         }
 

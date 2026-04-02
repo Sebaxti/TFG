@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5615177511667316805}
   m_Layer: 0
-  m_Name: Respawn
+  m_Name: PRF_Respawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
