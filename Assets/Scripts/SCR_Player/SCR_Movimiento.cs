@@ -1,27 +1,31 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
+
 [RequireComponent(typeof(Rigidbody))]
 public class SCR_Movimiento : MonoBehaviour
 {
+    // El evento global que reinicia al enemigo
+    public static event Action OnGlobalRespawn;
+
     public enum Estados { Idle, Move, Jump, DoubleJump, Fall }
 
-    [Header("M�quina de Estados")]
+    [Header("Estado")]
     public Estados estadoActual = Estados.Idle;
-    private string animacionActual = "";
+    private Estados estadoAnterior = Estados.Idle;
 
     [Header("Referencias")]
     [SerializeField] private Animator animador;
+    [SerializeField] private GameObject objetoAlas;
     private Rigidbody rb;
     private Transform camaraTransform;
 
     [Header("Movimiento")]
     [SerializeField] private float velocidadMovimiento = 8f;
-    [SerializeField] private float suavizadoSuelo = 50f;
+    [SerializeField] private float suavizadoSuelo = 15f;
     [SerializeField] private float suavizadoAire = 5f;
     [SerializeField] private float velocidadRotacion = 20f;
-    private float inputH, inputV;
 
-    [Header("Salto F�sico")]
+    [Header("Salto Físico (Restaurado)")]
     [SerializeField] private float fuerzaSalto = 14f;
     [SerializeField] private float gravedadAscenso = 2.5f;
     [SerializeField] private float multiplicadorCaida = 4.5f;
@@ -30,189 +34,133 @@ public class SCR_Movimiento : MonoBehaviour
     [SerializeField] private int saltosExtraMaximos = 1;
     private int saltosRestantes;
 
-    [Header("Detecci�n y Refinamiento")]
-    [SerializeField] private LayerMask capaSuelo;
-    [SerializeField] private float longitudRayoSuelo = 1.1f;
-    [SerializeField] private float tiempoCoyote = 0.15f;
-    [SerializeField] private float tiempoBufferSalto = 0.15f;
-    private bool enSuelo;
-    private float contadorCoyote;
-    private float contadorBufferSalto;
+    [Header("Game Feel (Control Perfecto)")]
+    [SerializeField] private float coyoteTime = 0.15f;
+    private float coyoteTimeCounter;
+    [SerializeField] private float jumpBufferTime = 0.2f;
+    private float jumpBufferCounter;
 
-    [Header("Sistema de Respawn")]
+    [Header("Detección Suelo Automática")]
+    [SerializeField] private Transform checkSuelo;
+    [SerializeField] private float radioSuelo = 0.3f;
+    private LayerMask capaSuelo;
+    private bool enSuelo;
+
+    [Header("Checkpoints")]
     private Vector3 posRespawnPlayer;
     private Vector3 posRespawnEnemigo;
-    public static event Action OnPlayerRespawn;
 
-    private Transform plataformaActual;
-    private Vector3 posicionPreviaPlataforma;
-    private Vector3 velocidadPlataforma;
+    private bool controlesBloqueados = false;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        camaraTransform = Camera.main.transform;
-        rb.freezeRotation = true;
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
-        posRespawnPlayer = transform.position;
-    }
-    private void Start()
-    {
-        posRespawnPlayer = transform.position;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        if (Camera.main != null) camaraTransform = Camera.main.transform;
 
-        // BUSCAMOS AL ENEMIGO PARA GUARDAR SU SITIO ORIGINAL
-        GameObject enemigo = GameObject.FindGameObjectWithTag("Enemigo"); // Aseg�rate de que el enemigo tenga el Tag "Enemigo"
-        if (enemigo != null)
-        {
-            posRespawnEnemigo = enemigo.transform.position;
-        }
+        posRespawnPlayer = transform.position;
+        capaSuelo = LayerMask.GetMask("Suelo");
     }
 
     private void Update()
     {
-        inputH = Input.GetAxisRaw("Horizontal");
-        inputV = Input.GetAxisRaw("Vertical");
 
-        ManejarTimers();
-        VerificarSuelo();
-        DeterminarEstadoLogico();
-        ActualizarAnimaciones();
+        if (controlesBloqueados) return;
+
+        enSuelo = Physics.CheckSphere(checkSuelo.position, radioSuelo, capaSuelo);
+
+        if (enSuelo)
+        {
+            coyoteTimeCounter = coyoteTime;
+            saltosRestantes = saltosExtraMaximos;
+            if (objetoAlas != null) objetoAlas.SetActive(false);
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+        }
+
+        if (Input.GetButtonDown("Jump")) jumpBufferCounter = jumpBufferTime;
+        else jumpBufferCounter -= Time.deltaTime;
+
+        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f) EjecutarSalto();
+        else if (Input.GetButtonDown("Jump") && saltosRestantes > 0 && !enSuelo) EjecutarDobleSalto();
+
+        
+        ActualizarEstado();
+        ProcesarAnimaciones();
     }
 
     private void FixedUpdate()
     {
-        CalcularVelocidadPlataforma();
-
-        if (contadorBufferSalto > 0) ProcesarPeticionSalto();
-
-        float suavizado = enSuelo ? suavizadoSuelo : suavizadoAire;
-        AplicarMovimientoFisico(suavizado);
-
-        if (!enSuelo) AplicarGravedadPersonalizada();
-        AplicarRotacion();
+        MoverPersonaje();
+        AplicarGravedadPersonalizada(); // LA GRAVEDAD QUE FUNCIONA
     }
 
-    private void ManejarTimers()
+    private void MoverPersonaje()
     {
-        if (Input.GetButtonDown("Jump")) contadorBufferSalto = tiempoBufferSalto;
-        else contadorBufferSalto -= Time.deltaTime;
+        Vector3 adelante = Vector3.ProjectOnPlane(camaraTransform.forward, Vector3.up).normalized;
+        Vector3 derecha = Vector3.ProjectOnPlane(camaraTransform.right, Vector3.up).normalized;
+        Vector3 dir = (adelante * Input.GetAxisRaw("Vertical") + derecha * Input.GetAxisRaw("Horizontal")).normalized;
 
-        if (enSuelo) contadorCoyote = tiempoCoyote;
-        else contadorCoyote -= Time.deltaTime;
-    }
-
-    private void DeterminarEstadoLogico()
-    {
-        if (!enSuelo)
-        {
-            if (rb.linearVelocity.y < -0.1f) estadoActual = Estados.Fall;
-        }
-        else
-        {
-            estadoActual = (Mathf.Abs(inputH) > 0.1f || Mathf.Abs(inputV) > 0.1f) ? Estados.Move : Estados.Idle;
-        }
-    }
-
-    private void ProcesarPeticionSalto()
-    {
-        if (enSuelo || contadorCoyote > 0)
-        {
-            EjecutarFuerzaSalto();
-            estadoActual = Estados.Jump;
-            contadorBufferSalto = 0;
-            contadorCoyote = 0;
-        }
-        else if (saltosRestantes > 0)
-        {
-            EjecutarFuerzaSalto();
-            estadoActual = Estados.DoubleJump;
-            contadorBufferSalto = 0;
-        }
-    }
-
-    private void EjecutarFuerzaSalto()
-    {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-        rb.AddForce(Vector3.up * fuerzaSalto, ForceMode.Impulse);
-        saltosRestantes--;
-        enSuelo = false;
-        plataformaActual = null;
-    }
-
-    private void AplicarMovimientoFisico(float suavizado)
-    {
-        Vector3 forward = camaraTransform.forward;
-        Vector3 right = camaraTransform.right;
-        forward.y = 0; right.y = 0;
-        Vector3 dir = (forward * inputV + right * inputH).normalized;
         Vector3 velObj = dir * velocidadMovimiento;
+        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, new Vector3(velObj.x, rb.linearVelocity.y, velObj.z), Time.fixedDeltaTime * (enSuelo ? suavizadoSuelo : suavizadoAire));
 
-        Vector3 velRelativa = rb.linearVelocity - velocidadPlataforma;
-        float nX = Mathf.Lerp(velRelativa.x, velObj.x, suavizado * Time.fixedDeltaTime);
-        float nZ = Mathf.Lerp(velRelativa.z, velObj.z, suavizado * Time.fixedDeltaTime);
-
-        rb.linearVelocity = new Vector3(nX + velocidadPlataforma.x, rb.linearVelocity.y, nZ + velocidadPlataforma.z);
+        if (dir.magnitude > 0.1f)
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.fixedDeltaTime * velocidadRotacion);
     }
 
+    // TUS FÍSICAS ORIGINALES INTACTAS
     private void AplicarGravedadPersonalizada()
     {
-        float multi = 1f;
-        if (rb.linearVelocity.y > 0)
-            multi = !Input.GetButton("Jump") ? multiplicadorSaltoCorto : gravedadAscenso;
-        else
-            multi = multiplicadorCaida;
-
-        rb.linearVelocity += Vector3.up * Physics.gravity.y * (multi - 1) * Time.fixedDeltaTime;
+        if (rb.linearVelocity.y < 0)
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (multiplicadorCaida - 1) * Time.fixedDeltaTime;
+        else if (rb.linearVelocity.y > 0 && !Input.GetButton("Jump"))
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (multiplicadorSaltoCorto - 1) * Time.fixedDeltaTime;
+        else if (rb.linearVelocity.y > 0)
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (gravedadAscenso - 1) * Time.fixedDeltaTime;
 
         if (rb.linearVelocity.y < velocidadTerminal)
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, velocidadTerminal, rb.linearVelocity.z);
     }
 
-    private void VerificarSuelo()
+    private void EjecutarSalto()
     {
-        if (Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, longitudRayoSuelo, capaSuelo))
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        rb.AddForce(Vector3.up * fuerzaSalto, ForceMode.Impulse);
+        jumpBufferCounter = 0f; coyoteTimeCounter = 0f;
+    }
+
+    private void EjecutarDobleSalto()
+    {
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        rb.AddForce(Vector3.up * fuerzaSalto, ForceMode.Impulse);
+        saltosRestantes--;
+        if (objetoAlas) { objetoAlas.SetActive(false); objetoAlas.SetActive(true); }
+    }
+
+    private void ActualizarEstado()
+    {
+        if (enSuelo) estadoActual = (rb.linearVelocity.magnitude > 0.1f) ? Estados.Move : Estados.Idle;
+        else estadoActual = (rb.linearVelocity.y > 0.1f) ? (saltosRestantes < saltosExtraMaximos ? Estados.DoubleJump : Estados.Jump) : Estados.Fall;
+    }
+
+    private void ProcesarAnimaciones()
+    {
+        if (animador && estadoActual != estadoAnterior)
         {
-            if (Vector3.Angle(hit.normal, Vector3.up) < 45f)
-            {
-                if (!enSuelo) saltosRestantes = saltosExtraMaximos;
-                enSuelo = true;
-                if (plataformaActual != hit.collider.transform)
-                {
-                    plataformaActual = hit.collider.transform;
-                    posicionPreviaPlataforma = plataformaActual.position;
-                }
-                return;
-            }
+            animador.CrossFade(estadoActual.ToString(), 0.1f);
+            estadoAnterior = estadoActual;
         }
-        enSuelo = false;
-        plataformaActual = null;
     }
 
-    private void CalcularVelocidadPlataforma()
+    // ==========================================
+    // SISTEMA DE MUERTE DIRECTO (INSTANTÁNEO)
+    // ==========================================
+    public void EstablecerCheckpoint(Vector3 p, Vector3 e)
     {
-        if (enSuelo && plataformaActual != null)
-        {
-            velocidadPlataforma = (plataformaActual.position - posicionPreviaPlataforma) / Time.fixedDeltaTime;
-            posicionPreviaPlataforma = plataformaActual.position;
-        }
-        else velocidadPlataforma = Vector3.zero;
-    }
-
-    private void AplicarRotacion()
-    {
-        if (Mathf.Abs(inputH) < 0.1f && Mathf.Abs(inputV) < 0.1f) return;
-        Vector3 forward = camaraTransform.forward;
-        Vector3 right = camaraTransform.right;
-        forward.y = 0; right.y = 0;
-        Vector3 direccion = (forward * inputV + right * inputH).normalized;
-        if (direccion != Vector3.zero)
-            rb.rotation = Quaternion.Slerp(rb.rotation, Quaternion.LookRotation(direccion), velocidadRotacion * Time.fixedDeltaTime);
-    }
-
-    public void EstablecerCheckpoint(Vector3 playerPos, Vector3 enemigoPos)
-    {
-        posRespawnPlayer = playerPos;
-        posRespawnEnemigo = enemigoPos;
+        posRespawnPlayer = p;
+        posRespawnEnemigo = e;
     }
 
     public Vector3 GetEnemigoRespawn() => posRespawnEnemigo;
@@ -221,29 +169,23 @@ public class SCR_Movimiento : MonoBehaviour
     {
         transform.position = posRespawnPlayer;
         rb.linearVelocity = Vector3.zero;
-        estadoActual = Estados.Idle;
-        saltosRestantes = saltosExtraMaximos;
-        enSuelo = true;
-        OnPlayerRespawn?.Invoke(); 
+        OnGlobalRespawn?.Invoke(); // Resetea al enemigo
     }
 
-    private void ActualizarAnimaciones()
+    public void BloquearMovimiento()
     {
-        if (animador == null) return;
-        switch (estadoActual)
+        controlesBloqueados = true;
+        rb.linearVelocity = Vector3.zero; // Frenazo inmediato
+        rb.isKinematic = true; // Desactivamos físicas para que no caiga por gravedad
+        estadoActual = Estados.Idle; // Forzamos animación de espera
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (checkSuelo)
         {
-            case Estados.Idle: CambiarAnimacion("Idle"); break;
-            case Estados.Move: CambiarAnimacion("Run"); break;
-            case Estados.Jump: CambiarAnimacion("Jump"); break;
-            case Estados.DoubleJump: CambiarAnimacion("DoubleJump"); break;
-            case Estados.Fall: CambiarAnimacion("Fall"); break;
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(checkSuelo.position, radioSuelo);
         }
-    }
-
-    private void CambiarAnimacion(string nueva)
-    {
-        if (animacionActual == nueva) return;
-        animador.Play(nueva);
-        animacionActual = nueva;
     }
 }

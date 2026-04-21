@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Enemigo
+  - Jefe
+  - PilarReflector
   layers:
   - Default
   - TransparentFX

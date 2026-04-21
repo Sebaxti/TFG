@@ -1,32 +1,40 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; 
-using UnityEngine.UI; 
+using UnityEngine.UI;
 
-public partial class SCR_MenuManager : MonoBehaviour
+public class SCR_MenuManager : MonoBehaviour
 {
     [Header("Paneles")]
     [SerializeField] private GameObject panelPrincipal;
     [SerializeField] private GameObject panelOpciones;
+    [SerializeField] private GameObject panelSeleccionNivel; 
 
     [Header("Configuración Sonido")]
     [SerializeField] private Slider sliderVolumen;
 
+    [Header("Selección de Niveles")]
+    [SerializeField] private Button[] botonesDeNiveles; // Arrastra botones en orden
+
     void Start()
     {
-        panelPrincipal.SetActive(true);
-        panelOpciones.SetActive(false);
+        MostrarPanelPrincipal();
 
-        // Carga el volumen guardado (si existe)
         float volGuardado = PlayerPrefs.GetFloat("Volumen", 0.5f);
         sliderVolumen.value = volGuardado;
         AudioListener.volume = volGuardado;
     }
 
-    // --- FUNCIONES DE BOTONES ---
+    // --- MÉTODOS DE NAVEGACIÓN DE UI ---
 
-    public void IniciarDemo(string nombreNivel)
+    public void MostrarPanelPrincipal()
     {
-        SceneManager.LoadScene(nombreNivel);
+        panelPrincipal.SetActive(true);
+        panelOpciones.SetActive(false);
+        if (panelSeleccionNivel) panelSeleccionNivel.SetActive(false);
+    }
+
+    public void BotonNuevaPartida()
+    {
+        SCR_GestorNiveles.Instancia.NuevaPartida();
     }
 
     public void AbrirOpciones()
@@ -35,21 +43,39 @@ public partial class SCR_MenuManager : MonoBehaviour
         panelOpciones.SetActive(true);
     }
 
-    public void CerrarOpciones()
+    public void AbrirSeleccionNivel()
     {
-        panelPrincipal.SetActive(true);
-        panelOpciones.SetActive(false);
+        panelPrincipal.SetActive(false);
+        panelSeleccionNivel.SetActive(true);
+
+        int nivelMaximo = SCR_GestorNiveles.Instancia.ObtenerNivelMaximo();
+
+        // Recorremos todos los botones que pusiste en el array
+        for (int i = 0; i < botonesDeNiveles.Length; i++)
+        {
+            // Si el índice del botón es menor o igual al nivel máximo, se puede clicar
+            botonesDeNiveles[i].interactable = (i <= nivelMaximo);
+
+            // Opcional: Puedes cambiarle el color o la opacidad para que se vea "bloqueado"
+        }
+    }
+
+    // --- ACCIONES DE JUEGO ---
+
+    public void BotonJugarNivel(int indice)
+    {
+        // Le pide al cerebro (Gestor) que cargue el nivel
+        SCR_GestorNiveles.Instancia.CargarNivelPorIndice(indice);
     }
 
     public void CambiarVolumen(float valor)
     {
         AudioListener.volume = valor;
-        PlayerPrefs.SetFloat("Volumen", valor); // Guarda el ajuste para la próxima vez
+        PlayerPrefs.SetFloat("Volumen", valor);
     }
 
-    public void SalirDelJuego()
+    public void Salir()
     {
-        Debug.Log("Saliendo");
-        Application.Quit(); //cierra el .exe
+        Application.Quit();
     }
 }
