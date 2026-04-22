@@ -12,7 +12,6 @@ public class SCR_MetaNivel : MonoBehaviour
         {
             tocado = true;
 
-            // Frenazo para evitar muertes accidentales en la meta
             other.GetComponent<SCR_Movimiento>()?.BloquearMovimiento();
 
             if (SCR_GestorNiveles.Instancia != null)

@@ -16,7 +16,6 @@ public class SCR_ControladorVideo : MonoBehaviour
 
     void Start()
     {
-        // 1. Buscamos el nivel actual
         int indiceNivelActual = PlayerPrefs.GetInt("NivelActual", 0);
         Debug.Log("CONTROLADOR VIDEO: Iniciando video para el índice de nivel: " + indiceNivelActual);
 
@@ -38,7 +37,6 @@ public class SCR_ControladorVideo : MonoBehaviour
 
     void Update()
     {
-        // Permitir saltar con Espacio
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Log("CONTROLADOR VIDEO: Salto de video manual detectado.");
@@ -54,14 +52,12 @@ public class SCR_ControladorVideo : MonoBehaviour
 
     void CargarSiguienteEscena()
     {
-        // COMPROBACIÓN CRÍTICA 1: ¿Existe el Gestor?
         if (SCR_GestorNiveles.Instancia == null)
         {
             Debug.LogError("ERROR CRÍTICO: ¡No se encuentra el SCR_GestorNiveles en la escena! ¿Has empezado el juego desde la escena del MENU?");
             return;
         }
 
-        // COMPROBACIÓN CRÍTICA 2: ¿A qué escena vamos?
         string nombreEscena = SCR_GestorNiveles.Instancia.GetEscenaDeNivelActual();
         Debug.Log("CONTROLADOR VIDEO: Intentando cargar la escena: " + nombreEscena);
 

@@ -12,7 +12,7 @@ public class SCR_MenuManager : MonoBehaviour
     [SerializeField] private Slider sliderVolumen;
 
     [Header("Selección de Niveles")]
-    [SerializeField] private Button[] botonesDeNiveles; // Arrastra botones en orden
+    [SerializeField] private Button[] botonesDeNiveles; 
 
     void Start()
     {
@@ -23,8 +23,6 @@ public class SCR_MenuManager : MonoBehaviour
         AudioListener.volume = volGuardado;
     }
 
-    // --- MÉTODOS DE NAVEGACIÓN DE UI ---
-
     public void MostrarPanelPrincipal()
     {
         panelPrincipal.SetActive(true);
@@ -34,6 +32,9 @@ public class SCR_MenuManager : MonoBehaviour
 
     public void BotonNuevaPartida()
     {
+        if (SCR_GestorMonedas.Instancia != null)
+            SCR_GestorMonedas.Instancia.ResetearMonedas();
+
         SCR_GestorNiveles.Instancia.NuevaPartida();
     }
 
@@ -50,21 +51,15 @@ public class SCR_MenuManager : MonoBehaviour
 
         int nivelMaximo = SCR_GestorNiveles.Instancia.ObtenerNivelMaximo();
 
-        // Recorremos todos los botones que pusiste en el array
         for (int i = 0; i < botonesDeNiveles.Length; i++)
         {
-            // Si el índice del botón es menor o igual al nivel máximo, se puede clicar
             botonesDeNiveles[i].interactable = (i <= nivelMaximo);
 
-            // Opcional: Puedes cambiarle el color o la opacidad para que se vea "bloqueado"
         }
     }
 
-    // --- ACCIONES DE JUEGO ---
-
     public void BotonJugarNivel(int indice)
     {
-        // Le pide al cerebro (Gestor) que cargue el nivel
         SCR_GestorNiveles.Instancia.CargarNivelPorIndice(indice);
     }
 

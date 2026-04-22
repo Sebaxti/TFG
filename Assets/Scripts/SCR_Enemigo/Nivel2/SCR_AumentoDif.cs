@@ -15,11 +15,8 @@ public class SCR_AumentoDif : MonoBehaviour
         {
             if (scriptEnemigo != null)
             {
-                // Enviamos la suma al enemigo
                 scriptEnemigo.SumarDificultad(sumarCorte, sumarCaida);
 
-                // IMPORTANTE: Lo destruimos para que no se pueda activar dos veces
-                // (Por si el jugador retrocede o muere y vuelve a pasar)
                 Destroy(gameObject);
             }
             else

@@ -5,7 +5,6 @@ using System.Collections;
 
 public class SCR_Transiciones : MonoBehaviour
 {
-    // Instancia estática para que cualquier script pueda llamarlo: SCR_Transiciones.Instancia
     public static SCR_Transiciones Instancia;
 
     [Header("Configuración de UI")]
@@ -17,19 +16,17 @@ public class SCR_Transiciones : MonoBehaviour
 
     private void Awake()
     {
-        // --- PATRÓN SINGLETON INMORTAL ---
         if (Instancia == null)
         {
             Instancia = this;
-            DontDestroyOnLoad(gameObject); // No se destruye al cambiar de escena
+            DontDestroyOnLoad(gameObject); 
         }
         else
         {
-            Destroy(gameObject); // Si ya existe uno, destruye la copia
+            Destroy(gameObject); 
             return;
         }
 
-        // Al empezar el juego, nos aseguramos de que la imagen sea invisible
         if (imagenNegra != null)
         {
             imagenNegra.color = new Color(0, 0, 0, 0);
@@ -37,23 +34,15 @@ public class SCR_Transiciones : MonoBehaviour
         }
     }
 
-    // Suscribirse al evento de carga de escena para hacer el Fade In automático
     private void OnEnable() { SceneManager.sceneLoaded += AlCargarEscena; }
     private void OnDisable() { SceneManager.sceneLoaded -= AlCargarEscena; }
 
     private void AlCargarEscena(Scene escena, LoadSceneMode modo)
     {
-        // Cada vez que entramos a un nivel nuevo (o reiniciamos), quitamos el negro
         QuitarFundido();
     }
 
-    // ==========================================
-    // MÉTODOS DE CONTROL (Llamados por otros scripts)
-    // ==========================================
 
-    /// <summary>
-    /// Pone la pantalla en negro y luego reinicia o carga una escena nueva.
-    /// </summary>
     public void ReiniciarEscenaConEspera(float espera)
     {
         StartCoroutine(RutinaFadeOutYLoad(SceneManager.GetActiveScene().name, espera));
@@ -64,9 +53,6 @@ public class SCR_Transiciones : MonoBehaviour
         StartCoroutine(RutinaFadeOutYLoad(nombreEscena, espera));
     }
 
-    /// <summary>
-    /// SOLO pone la pantalla en negro (usado para el respawn local del Nivel 2).
-    /// </summary>
     public IEnumerator SoloFundidoNegro(float duracion)
     {
         imagenNegra.raycastTarget = true;
@@ -81,22 +67,16 @@ public class SCR_Transiciones : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Quita el color negro de la pantalla suavemente.
-    /// </summary>
+
     public void QuitarFundido()
     {
-        StopAllCoroutines(); // Evita conflictos si hay fundidos a medias
+        StopAllCoroutines(); 
         StartCoroutine(RutinaFadeIn());
     }
 
-    // ==========================================
-    // LÓGICA INTERNA (CORRUTINAS)
-    // ==========================================
 
     private IEnumerator RutinaFadeOutYLoad(string escenaDestino, float espera)
     {
-        // Esperamos el tiempo de "drama" (viendo al jugador morir)
         yield return new WaitForSeconds(espera);
 
         imagenNegra.raycastTarget = true;
@@ -108,7 +88,6 @@ public class SCR_Transiciones : MonoBehaviour
             yield return null;
         }
 
-        // Una vez negro, cargamos
         SceneManager.LoadScene(escenaDestino);
     }
 

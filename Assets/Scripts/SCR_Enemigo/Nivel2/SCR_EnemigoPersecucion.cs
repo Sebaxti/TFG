@@ -155,10 +155,8 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
         Vector3 posCielo = posSuelo + (Vector3.up * alturaCaida);
         trampaActiva = Instantiate(prefabObjetoCaida, posCielo, Quaternion.identity);
 
-        // --- CAÍDA POR MATEMÁTICAS (Cero bugs físicos) ---
         while (trampaActiva != null && trampaActiva.transform.position.y > posSuelo.y)
         {
-            // La bajamos a la velocidad exacta indicada
             trampaActiva.transform.position = Vector3.MoveTowards(
                 trampaActiva.transform.position,
                 posSuelo,
@@ -167,7 +165,6 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
             yield return null;
         }
 
-        // --- TIEMPO DE ESPERA SOBRE LA SUPERFICIE ---
         yield return new WaitForSeconds(tiempoVidaEnSuelo);
 
         if (trampaActiva != null) Destroy(trampaActiva);

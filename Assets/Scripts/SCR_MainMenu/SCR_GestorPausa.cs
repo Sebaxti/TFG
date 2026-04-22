@@ -1,24 +1,27 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SCR_GestionPausa : MonoBehaviour
+public class SCR_GestorPausa : MonoBehaviour
 {
-    public static SCR_GestionPausa Instancia;
+    public static SCR_GestorPausa Instancia;
 
     [Header("Referencias UI")]
-    [SerializeField] private GameObject canvasPausaRaiz; // El Canvas completo
-    [SerializeField] private GameObject panelPrincipal;
-    [SerializeField] private GameObject panelOpciones;
+    [SerializeField] private GameObject canvasPausaRaiz;
+    [SerializeField] private GameObject panelPrincipalPausa;
+    [SerializeField] private GameObject panelOpcionesPausa;
+
+    [Header("Nombres de Escena (Bloqueo de Pausa)")]
+    [SerializeField] private string nombreEscenaMenu = "SCN_Menu";
+    [SerializeField] private string nombreEscenaVideo = "SCN_Cinematica";
 
     private bool estaPausado = false;
 
     private void Awake()
     {
-        // Configuramos el Singleton para que persista
         if (Instancia == null)
         {
             Instancia = this;
-            DontDestroyOnLoad(gameObject); // Salva al GestorPausa y a su Canvas hijo
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -26,17 +29,19 @@ public class SCR_GestionPausa : MonoBehaviour
             return;
         }
 
-        // Nos aseguramos de que empiece apagado
         if (canvasPausaRaiz != null) canvasPausaRaiz.SetActive(false);
     }
 
     void Update()
     {
-        // Detectar tecla de pausa (Escape)
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // Evitamos que el jugador pause estando en el Menú Principal (Escena 0)
-            if (SceneManager.GetActiveScene().buildIndex == 0) return;
+            string escenaActual = SceneManager.GetActiveScene().name;
+
+            if (escenaActual == nombreEscenaMenu || escenaActual == nombreEscenaVideo)
+            {
+                return;
+            }
 
             if (estaPausado) Reanudar();
             else Pausar();
@@ -46,52 +51,39 @@ public class SCR_GestionPausa : MonoBehaviour
     public void Pausar()
     {
         estaPausado = true;
+        Time.timeScale = 0f;
         canvasPausaRaiz.SetActive(true);
         MostrarPanelPrincipal();
-
-        // Magia de Unity: Detiene todas las físicas y Update (si usan deltaTime)
-        Time.timeScale = 0f;
     }
 
     public void Reanudar()
     {
         estaPausado = false;
-        canvasPausaRaiz.SetActive(false);
-
-        // Devolvemos el tiempo a la normalidad
         Time.timeScale = 1f;
+        canvasPausaRaiz.SetActive(false);
     }
-
-    // --- NAVEGACIÓN DENTRO DE LA PAUSA ---
 
     public void MostrarPanelPrincipal()
     {
-        panelPrincipal.SetActive(true);
-        panelOpciones.SetActive(false);
+        panelPrincipalPausa.SetActive(true);
+        panelOpcionesPausa.SetActive(false);
     }
 
     public void AbrirOpciones()
     {
-        panelPrincipal.SetActive(false);
-        panelOpciones.SetActive(true);
+        panelPrincipalPausa.SetActive(false);
+        panelOpcionesPausa.SetActive(true);
     }
-
-    // --- ACCIONES DE SALIDA ---
 
     public void SalirAlMenuPrincipal()
     {
-        // ¡SÚPER IMPORTANTE! Quitar la pausa antes de cambiar de escena
-        estaPausado = false;
-        Time.timeScale = 1f;
-        canvasPausaRaiz.SetActive(false);
-
-        // Asumimos que el Menú Principal es el buildIndex 0
-        SceneManager.LoadScene(0);
+        Reanudar();
+        SceneManager.LoadScene(nombreEscenaMenu);
     }
 
-    public void SalirDelJuego()
+    public void SalirAlEscritorio()
     {
-        Debug.Log("Saliendo del juego desde la pausa...");
+        Debug.Log("Cerrando aplicaciÃ³n...");
         Application.Quit();
     }
 }

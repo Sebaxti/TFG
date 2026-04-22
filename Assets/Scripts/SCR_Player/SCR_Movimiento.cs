@@ -94,7 +94,7 @@ public class SCR_Movimiento : MonoBehaviour
     private void FixedUpdate()
     {
         MoverPersonaje();
-        AplicarGravedadPersonalizada(); // LA GRAVEDAD QUE FUNCIONA
+        AplicarGravedadPersonalizada();
     }
 
     private void MoverPersonaje()
@@ -110,7 +110,6 @@ public class SCR_Movimiento : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.fixedDeltaTime * velocidadRotacion);
     }
 
-    // TUS FÍSICAS ORIGINALES INTACTAS
     private void AplicarGravedadPersonalizada()
     {
         if (rb.linearVelocity.y < 0)
@@ -154,9 +153,6 @@ public class SCR_Movimiento : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // SISTEMA DE MUERTE DIRECTO (INSTANTÁNEO)
-    // ==========================================
     public void EstablecerCheckpoint(Vector3 p, Vector3 e)
     {
         posRespawnPlayer = p;
@@ -169,15 +165,15 @@ public class SCR_Movimiento : MonoBehaviour
     {
         transform.position = posRespawnPlayer;
         rb.linearVelocity = Vector3.zero;
-        OnGlobalRespawn?.Invoke(); // Resetea al enemigo
+        OnGlobalRespawn?.Invoke();
     }
 
     public void BloquearMovimiento()
     {
         controlesBloqueados = true;
-        rb.linearVelocity = Vector3.zero; // Frenazo inmediato
-        rb.isKinematic = true; // Desactivamos físicas para que no caiga por gravedad
-        estadoActual = Estados.Idle; // Forzamos animación de espera
+        rb.linearVelocity = Vector3.zero; 
+        rb.isKinematic = true; 
+        estadoActual = Estados.Idle; 
     }
 
     private void OnDrawGizmos()

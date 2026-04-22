@@ -123,7 +123,7 @@ public class SCR_JefeFinal : MonoBehaviour
 
         if (prefabProyectilMaestro != null)
         {
-            // USAMOS LAS VARIABLES DEL INSPECTOR PARA EL SPAWN
+
             Vector3 spawnPos = transform.position + (transform.forward * distanciaSalidaProyectil) + (Vector3.up * alturaSalidaProyectil);
             proyectilActivo = Instantiate(prefabProyectilMaestro, spawnPos, transform.rotation);
             proyectilActivo.GetComponent<SCR_ProyectilJefe>().Disparar(jugador.position, this);

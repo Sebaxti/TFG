@@ -4,7 +4,7 @@ using System.Collections;
 public class SCR_TrampaPinchos : MonoBehaviour
 {
     [Header("Referencias")]
-    [SerializeField] private Transform objetoPinchos; // El objeto hijo que tiene los pinchos
+    [SerializeField] private Transform objetoPinchos;
 
     [Header("Configuración de Movimiento")]
     [SerializeField] private Vector3 posicionEscondido;
@@ -13,14 +13,13 @@ public class SCR_TrampaPinchos : MonoBehaviour
     [SerializeField] private float velocidadEntrada = 3f;
 
     [Header("Tiempos")]
-    [SerializeField] private float retardoActivacion = 0.5f; // Tiempo desde que pisa hasta que salen
-    [SerializeField] private float tiempoFuera = 2f;        // Tiempo que se quedan arriba
+    [SerializeField] private float retardoActivacion = 0.5f;
+    [SerializeField] private float tiempoFuera = 2f;       
 
     private bool activada = false;
 
     private void Start()
     {
-        // Aseguramos que empiecen escondidos
         if (objetoPinchos != null)
             objetoPinchos.localPosition = posicionEscondido;
     }
@@ -37,10 +36,8 @@ public class SCR_TrampaPinchos : MonoBehaviour
     {
         activada = true;
 
-        // 1. Retardo (El jugador nota que algo va a pasar)
         yield return new WaitForSeconds(retardoActivacion);
 
-        // 2. Salida Rápida
         float t = 0;
         while (t < 1)
         {
@@ -49,10 +46,8 @@ public class SCR_TrampaPinchos : MonoBehaviour
             yield return null;
         }
 
-        // 3. Mantenerse arriba
         yield return new WaitForSeconds(tiempoFuera);
 
-        // 4. Esconderse Lento
         t = 0;
         while (t < 1)
         {
@@ -63,8 +58,6 @@ public class SCR_TrampaPinchos : MonoBehaviour
 
         activada = false;
     }
-
-    // Dibujar los puntos en el editor para que sea fácil configurarla
     private void OnDrawGizmosSelected()
     {
         if (objetoPinchos != null)
