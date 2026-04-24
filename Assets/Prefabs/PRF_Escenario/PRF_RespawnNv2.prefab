@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5615177511667316805}
   m_Layer: 0
-  m_Name: PRF_Respawn
+  m_Name: PRF_RespawnNv2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -155,8 +155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc3c8beec0a0f18408f99bfb28d50eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SCR_Checkpoint
-  puntoDeAparicion: {fileID: 3152562022701285465}
-  colorActivado: {r: 0, g: 1, b: 0, a: 1}
+  puntoAparicionPlayer: {fileID: 0}
+  puntoAparicionEnemigo: {fileID: 0}
 --- !u!1 &8216459586404201751
 GameObject:
   m_ObjectHideFlags: 0

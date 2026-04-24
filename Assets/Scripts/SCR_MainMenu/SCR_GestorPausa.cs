@@ -38,6 +38,7 @@ public class SCR_GestorPausa : MonoBehaviour
         {
             string escenaActual = SceneManager.GetActiveScene().name;
 
+            // Evitar pausar en el menú principal o en cinemáticas
             if (escenaActual == nombreEscenaMenu || escenaActual == nombreEscenaVideo)
             {
                 return;
@@ -54,6 +55,9 @@ public class SCR_GestorPausa : MonoBehaviour
         Time.timeScale = 0f;
         canvasPausaRaiz.SetActive(true);
         MostrarPanelPrincipal();
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void Reanudar()
@@ -61,6 +65,9 @@ public class SCR_GestorPausa : MonoBehaviour
         estaPausado = false;
         Time.timeScale = 1f;
         canvasPausaRaiz.SetActive(false);
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void MostrarPanelPrincipal()
@@ -73,17 +80,5 @@ public class SCR_GestorPausa : MonoBehaviour
     {
         panelPrincipalPausa.SetActive(false);
         panelOpcionesPausa.SetActive(true);
-    }
-
-    public void SalirAlMenuPrincipal()
-    {
-        Reanudar();
-        SceneManager.LoadScene(nombreEscenaMenu);
-    }
-
-    public void SalirAlEscritorio()
-    {
-        Debug.Log("Cerrando aplicación...");
-        Application.Quit();
     }
 }

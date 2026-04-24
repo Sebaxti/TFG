@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 6720317028978891132}
   - component: {fileID: 6744483078663725772}
   - component: {fileID: 1622222612962062602}
+  - component: {fileID: 3824971332866933328}
   m_Layer: 0
   m_Name: MetaNivel
   m_TagString: Untagged
@@ -99,3 +100,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SCR_MetaNivel
   indiceNivelActual: 0
+--- !u!114 &3824971332866933328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979355155830409702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d684a866e5a7ad647b05cd1dadf572fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SCR_TriggerCambioEscena
+  indiceDeEsteNivel: 0

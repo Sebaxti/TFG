@@ -41,13 +41,21 @@ public class SCR_GestorNiveles : MonoBehaviour
     {
         if (indice >= 0 && indice < listaDeNiveles.Length)
         {
-            SceneManager.LoadScene(listaDeNiveles[indice].nombreEscenaUnity);
+            string nombreEscena = listaDeNiveles[indice].nombreEscenaUnity;
+
+            // CAMBIO: En lugar de SceneManager, usamos nuestro Gestor de Escena para el Fade
+            if (SCR_GestorEscena.Instancia != null)
+                SCR_GestorEscena.Instancia.CambiarEscena(nombreEscena);
+            else
+                SceneManager.LoadScene(nombreEscena);
         }
     }
 
     public void AvanzarDesdeNivel(int indiceActual)
     {
         int siguiente = indiceActual + 1;
+
+        // Guardamos progreso
         if (siguiente > ObtenerNivelMaximo() && siguiente < listaDeNiveles.Length)
         {
             PlayerPrefs.SetInt("NivelMaximoDesbloqueado", siguiente);
@@ -56,7 +64,17 @@ public class SCR_GestorNiveles : MonoBehaviour
         PlayerPrefs.SetInt("NivelActual", siguiente);
         PlayerPrefs.Save();
 
-        SceneManager.LoadScene(nombreEscenaCinematica);
+        // Si hay un nivel siguiente en la lista, lo cargamos con Fade
+        if (siguiente < listaDeNiveles.Length)
+        {
+            CargarNivelPorIndice(siguiente);
+        }
+        else
+        {
+            Debug.Log("¡Juego completado! Volviendo al menú...");
+            if (SCR_GestorEscena.Instancia != null)
+                SCR_GestorEscena.Instancia.CambiarEscena(nombreEscenaCinematica);
+        }
     }
 
     public string GetEscenaDeNivelActual()

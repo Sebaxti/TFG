@@ -54,15 +54,25 @@ public class SCR_Plataformas : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+
+    private void OnCollisionEnter(Collision collision)
     {
-        if (puntoA != null && puntoB != null)
+        // Cuando el jugador toca la plataforma, lo emparentamos
+        if (collision.gameObject.CompareTag("Player"))
         {
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(puntoA.position, puntoB.position);
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(puntoA.position, 0.3f);
-            Gizmos.DrawWireSphere(puntoB.position, 0.3f);
+            collision.gameObject.transform.SetParent(transform);
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            if (collision.gameObject.transform.parent == transform)
+            {
+                collision.gameObject.transform.SetParent(null);
+            }
         }
     }
 }

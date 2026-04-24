@@ -103,7 +103,25 @@ public class SCR_Movimiento : MonoBehaviour
         Vector3 derecha = Vector3.ProjectOnPlane(camaraTransform.right, Vector3.up).normalized;
         Vector3 dir = (adelante * Input.GetAxisRaw("Vertical") + derecha * Input.GetAxisRaw("Horizontal")).normalized;
 
-        Vector3 velObj = dir * velocidadMovimiento;
+        // --- EL TRUCO DE LAS PLATAFORMAS ---
+        Vector3 inerciaPlataforma = Vector3.zero;
+        if (transform.parent != null)
+        {
+            Rigidbody rbPadre = transform.parent.GetComponent<Rigidbody>();
+            if (rbPadre != null)
+            {
+                // "Copiamos" la velocidad a la que se mueve el suelo bajo nuestros pies
+                inerciaPlataforma = rbPadre.linearVelocity;
+            }
+        }
+
+        // Calculamos hacia dónde quieres ir tú
+        Vector3 velJugador = dir * velocidadMovimiento;
+
+        // El objetivo real es Tu Velocidad + La Velocidad de la Plataforma
+        Vector3 velObj = velJugador + inerciaPlataforma;
+
+        // Aplicamos el Lerp usando el nuevo objetivo, respetando la gravedad (Y)
         rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, new Vector3(velObj.x, rb.linearVelocity.y, velObj.z), Time.fixedDeltaTime * (enSuelo ? suavizadoSuelo : suavizadoAire));
 
         if (dir.magnitude > 0.1f)
@@ -163,9 +181,35 @@ public class SCR_Movimiento : MonoBehaviour
 
     public void Respawn()
     {
+        BloquearMovimiento();
+
+        if (SCR_GestorEscena.Instancia != null)
+        {
+            // Le pasamos el propio jugador ("this") al Gestor para que sepa a quién mover
+            SCR_GestorEscena.Instancia.ProcesarMuerte(this);
+        }
+        else
+        {
+            Debug.LogWarning("Falta SCR_GestorEscena. Haciendo respawn rápido.");
+            EjecutarTeletransporte();
+            DesbloquearMovimiento();
+        }
+    }
+
+    // Esta es la función que el Gestor llama cuando la pantalla ya está en negro
+    public void EjecutarTeletransporte()
+    {
         transform.position = posRespawnPlayer;
-        rb.linearVelocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero; // Frenamos la caída
         OnGlobalRespawn?.Invoke();
+    }
+
+    // (Asegúrate de que tienes una función DesbloquearMovimiento para devolverle los controles,
+    // que sea exactamente la inversa de BloquearMovimiento)
+    public void DesbloquearMovimiento()
+    {
+        controlesBloqueados = false;
+        rb.isKinematic = false; 
     }
 
     public void BloquearMovimiento()
