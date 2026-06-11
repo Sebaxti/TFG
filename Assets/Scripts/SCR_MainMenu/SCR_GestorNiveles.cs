@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 public class SCR_GestorNiveles : MonoBehaviour
 {
@@ -10,53 +11,75 @@ public class SCR_GestorNiveles : MonoBehaviour
     {
         public string nombreNivelUI;
         public string nombreEscenaUnity;
+        public bool esNivelJefe;
+        public VideoClip cinematicaPrevia;
     }
 
-    [Header("Configuración de Niveles")]
+    [Header("Base de Datos de Niveles")]
     public DatosNivel[] listaDeNiveles;
-    [SerializeField] private string nombreEscenaCinematica = "SCN_Cinematica";
+
+    [Header("Escenas del Sistema")]
+    public string escenaMenuPrincipal = "MainMenu";
+    public string escenaReproductorVideo = "SCN_Cinematica";
 
     private void Awake()
     {
-        if (Instancia == null)
-        {
-            Instancia = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instancia == null) { Instancia = this; DontDestroyOnLoad(gameObject); }
+        else { Destroy(gameObject); }
     }
 
-    public int ObtenerNivelMaximo() => PlayerPrefs.GetInt("NivelMaximoDesbloqueado", 0);
+    // =================================================================
+    // FUNCIONES DE COMPATIBILIDAD (Para que los menús y botones no fallen)
+    // =================================================================
 
-    public void NuevaPartida()
+    public int ObtenerNivelMaximo()
     {
-        PlayerPrefs.SetInt("NivelActual", 0);
-        SceneManager.LoadScene(nombreEscenaCinematica);
+        return PlayerPrefs.GetInt("NivelMaximoDesbloqueado", 0);
     }
 
     public void CargarNivelPorIndice(int indice)
     {
-        if (indice >= 0 && indice < listaDeNiveles.Length)
-        {
-            string nombreEscena = listaDeNiveles[indice].nombreEscenaUnity;
-
-            // CAMBIO: En lugar de SceneManager, usamos nuestro Gestor de Escena para el Fade
-            if (SCR_GestorEscena.Instancia != null)
-                SCR_GestorEscena.Instancia.CambiarEscena(nombreEscena);
-            else
-                SceneManager.LoadScene(nombreEscena);
-        }
+        PlayerPrefs.SetInt("NivelActual", indice);
+        PlayerPrefs.Save();
+        ProcesarCargaNivel(indice);
     }
 
     public void AvanzarDesdeNivel(int indiceActual)
     {
-        int siguiente = indiceActual + 1;
+        AvanzarSiguienteNivel();
+    }
 
-        // Guardamos progreso
-        if (siguiente > ObtenerNivelMaximo() && siguiente < listaDeNiveles.Length)
+    public string GetEscenaDeNivelActual()
+    {
+        return ObtenerDatosNivelActual().nombreEscenaUnity;
+    }
+
+
+    // =================================================================
+    // NUEVA LÓGICA LIMPIA (Centralizada y sin Hardcodeo)
+    // =================================================================
+
+    public DatosNivel ObtenerDatosNivelActual()
+    {
+        int indice = PlayerPrefs.GetInt("NivelActual", 0);
+        if (indice < listaDeNiveles.Length) return listaDeNiveles[indice];
+        return new DatosNivel();
+    }
+
+    public void NuevaPartida()
+    {
+        PlayerPrefs.SetInt("NivelActual", 0);
+        PlayerPrefs.Save();
+        ProcesarCargaNivel(0);
+    }
+
+    public void AvanzarSiguienteNivel()
+    {
+        int nivelActual = PlayerPrefs.GetInt("NivelActual", 0);
+        int siguiente = nivelActual + 1;
+
+        int maxDesbloqueado = ObtenerNivelMaximo();
+        if (siguiente > maxDesbloqueado && siguiente < listaDeNiveles.Length)
         {
             PlayerPrefs.SetInt("NivelMaximoDesbloqueado", siguiente);
         }
@@ -64,22 +87,40 @@ public class SCR_GestorNiveles : MonoBehaviour
         PlayerPrefs.SetInt("NivelActual", siguiente);
         PlayerPrefs.Save();
 
-        // Si hay un nivel siguiente en la lista, lo cargamos con Fade
         if (siguiente < listaDeNiveles.Length)
         {
-            CargarNivelPorIndice(siguiente);
+            ProcesarCargaNivel(siguiente);
         }
         else
         {
-            Debug.Log("¡Juego completado! Volviendo al menú...");
+            // Juego completado
             if (SCR_GestorEscena.Instancia != null)
-                SCR_GestorEscena.Instancia.CambiarEscena(nombreEscenaCinematica);
+                SCR_GestorEscena.Instancia.CargarEscenaConFade(escenaMenuPrincipal);
         }
     }
 
-    public string GetEscenaDeNivelActual()
+    public void ProcesarCargaNivel(int indice)
     {
-        int index = PlayerPrefs.GetInt("NivelActual", 0);
-        return (index < listaDeNiveles.Length) ? listaDeNiveles[index].nombreEscenaUnity : listaDeNiveles[0].nombreEscenaUnity;
+        if (indice >= listaDeNiveles.Length) return;
+
+        DatosNivel datos = listaDeNiveles[indice];
+
+        if (datos.cinematicaPrevia != null)
+        {
+            if (SCR_GestorEscena.Instancia != null)
+                SCR_GestorEscena.Instancia.CargarEscenaConFade(escenaReproductorVideo);
+        }
+        else
+        {
+            if (SCR_GestorEscena.Instancia != null)
+                SCR_GestorEscena.Instancia.CargarEscenaConFade(datos.nombreEscenaUnity);
+        }
+    }
+
+    public void CargarNivelDespuesDeVideo()
+    {
+        DatosNivel datos = ObtenerDatosNivelActual();
+        if (SCR_GestorEscena.Instancia != null)
+            SCR_GestorEscena.Instancia.CargarEscenaConFade(datos.nombreEscenaUnity);
     }
 }

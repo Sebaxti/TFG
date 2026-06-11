@@ -1,13 +1,11 @@
 using UnityEngine;
 using UnityEngine.Video;
-using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(VideoPlayer))]
 public class SCR_ControladorVideo : MonoBehaviour
 {
     private VideoPlayer vPlayer;
-
-    [Header("Base de Datos de Videos")]
-    [SerializeField] private VideoClip[] clipsCinematicas;
+    private bool saltando = false;
 
     void Awake()
     {
@@ -16,19 +14,18 @@ public class SCR_ControladorVideo : MonoBehaviour
 
     void Start()
     {
-        int indiceNivelActual = PlayerPrefs.GetInt("NivelActual", 0);
-        Debug.Log("CONTROLADOR VIDEO: Iniciando video para el índice de nivel: " + indiceNivelActual);
+        // 1. Conseguimos el vídeo que toca desde la base de datos centralizada
+        VideoClip clipActual = SCR_GestorNiveles.Instancia.ObtenerDatosNivelActual().cinematicaPrevia;
 
-        if (indiceNivelActual < clipsCinematicas.Length)
+        if (clipActual != null)
         {
-            vPlayer.clip = clipsCinematicas[indiceNivelActual];
+            vPlayer.clip = clipActual;
             vPlayer.Play();
-            Debug.Log("CONTROLADOR VIDEO: Reproduciendo clip: " + vPlayer.clip.name);
         }
         else
         {
-            Debug.LogWarning("CONTROLADOR VIDEO: No hay video para el índice " + indiceNivelActual + ". Saltando al nivel.");
-            CargarSiguienteEscena();
+            // Salvavidas por si se carga la escena sin vídeo asignado
+            FinalizarVideo();
         }
     }
 
@@ -37,37 +34,26 @@ public class SCR_ControladorVideo : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        // Permitir saltar la cinemática
+        if (Input.GetKeyDown(KeyCode.Space) && !saltando)
         {
-            Debug.Log("CONTROLADOR VIDEO: Salto de video manual detectado.");
-            CargarSiguienteEscena();
+            saltando = true;
+            FinalizarVideo();
         }
     }
 
     void AlTerminarVideo(VideoPlayer vp)
     {
-        Debug.Log("CONTROLADOR VIDEO: El video ha terminado de forma natural.");
-        CargarSiguienteEscena();
+        if (!saltando)
+        {
+            saltando = true;
+            FinalizarVideo();
+        }
     }
 
-    void CargarSiguienteEscena()
+    void FinalizarVideo()
     {
-        if (SCR_GestorNiveles.Instancia == null)
-        {
-            Debug.LogError("ERROR CRÍTICO: ¡No se encuentra el SCR_GestorNiveles en la escena! ¿Has empezado el juego desde la escena del MENU?");
-            return;
-        }
-
-        string nombreEscena = SCR_GestorNiveles.Instancia.GetEscenaDeNivelActual();
-        Debug.Log("CONTROLADOR VIDEO: Intentando cargar la escena: " + nombreEscena);
-
-        if (!string.IsNullOrEmpty(nombreEscena))
-        {
-            SceneManager.LoadScene(nombreEscena);
-        }
-        else
-        {
-            Debug.LogError("ERROR: El nombre de la escena devuelto por el Gestor está vacío.");
-        }
+        // Le devolvemos el control al Gestor de Niveles para que cargue la fase
+        SCR_GestorNiveles.Instancia.CargarNivelDespuesDeVideo();
     }
 }

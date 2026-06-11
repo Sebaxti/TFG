@@ -416,11 +416,18 @@ MonoBehaviour:
   listaDeNiveles:
   - nombreNivelUI: Nivel 1
     nombreEscenaUnity: SCN_Nivel1Tuto
+    esNivelJefe: 0
+    cinematicaPrevia: {fileID: 0}
   - nombreNivelUI: Nivel 2
     nombreEscenaUnity: SCN_Nivel2Run
+    esNivelJefe: 0
+    cinematicaPrevia: {fileID: 0}
   - nombreNivelUI: Nivel 3
     nombreEscenaUnity: SCN_Nivel3BossFight
-  nombreEscenaCinematica: SCN_Cinematica
+    esNivelJefe: 1
+    cinematicaPrevia: {fileID: 0}
+  escenaMenuPrincipal: MainMenu
+  escenaReproductorVideo: SCN_Cinematica
 --- !u!1 &85801490
 GameObject:
   m_ObjectHideFlags: 0
@@ -3682,7 +3689,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &865569877
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9197,7 +9204,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1405628927}
         m_TargetAssemblyTypeName: SCR_GestorPausa, Assembly-CSharp
-        m_MethodName: SalirAlMenuPrincipal
+        m_MethodName: MostrarPanelPrincipal
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9726,8 +9733,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 043ff0654d8efaa4fbc1efed1ce397dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SCR_GestorEscena
-  nombreEscenaMenu: SCN_Menu
-  nombreEscenaJefe: Nivel_3_Jefe
   imagenFundido: {fileID: 875318980}
   velocidadFade: 1.5
 --- !u!1 &2077609752
