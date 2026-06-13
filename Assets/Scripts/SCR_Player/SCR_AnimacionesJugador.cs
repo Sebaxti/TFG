@@ -16,9 +16,10 @@ public class SCR_AnimacionesJugador : MonoBehaviour
     public string animDoubleJump = "DoubleJump";
     public string animFall = "Fall";
 
-    [Header("Ajustes")]
+   /*  [Header("Ajustes")]
     [Tooltip("Tiempo que tarda en mezclar una animación con otra")]
     [SerializeField] private float transicionSuave = 0.1f;
+   */  //POR AHORA NO LO USE, ASI QUE LO COMENTO
 
     // Se guarda el estado anterior para saber cuándo hay un cambio
     private SCR_Movimiento.Estados estadoAnterior;
@@ -33,6 +34,7 @@ public class SCR_AnimacionesJugador : MonoBehaviour
         if (objetoAlas != null) objetoAlas.SetActive(false);
 
         if (scriptMovimiento != null) estadoAnterior = scriptMovimiento.estadoActual;
+  
     }
 
     private void Update()
@@ -50,31 +52,37 @@ public class SCR_AnimacionesJugador : MonoBehaviour
 
     private void CambiarAnimacion(SCR_Movimiento.Estados nuevoEstado)
     {
+        bool bIsRunning = animador.GetBool("bIsRunning");
+        bool bIsJumping = animador.GetBool("bIsJumping");
         switch (nuevoEstado)
         {
             case SCR_Movimiento.Estados.Idle:
-                animador.CrossFade(animIdle, transicionSuave);
-                if (objetoAlas) objetoAlas.SetActive(false);
+                //animador.CrossFade(animIdle, transicionSuave);
+                //if (objetoAlas) objetoAlas.SetActive(false);
+                animador.SetBool("bIsRunning", false);
+                animador.SetBool("bIsJumping", false);
+
+
                 break;
 
             case SCR_Movimiento.Estados.Move:
-                animador.CrossFade(animMove, transicionSuave);
-                if (objetoAlas) objetoAlas.SetActive(false);
+                if(!bIsJumping)animador.SetBool("bIsRunning", true);
+
                 break;
 
             case SCR_Movimiento.Estados.Jump:
-                animador.CrossFade(animJump, transicionSuave);
-                if (objetoAlas) objetoAlas.SetActive(false);
+                animador.SetBool("bIsJumping",true);
+                Debug.Log("SALTO");
                 break;
 
             case SCR_Movimiento.Estados.DoubleJump:
-                animador.CrossFade(animDoubleJump, transicionSuave);
-                if (objetoAlas) objetoAlas.SetActive(true);
+         
+              
                 break;
 
             case SCR_Movimiento.Estados.Fall:
-                animador.CrossFade(animFall, transicionSuave);
-                if (objetoAlas) objetoAlas.SetActive(false);
+          
+                
                 break;
         }
     }

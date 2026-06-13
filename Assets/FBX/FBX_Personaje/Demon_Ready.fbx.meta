@@ -3,7 +3,47 @@ guid: d34b0f5aa9e367f45aeb34ff01bda90f
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Face
+    second: {fileID: 2100000, guid: 588ddd8998346754291b1fd3e37c8ad5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MM_Body
+    second: {fileID: 2100000, guid: 2c970debf7785f649b852a3347a7eb92, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MM_Cola
+    second: {fileID: 2100000, guid: 02a1dc1f97f1cd844a8edddcac83afc8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MM_Cuernos_001
+    second: {fileID: 2100000, guid: 40e032f3f14d3d240b85a0117420afbb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MM_Cuernos_002
+    second: {fileID: 2100000, guid: b5c79daade4dd6a4e917de3ccc542f0b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MM_Head
+    second: {fileID: 2100000, guid: 05aeacd4affe7d64ebad26b021d09a9e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MM_Wings
+    second: {fileID: 2100000, guid: ee573045e281eaa49a92c593cb1becf3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: standardSurface1
+    second: {fileID: 2100000, guid: 93253dc04fdb97947bad15a7bb4305e9, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

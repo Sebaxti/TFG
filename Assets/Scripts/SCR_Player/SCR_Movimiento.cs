@@ -116,14 +116,22 @@ public class SCR_Movimiento : MonoBehaviour
 
     private void ControlarEstados()
     {
-        if (enSuelo)
+        if (enSuelo && rb.linearVelocity.y <= 0.1f)
         {
             estadoActual = (direccionInput.magnitude > 0.1f) ? Estados.Move : Estados.Idle;
         }
         else
         {
-            if (rb.linearVelocity.y < 0)
+            if (rb.linearVelocity.y < -0.1f)
                 estadoActual = Estados.Fall;
+            else if (rb.linearVelocity.y > 0.1f)
+            {
+                
+                if (estadoActual != Estados.Jump && estadoActual != Estados.DoubleJump)
+                {
+                    estadoActual = Estados.Jump;
+                }
+            }
         }
     }
 
@@ -166,7 +174,7 @@ public class SCR_Movimiento : MonoBehaviour
             Quaternion rotacionObjetivo = Quaternion.LookRotation(direccionMov);
             rb.MoveRotation(Quaternion.Slerp(transform.rotation, rotacionObjetivo, velocidadRotacion * Time.fixedDeltaTime));
 
-               Vector3 velocidadObjetivo = (direccionMov * velocidadMovimiento) + velocidadSuelo;
+            Vector3 velocidadObjetivo = (direccionMov * velocidadMovimiento) + velocidadSuelo;
             float suavizadoActual = enSuelo ? suavizadoSuelo : suavizadoAire;
 
             rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, new Vector3(velocidadObjetivo.x, rb.linearVelocity.y, velocidadObjetivo.z), suavizadoActual * Time.fixedDeltaTime);
@@ -175,7 +183,7 @@ public class SCR_Movimiento : MonoBehaviour
         {
             float suavizadoActual = enSuelo ? suavizadoSuelo : suavizadoAire;
 
-               Vector3 velocidadObjetivo = velocidadSuelo;
+            Vector3 velocidadObjetivo = velocidadSuelo;
 
             rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, new Vector3(velocidadObjetivo.x, rb.linearVelocity.y, velocidadObjetivo.z), suavizadoActual * Time.fixedDeltaTime);
         }
