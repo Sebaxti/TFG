@@ -226,7 +226,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.8361, y: 1, z: 2.3881}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -243,6 +243,14 @@ PrefabInstance:
       propertyPath: animador
       value: 
       objectReference: {fileID: 274125045}
+    - target: {fileID: 1911939647876660393, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
+      propertyPath: objetoAlas
+      value: 
+      objectReference: {fileID: 2026609666}
+    - target: {fileID: 1911939647876660393, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
+      propertyPath: estiloDeCorrer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1911939647876660393, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
       propertyPath: scriptMovimiento
       value: 
@@ -295,6 +303,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: a5cf60bbd2550404582d3759c281a4e3, type: 2}
+    - target: {fileID: 6097968918515647161, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8728011637492782706, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
       propertyPath: materialCara
       value: 
@@ -584,6 +596,11 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &2026609666 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6097968918515647161, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
+  m_PrefabInstance: {fileID: 274125044}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

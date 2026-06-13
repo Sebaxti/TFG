@@ -2,39 +2,35 @@ using UnityEngine;
 
 public class SCR_AnimacionesJugador : MonoBehaviour
 {
+    // Creamos una lista desplegable para el Inspector
+    public enum EstiloNivel { Nivel1 = 1, Nivel2 = 2 }
+
+    [Header("Configuración de Nivel")]
+    [Tooltip("Elige qué animación de correr se usará en esta escena")]
+
+    //Esto es para elegir el correr diferente en lvl1 y diferente en lvl2
+    public EstiloNivel estiloDeCorrer = EstiloNivel.Nivel1;
+
     [Header("Referencias")]
-    [Tooltip("Se asignará automáticamente si están en el mismo objeto")]
     [SerializeField] private SCR_Movimiento scriptMovimiento;
     [SerializeField] private Animator animador;
-
     [SerializeField] private GameObject objetoAlas;
 
-    [Header("Nombres de Animaciones")]
-    public string animIdle = "Idle";
-    public string animMove = "Move";
-    public string animJump = "Jump";
-    public string animDoubleJump = "DoubleJump";
-    public string animFall = "Fall";
-
-   /*  [Header("Ajustes")]
-    [Tooltip("Tiempo que tarda en mezclar una animación con otra")]
-    [SerializeField] private float transicionSuave = 0.1f;
-   */  //POR AHORA NO LO USE, ASI QUE LO COMENTO
-
-    // Se guarda el estado anterior para saber cuándo hay un cambio
     private SCR_Movimiento.Estados estadoAnterior;
 
     private void Start()
     {
-        // Autoconfigurar referencias si se nos olvida arrastrarlas en Unity
         if (scriptMovimiento == null) scriptMovimiento = GetComponent<SCR_Movimiento>();
         if (animador == null) animador = GetComponentInChildren<Animator>();
 
-        // apagar alas inicio
         if (objetoAlas != null) objetoAlas.SetActive(false);
-
         if (scriptMovimiento != null) estadoAnterior = scriptMovimiento.estadoActual;
-  
+
+        // Le enviamos al Animator la elección del Inspector nada más arrancar
+        if (animador != null)
+        {
+            animador.SetFloat("EstiloCorrer", (float)estiloDeCorrer);
+        }
     }
 
     private void Update()
@@ -52,37 +48,46 @@ public class SCR_AnimacionesJugador : MonoBehaviour
 
     private void CambiarAnimacion(SCR_Movimiento.Estados nuevoEstado)
     {
-        bool bIsRunning = animador.GetBool("bIsRunning");
-        bool bIsJumping = animador.GetBool("bIsJumping");
         switch (nuevoEstado)
         {
             case SCR_Movimiento.Estados.Idle:
-                //animador.CrossFade(animIdle, transicionSuave);
-                //if (objetoAlas) objetoAlas.SetActive(false);
                 animador.SetBool("bIsRunning", false);
                 animador.SetBool("bIsJumping", false);
-
-
+                animador.SetBool("bIsDoubleJumping", false); // Apagamos doble salto
+                if (objetoAlas) objetoAlas.SetActive(false);
                 break;
 
             case SCR_Movimiento.Estados.Move:
-                if(!bIsJumping)animador.SetBool("bIsRunning", true);
+                animador.SetFloat("EstiloCorrer", (float)estiloDeCorrer);
 
+                animador.SetBool("bIsRunning", true);
+                animador.SetBool("bIsJumping", false);
+                animador.SetBool("bIsDoubleJumping", false); // Apagamos doble salto
+                if (objetoAlas) objetoAlas.SetActive(false);
                 break;
 
             case SCR_Movimiento.Estados.Jump:
-                animador.SetBool("bIsJumping",true);
-                Debug.Log("SALTO");
+                // Dado aleatorio solo para el primer salto
+                int saltoElegido = Random.Range(1, 4);
+                animador.SetInteger("IndiceSalto", saltoElegido);
+
+                animador.SetBool("bIsJumping", true);
+                animador.SetBool("bIsDoubleJumping", false); // Aseguramos que el doble salto esté apagado
+                animador.SetBool("bIsRunning", false);
+                if (objetoAlas) objetoAlas.SetActive(false);
                 break;
 
             case SCR_Movimiento.Estados.DoubleJump:
-         
-              
+                // APAGAMOS el salto normal y ENCENDEMOS el doble
+                animador.SetBool("bIsJumping", false);
+                animador.SetBool("bIsDoubleJumping", true);
+                animador.SetBool("bIsRunning", false);
+                if (objetoAlas) objetoAlas.SetActive(true);
                 break;
 
             case SCR_Movimiento.Estados.Fall:
-          
-                
+                animador.SetBool("bIsRunning", false);
+                if (objetoAlas) objetoAlas.SetActive(false);
                 break;
         }
     }
