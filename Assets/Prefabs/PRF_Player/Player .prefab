@@ -148,6 +148,8 @@ GameObject:
   - component: {fileID: 2638135734090256407}
   - component: {fileID: 1189648732648453975}
   - component: {fileID: 1342070036018101266}
+  - component: {fileID: 1911939647876660393}
+  - component: {fileID: -8997563632758897531}
   m_Layer: 6
   m_Name: 'Player '
   m_TagString: Player
@@ -235,8 +237,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SCR_Movimiento
   estadoActual: 0
-  animador: {fileID: 0}
-  objetoAlas: {fileID: 4469988305121895494}
   velocidadMovimiento: 8
   suavizadoSuelo: 50
   suavizadoAire: 5
@@ -249,8 +249,44 @@ MonoBehaviour:
   saltosExtraMaximos: 1
   coyoteTime: 0.15
   jumpBufferTime: 0.2
-  checkSuelo: {fileID: 6822165623491138305}
+  puntoSuelo: {fileID: 6822165623491138305}
   radioSuelo: 0.3
+  capaSuelo:
+    serializedVersion: 2
+    m_Bits: 8
+--- !u!114 &1911939647876660393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3681350114390057902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50d8a18372ed25e459ae99e926b65185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SCR_AnimacionesJugador
+  scriptMovimiento: {fileID: 0}
+  animador: {fileID: 0}
+  objetoAlas: {fileID: 0}
+  animIdle: Idle
+  animMove: Move
+  animJump: Jump
+  animDoubleJump: DoubleJump
+  animFall: Fall
+  transicionSuave: 0.1
+--- !u!114 &-8997563632758897531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3681350114390057902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a4034454bcf05d4a8ac33529cd4a0f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SCR_RespawnJugador
 --- !u!1001 &4458488373994153464
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -362,10 +398,5 @@ PrefabInstance:
 --- !u!4 &4203269059881206291 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4c67972759ee42540b3daf918f8a92a6, type: 3}
-  m_PrefabInstance: {fileID: 4458488373994153464}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4469988305121895494 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -8946632502578937410, guid: 4c67972759ee42540b3daf918f8a92a6, type: 3}
   m_PrefabInstance: {fileID: 4458488373994153464}
   m_PrefabAsset: {fileID: 0}

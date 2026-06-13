@@ -2,17 +2,23 @@ using UnityEngine;
 
 public class SCR_Checkpoint : MonoBehaviour
 {
-    [SerializeField] private Transform puntoAparicionPlayer;
-    [SerializeField] private Transform puntoAparicionEnemigo;
+    [Header("Configuración de Respawn")]
+    [SerializeField] private Transform puntoDeReaparicion;
+    [SerializeField] private Transform puntoEnemigoOpcional;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            SCR_Movimiento player = other.GetComponent<SCR_Movimiento>();
-            if (player != null)
+            SCR_RespawnJugador respawn = other.GetComponent<SCR_RespawnJugador>();
+
+            if (respawn != null)
             {
-                player.EstablecerCheckpoint(puntoAparicionPlayer.position, puntoAparicionEnemigo.position);
+                Vector3 posJugador = (puntoDeReaparicion != null) ? puntoDeReaparicion.position : transform.position;
+
+                Vector3 posEnemigo = (puntoEnemigoOpcional != null) ? puntoEnemigoOpcional.position : respawn.GetEnemigoRespawn();
+
+                respawn.EstablecerCheckpoint(posJugador, posEnemigo);
             }
         }
     }

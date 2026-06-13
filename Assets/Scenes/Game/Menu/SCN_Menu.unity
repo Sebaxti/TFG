@@ -6108,7 +6108,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1405628927}
         m_TargetAssemblyTypeName: SCR_GestorPausa, Assembly-CSharp
-        m_MethodName: SalirAlEscritorio
+        m_MethodName: SalirDelJuego
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9204,7 +9204,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1405628927}
         m_TargetAssemblyTypeName: SCR_GestorPausa, Assembly-CSharp
-        m_MethodName: MostrarPanelPrincipal
+        m_MethodName: VolverMenuPrincipal
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9733,6 +9733,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 043ff0654d8efaa4fbc1efed1ce397dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SCR_GestorEscena
+  nombreEscenaMenu: MainMenu
+  nombreEscenaJefe: Nivel_3_Jefe
   imagenFundido: {fileID: 875318980}
   velocidadFade: 1.5
 --- !u!1 &2077609752

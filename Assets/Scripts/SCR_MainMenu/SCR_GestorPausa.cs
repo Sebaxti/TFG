@@ -70,6 +70,10 @@ public class SCR_GestorPausa : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+
+    // ==========================================
+    // FUNCIONES PARA LOS BOTONES DEL CANVAS
+    // ==========================================
     public void MostrarPanelPrincipal()
     {
         panelPrincipalPausa.SetActive(true);
@@ -80,5 +84,36 @@ public class SCR_GestorPausa : MonoBehaviour
     {
         panelPrincipalPausa.SetActive(false);
         panelOpcionesPausa.SetActive(true);
+    }
+
+    public void CerrarOpciones()
+    {
+        MostrarPanelPrincipal();
+    }
+
+    public void VolverMenuPrincipal()
+    {
+        Time.timeScale = 1f;
+        estaPausado = false;
+
+        canvasPausaRaiz.SetActive(false);
+
+        if (SCR_GestorEscena.Instancia != null)
+        {
+            SCR_GestorEscena.Instancia.CargarEscenaConFade(nombreEscenaMenu);
+        }
+        else
+        {
+            SceneManager.LoadScene(nombreEscenaMenu);
+        }
+    }
+
+    public void SalirDelJuego()
+    {
+               Time.timeScale = 1f;
+
+        Debug.Log("¡Cerrando el juego!");
+
+        Application.Quit();
     }
 }

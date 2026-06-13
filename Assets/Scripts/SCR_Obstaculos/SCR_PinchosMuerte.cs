@@ -6,11 +6,7 @@ public class SCR_PinchosMuerte : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SCR_Movimiento player = other.GetComponent<SCR_Movimiento>();
-            if (player != null)
-            {
-                player.Respawn();
-            }
+            other.GetComponent<SCR_RespawnJugador>()?.Respawn();
         }
     }
 }

@@ -310,7 +310,7 @@ public class SCR_JefeFinal : MonoBehaviour
         SCR_ObjetoCaida[] rocas = FindObjectsByType<SCR_ObjetoCaida>(FindObjectsSortMode.None);
         foreach (var r in rocas) Destroy(r.gameObject);
 
-        // Aquí puedes añadir código para ganar el nivel (ej. GestorNiveles.Win())
+        // Falta lo que pasa cuando se gana 
         Destroy(gameObject, 1f);
     }
 

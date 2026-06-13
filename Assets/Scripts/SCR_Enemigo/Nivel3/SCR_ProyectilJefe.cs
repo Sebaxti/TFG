@@ -54,13 +54,9 @@ public class SCR_ProyectilJefe : MonoBehaviour
         }
         else if (other.CompareTag("Player") && !esReflejado)
         {
-            other.GetComponent<SCR_Movimiento>()?.Respawn();
+              other.GetComponent<SCR_RespawnJugador>()?.Respawn();
+
             if (scriptJefe) scriptJefe.DesbloquearJefe();
-            Destroy(gameObject);
-        }
-        else if (other.CompareTag("Jefe") && esReflejado)
-        {
-            scriptJefe.RecibirGolpe();
             Destroy(gameObject);
         }
     }

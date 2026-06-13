@@ -7,7 +7,11 @@ public class SCR_GestorEscena : MonoBehaviour
 {
     public static SCR_GestorEscena Instancia;
 
-    [Header("Efecto de Fundido")]
+    [Header("Configuración de Escenas")]
+    public string nombreEscenaMenu = "MainMenu";
+    public string nombreEscenaJefe = "Nivel_3_Jefe";
+
+    [Header("Efecto de Fundido (Fade)")]
     [SerializeField] private Image imagenFundido;
     [SerializeField] private float velocidadFade = 1.5f;
 
@@ -15,57 +19,58 @@ public class SCR_GestorEscena : MonoBehaviour
     {
         if (Instancia == null) { Instancia = this; DontDestroyOnLoad(gameObject); }
         else { Destroy(gameObject); return; }
-
-        FijarOpacidad(0f);
     }
 
-    private void OnEnable() { SceneManager.sceneLoaded += AlEntrarNuevaEscena; }
-    private void OnDisable() { SceneManager.sceneLoaded -= AlEntrarNuevaEscena; }
+    private void OnEnable() { SceneManager.sceneLoaded += AlCargarEscena; }
+    private void OnDisable() { SceneManager.sceneLoaded -= AlCargarEscena; }
 
-    // Unity llama a esto automáticamente en cuanto una nueva escena está lista
-    private void AlEntrarNuevaEscena(Scene escena, LoadSceneMode modo)
+    private void AlCargarEscena(Scene escena, LoadSceneMode modo)
     {
         StopAllCoroutines();
-        StartCoroutine(RutinaFade(0f)); // Fade In (aparecer)
+        if (escena.name == nombreEscenaMenu) FijarOpacidad(0f);
+        else StartCoroutine(RutinaFade(0f));
     }
 
-    // Función pública universal para viajar a cualquier sitio
-    public void CargarEscenaConFade(string nombreEscenaDestino)
+    public void CambiarEscena(string nombreNuevaEscena)
     {
-        StartCoroutine(RutinaCambio(nombreEscenaDestino));
+        StartCoroutine(RutinaCambioEscena(nombreNuevaEscena));
     }
 
-    // La lógica universal de muerte, sin nombres quemados en el código
-    public void ProcesarMuerte(SCR_Movimiento jugador)
+    public void CargarEscenaConFade(string nombreNuevaEscena)
     {
-        StartCoroutine(RutinaMuerte(jugador));
+        CambiarEscena(nombreNuevaEscena);
     }
 
-    private IEnumerator RutinaCambio(string destino)
+    private IEnumerator RutinaCambioEscena(string nombre)
     {
-        yield return StartCoroutine(RutinaFade(1f)); // Fundido a negro
-        SceneManager.LoadScene(destino);             // Carga oculta por el negro
+        yield return StartCoroutine(RutinaFade(1f));
+        SceneManager.LoadScene(nombre);
     }
 
-    private IEnumerator RutinaMuerte(SCR_Movimiento jugador)
+    // AHORA SOLICITA EL SCRIPT DE RESPAWN ESPECIALIZADO
+    public void ProcesarMuerte(SCR_RespawnJugador respawnJugador)
+    {
+        StartCoroutine(RutinaMuerte(respawnJugador));
+    }
+
+    private IEnumerator RutinaMuerte(SCR_RespawnJugador respawnJugador)
     {
         yield return StartCoroutine(RutinaFade(1f));
         yield return new WaitForSeconds(0.5f);
 
-        // Preguntamos al cerebro (GestorNiveles) qué tipo de nivel es este
-        bool esJefe = SCR_GestorNiveles.Instancia.ObtenerDatosNivelActual().esNivelJefe;
-
-        if (esJefe)
+        string escenaActual = SceneManager.GetActiveScene().name;
+        if (escenaActual == nombreEscenaJefe)
         {
-            // Reinicio completo del nivel
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneManager.LoadScene(escenaActual);
         }
-        else if (jugador != null)
+        else
         {
-            // Teletransporte al checkpoint
-            jugador.EjecutarTeletransporte();
-            yield return StartCoroutine(RutinaFade(0f));
-            jugador.DesbloquearMovimiento();
+            if (respawnJugador != null)
+            {
+                respawnJugador.EjecutarTeletransporte();
+                yield return StartCoroutine(RutinaFade(0f));
+                respawnJugador.FinalizarRespawn();
+            }
         }
     }
 
@@ -73,9 +78,7 @@ public class SCR_GestorEscena : MonoBehaviour
     {
         if (imagenFundido != null)
         {
-            Color c = imagenFundido.color;
-            c.a = valor;
-            imagenFundido.color = c;
+            Color c = imagenFundido.color; c.a = valor; imagenFundido.color = c;
             imagenFundido.raycastTarget = (valor > 0.1f);
         }
     }
@@ -83,8 +86,7 @@ public class SCR_GestorEscena : MonoBehaviour
     private IEnumerator RutinaFade(float opacidadObjetivo)
     {
         if (imagenFundido == null) yield break;
-        if (opacidadObjetivo > 0.1f) imagenFundido.raycastTarget = true;
-
+        imagenFundido.raycastTarget = (opacidadObjetivo > 0.1f);
         Color color = imagenFundido.color;
         while (Mathf.Abs(color.a - opacidadObjetivo) > 0.01f)
         {

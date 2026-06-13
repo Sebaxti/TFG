@@ -38,8 +38,14 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     private float alturaOriginal;
     private GameObject avisoLateralActivo, indicadorActivo, trampaActiva;
 
-    private void OnEnable() { SCR_Movimiento.OnGlobalRespawn += ResetPosicion; }
-    private void OnDisable() { SCR_Movimiento.OnGlobalRespawn -= ResetPosicion; }
+    private void OnEnable()
+    {
+        SCR_RespawnJugador.OnGlobalRespawn += ResetearPosicion;
+    }
+    private void OnDisable()
+    {
+        SCR_RespawnJugador.OnGlobalRespawn -= ResetearPosicion;
+    }
 
     private void Start()
     {
@@ -59,23 +65,14 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
         probabilidadCaida = Mathf.Clamp01(probabilidadCaida + extraCaida);
     }
 
-    private void ResetPosicion()
+    private void ResetearPosicion()
     {
-        StopAllCoroutines();
-
-        if (avisoLateralActivo != null) Destroy(avisoLateralActivo);
-        if (indicadorActivo != null) Destroy(indicadorActivo);
-        if (trampaActiva != null) Destroy(trampaActiva);
-        if (objetoCorte != null) objetoCorte.SetActive(false);
-
-        SCR_Movimiento player = Object.FindFirstObjectByType<SCR_Movimiento>();
-        if (player != null)
+        SCR_RespawnJugador respawn = FindFirstObjectByType<SCR_RespawnJugador>();
+        if (respawn != null)
         {
-            Vector3 p = player.GetEnemigoRespawn();
-            transform.position = new Vector3(p.x, alturaOriginal, p.z);
-        }
+            transform.position = respawn.GetEnemigoRespawn();
 
-        StartCoroutine(BucleLogicaAtaques());
+        }
     }
 
     private IEnumerator BucleLogicaAtaques()
@@ -174,8 +171,7 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SCR_Movimiento mov = other.GetComponent<SCR_Movimiento>();
-            if (mov != null) mov.Respawn();
+            other.GetComponent<SCR_RespawnJugador>()?.Respawn();
         }
     }
 }

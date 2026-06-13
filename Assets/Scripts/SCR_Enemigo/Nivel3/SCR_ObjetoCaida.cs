@@ -3,12 +3,11 @@ using UnityEngine;
 public class SCR_ObjetoCaida : MonoBehaviour
 {
     public float tiempoDeVida = 4f;
-    [HideInInspector] public float velocidadDescenso = 10f; // La controlará el jefe
+    [HideInInspector] public float velocidadDescenso = 10f;
 
     private void Start()
     {
         Destroy(gameObject, tiempoDeVida);
-        // Si no tiene Rigidbody, se lo añadimos o usamos velocidad manual
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null) rb.linearVelocity = Vector3.down * velocidadDescenso;
     }
@@ -17,7 +16,7 @@ public class SCR_ObjetoCaida : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            other.GetComponent<SCR_Movimiento>()?.Respawn();
+            other.GetComponent<SCR_RespawnJugador>()?.Respawn();
             Destroy(gameObject);
         }
         else if (!other.CompareTag("Jefe") && !other.CompareTag("PilarReflector"))

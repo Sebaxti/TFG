@@ -28,9 +28,6 @@ public class SCR_GestorNiveles : MonoBehaviour
         else { Destroy(gameObject); }
     }
 
-    // =================================================================
-    // FUNCIONES DE COMPATIBILIDAD (Para que los menús y botones no fallen)
-    // =================================================================
 
     public int ObtenerNivelMaximo()
     {
@@ -46,18 +43,33 @@ public class SCR_GestorNiveles : MonoBehaviour
 
     public void AvanzarDesdeNivel(int indiceActual)
     {
-        AvanzarSiguienteNivel();
+        int siguiente = indiceActual + 1;
+
+        int maxDesbloqueado = ObtenerNivelMaximo();
+        if (siguiente > maxDesbloqueado && siguiente < listaDeNiveles.Length)
+        {
+            PlayerPrefs.SetInt("NivelMaximoDesbloqueado", siguiente);
+        }
+
+        PlayerPrefs.SetInt("NivelActual", siguiente);
+        PlayerPrefs.Save();
+
+        if (siguiente < listaDeNiveles.Length)
+        {
+            ProcesarCargaNivel(siguiente);
+        }
+        else
+        {
+            // Juego completado
+            if (SCR_GestorEscena.Instancia != null)
+                SCR_GestorEscena.Instancia.CargarEscenaConFade(escenaMenuPrincipal);
+        }
     }
 
     public string GetEscenaDeNivelActual()
     {
         return ObtenerDatosNivelActual().nombreEscenaUnity;
     }
-
-
-    // =================================================================
-    // NUEVA LÓGICA LIMPIA (Centralizada y sin Hardcodeo)
-    // =================================================================
 
     public DatosNivel ObtenerDatosNivelActual()
     {
@@ -93,7 +105,6 @@ public class SCR_GestorNiveles : MonoBehaviour
         }
         else
         {
-            // Juego completado
             if (SCR_GestorEscena.Instancia != null)
                 SCR_GestorEscena.Instancia.CargarEscenaConFade(escenaMenuPrincipal);
         }

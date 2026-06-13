@@ -11,7 +11,6 @@ public class SCR_Plataformas : MonoBehaviour
     [SerializeField] private float velocidad = 3f;
 
     [Header("Ajustes de Inicio")]
-    [Tooltip("Selecciona a qué punto se dirigirá la plataforma al arrancar")]
     [SerializeField] private PuntoInicial comenzarHacia = PuntoInicial.PuntoB;
 
     private Rigidbody rb;
@@ -20,7 +19,6 @@ public class SCR_Plataformas : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-
         rb.isKinematic = true;
         rb.useGravity = false;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
@@ -28,11 +26,7 @@ public class SCR_Plataformas : MonoBehaviour
 
     private void Start()
     {
-        if (puntoA == null || puntoB == null)
-        {
-            return;
-        }
-
+        if (puntoA == null || puntoB == null) return;
         objetivoActual = (comenzarHacia == PuntoInicial.PuntoA) ? puntoA : puntoB;
     }
 
@@ -51,28 +45,6 @@ public class SCR_Plataformas : MonoBehaviour
         if (Vector3.Distance(rb.position, objetivoActual.position) < 0.1f)
         {
             objetivoActual = (objetivoActual == puntoA) ? puntoB : puntoA;
-        }
-    }
-
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        // Cuando el jugador toca la plataforma, lo emparentamos
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.gameObject.transform.SetParent(transform);
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            if (collision.gameObject.transform.parent == transform)
-            {
-                collision.gameObject.transform.SetParent(null);
-            }
         }
     }
 }
