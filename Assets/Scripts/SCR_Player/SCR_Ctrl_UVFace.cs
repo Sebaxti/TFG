@@ -1,19 +1,24 @@
 using UnityEngine;
 
-public class SCR_Ctrl_UVFace : MonoBehaviour
-
+public class SelectorCaraUV : MonoBehaviour
 {
     public Material materialCara;
-    public string nombrePropiedadTextura = "_BaseMap";
+    // El nombre debe ser exactamente igual al que pusiste en el Blackboard del Shader
+    public string nombrePropiedad = "_FaceOffset";
 
-    // Aquí definimos el número de cara (0=Feliz, 1=Enojado, 2=Triste...)
-    [Range(0, 16)]
-    public int indiceCara;
+    [Range(0, 15)]
+    public int indiceCara = 0;
 
     void Update()
     {
-        // Calculamos el offset basado en un número entero, no en una posición
-        float offsetU = indiceCara * 0.25f; // Ajusta 0.25 según tu textura
-        materialCara.SetTextureOffset(nombrePropiedadTextura, new Vector2(offsetU, 0));
+        // 1. Cálculo de coordenadas (Esto no cambia)
+        int columna = indiceCara % 4;
+        int fila = 3 - (indiceCara / 4);
+
+        Vector2 offset = new Vector2(columna * 0.25f, fila * 0.25f);
+
+        // 2. Aplicamos al Shader Graph
+        // Usamos SetVector porque el Shader Graph recibe un Vector2/4
+        materialCara.SetVector(nombrePropiedad, offset);
     }
 }
