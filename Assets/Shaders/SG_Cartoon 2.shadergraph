@@ -144,7 +144,7 @@
             },
             "m_InputSlot": {
                 "m_Node": {
-                    "m_Id": "ba4eed3554194be1a234fd93a22c4f1e"
+                    "m_Id": "b4bbeca10eb84dc196e206c8bb9a9cee"
                 },
                 "m_SlotId": 0
             }
@@ -348,6 +348,20 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
+                    "m_Id": "b4bbeca10eb84dc196e206c8bb9a9cee"
+                },
+                "m_SlotId": 2
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "ba4eed3554194be1a234fd93a22c4f1e"
+                },
+                "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
                     "m_Id": "cd89e74e58d7477c813e5b119a8b578e"
                 },
                 "m_SlotId": 2
@@ -483,7 +497,7 @@
         "preventRotation": false
     },
     "m_Path": "Shader Graphs",
-    "m_GraphPrecision": 1,
+    "m_GraphPrecision": 0,
     "m_PreviewMode": 2,
     "m_OutputNode": {
         "m_Id": ""
@@ -847,9 +861,9 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -317.0,
-            "y": 540.0000610351563,
-            "width": 151.0,
+            "x": -365.00006103515627,
+            "y": 555.0000610351563,
+            "width": 151.0000457763672,
             "height": 33.99993896484375
         }
     },
@@ -1005,7 +1019,7 @@
     "m_AlembicMotionVectors": false,
     "m_SupportsLODCrossFade": false,
     "m_CustomEditorGUI": "",
-    "m_SupportVFX": false
+    "m_SupportVFX": true
 }
 
 {
@@ -2686,10 +2700,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -97.99999237060547,
-            "y": 568.0,
+            "x": -188.00001525878907,
+            "y": 461.0000305175781,
             "width": 208.00003051757813,
-            "height": 302.0
+            "height": 302.0000305175781
         }
     },
     "m_Slots": [
