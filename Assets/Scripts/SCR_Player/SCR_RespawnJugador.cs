@@ -12,6 +12,10 @@ public class SCR_RespawnJugador : MonoBehaviour
     private SCR_Movimiento scriptMovimiento;
     private Rigidbody rb;
 
+    [Header("Animación de Muerte")]
+    [Tooltip("Segundos de espera antes de teletransportar al jugador")]
+    [SerializeField] private float tiempoEsperaMuerte = 2f;
+
     private void Awake()
     {
         scriptMovimiento = GetComponent<SCR_Movimiento>();
@@ -37,17 +41,8 @@ public class SCR_RespawnJugador : MonoBehaviour
 
     public void Respawn()
     {
-        if (scriptMovimiento != null) scriptMovimiento.BloquearMovimiento();
-
-        if (SCR_GestorEscena.Instancia != null)
-        {
-            SCR_GestorEscena.Instancia.ProcesarMuerte(this);
-        }
-        else
-        {
-            EjecutarTeletransporte();
-            FinalizarRespawn();
-        }
+        StartCoroutine(SecuenciaDeMuerte());
+    
     }
 
     public void EjecutarTeletransporte()
@@ -62,10 +57,41 @@ public class SCR_RespawnJugador : MonoBehaviour
     public void FinalizarRespawn()
     {
         if (scriptMovimiento != null) scriptMovimiento.DesbloquearMovimiento();
+
+        // Buscamos el script de animaciones y lo devolvemos a la vida limpio
+        SCR_AnimacionesJugador animaciones = GetComponent<SCR_AnimacionesJugador>();
+        if (animaciones != null)
+        {
+            animaciones.ResetearAnimaciones();
+        }
     }
 
     public Vector3 GetEnemigoRespawn()
     {
         return posRespawnEnemigo;
+    }
+
+    private System.Collections.IEnumerator SecuenciaDeMuerte()
+    {
+        if (scriptMovimiento != null) scriptMovimiento.BloquearPorMuerte();
+
+        if (SCR_TemblorCamara.Instancia != null)
+        {
+            SCR_TemblorCamara.Instancia.AgitarCamara();
+        }
+
+        yield return new WaitForSeconds(tiempoEsperaMuerte);
+
+    
+        if (SCR_GestorEscena.Instancia != null)
+        {
+            SCR_GestorEscena.Instancia.ProcesarMuerte(this);
+            FinalizarRespawn(); 
+        }
+        else
+        {
+            EjecutarTeletransporte();
+            FinalizarRespawn();
+        }
     }
 }

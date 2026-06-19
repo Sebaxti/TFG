@@ -1,0 +1,273 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Mascara_Alas
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: DEMON_BODY
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_BONES
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Hip_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Hip_Left/J_Knee_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Hip_Left/J_Knee_Left/J_LegEnd_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Hip_Left/J_Knee_Left/J_LegEnd_Left/CC_LengChanger_Left_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Hip_Left/J_Knee_Left/J_LegEnd_Left/CC_LengChanger_Left_GRP/CC_LengChanger_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Hip_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Hip_Right/J_Knee_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Hip_Right/J_Knee_Right/J_LegEnd_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Hip_Right/J_Knee_Right/J_LegEnd_Right/CC_LengChanger_Right_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Hip_Right/J_Knee_Right/J_LegEnd_Right/CC_LengChanger_Right_GRP/CC_LengChanger_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Tail_001
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Tail_001/J_Tail_002
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Tail_001/J_Tail_002/J_Tail_003
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Tail_001/J_Tail_002/J_Tail_003/J_Tail_004
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Tail_001/J_Tail_002/J_Tail_003/J_Tail_004/J_Tail_005
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_HipsOffSet/J_Tail_001/J_Tail_002/J_Tail_003/J_Tail_004/J_Tail_005/J_Tail_END
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Left/J_Shoulder_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Left/J_Shoulder_Left/J_Elbow_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Left/J_Shoulder_Left/J_Elbow_Left/_J_ArmEnd_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Left/J_Shoulder_Left/J_Elbow_Left/_J_ArmEnd_Left/CC_HandChanger_Left_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Left/J_Shoulder_Left/J_Elbow_Left/_J_ArmEnd_Left/CC_HandChanger_Left_GRP/CC_HandChanger_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Right/J_Shoulder_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Right/J_Shoulder_Right/J_Elbow_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Right/J_Shoulder_Right/J_Elbow_Right/J_ArmEnd_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Right/J_Shoulder_Right/J_Elbow_Right/J_ArmEnd_Right/CC_HandChanger_Left_GRP1
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Right/J_Shoulder_Right/J_Elbow_Right/J_ArmEnd_Right/CC_HandChanger_Right_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_BladeShoulder_Right/J_Shoulder_Right/J_Elbow_Right/J_ArmEnd_Right/CC_HandChanger_Right_GRP/CC_HandChanger_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_Neck
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_BONES/J_CG/J_Lumbar/J_Back/J_Chest/J_Neck/J_NeckEnd
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_FK_Hip_Left_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_FK_Hip_Left_GRP/CC_FK_Hip_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_FK_Hip_Left_GRP/CC_FK_Hip_Left/CC_FK_Knee_Left_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_FK_Hip_Left_GRP/CC_FK_Hip_Left/CC_FK_Knee_Left_GRP/CC_FK_Knee_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_FK_Hip_Right_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_FK_Hip_Right_GRP/CC_FK_Hip_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_FK_Hip_Right_GRP/CC_FK_Hip_Right/CC_FK_Knee_Right_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_FK_Hip_Right_GRP/CC_FK_Hip_Right/CC_FK_Knee_Right_GRP/CC_FK_Knee_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_FK_Shoulder_Left_GRP1
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_FK_Shoulder_Left_GRP1/CC_FK_Shoulder_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_FK_Shoulder_Left_GRP1/CC_FK_Shoulder_Right/CC_FK_Elbow_Left_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_FK_Shoulder_Left_GRP1/CC_FK_Shoulder_Right/CC_FK_Elbow_Left_GRP/CC_FK_Elbow_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_FK_Shoulder_Right_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_FK_Shoulder_Right_GRP/CC_FK_Shoulder_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_FK_Shoulder_Right_GRP/CC_FK_Shoulder_Right/CC_FK_Elbow_Left_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_FK_Shoulder_Right_GRP/CC_FK_Shoulder_Right/CC_FK_Elbow_Left_GRP/CC_FK_Elbow_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Head
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Shoulder_Left_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Shoulder_Left_GRP/CC_Shoulder_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Shoulder_Right_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Shoulder_Right_GRP/CC_Shoulder_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Left_GRP
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Left_GRP/CC_Wing_01_Left
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Left_GRP/CC_Wing_01_Left/CC_Wing_02_Left_GRP
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Left_GRP/CC_Wing_01_Left/CC_Wing_02_Left_GRP/CC_Wing_02_Left
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Left_GRP/CC_Wing_01_Left/CC_Wing_02_Left_GRP/CC_Wing_02_Left/CC_Wing_03_Left_GRP
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Left_GRP/CC_Wing_01_Left/CC_Wing_02_Left_GRP/CC_Wing_02_Left/CC_Wing_03_Left_GRP/CC_Wing_03_Left
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Right_GRP
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Right_GRP/CC_Wing_01_Right
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Right_GRP/CC_Wing_01_Right/CC_Wing_02_Right_GRP
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Right_GRP/CC_Wing_01_Right/CC_Wing_02_Right_GRP/CC_Wing_02_Right
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Right_GRP/CC_Wing_01_Right/CC_Wing_02_Right_GRP/CC_Wing_02_Right/CC_Wing_03_Right_GRP
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Lumbar/CC_Back/CC_Chest/CC_Wing_01_Right_GRP/CC_Wing_01_Right/CC_Wing_02_Right_GRP/CC_Wing_02_Right/CC_Wing_03_Right_GRP/CC_Wing_03_Right
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Pelvis
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Pelvis/CC_Tail_01_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Pelvis/CC_Tail_01_GRP/CC_Tail_01
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Pelvis/CC_Tail_01_GRP/CC_Tail_01/CC_Tail_02_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Pelvis/CC_Tail_01_GRP/CC_Tail_01/CC_Tail_02_GRP/CC_Tail_02
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Pelvis/CC_Tail_01_GRP/CC_Tail_01/CC_Tail_02_GRP/CC_Tail_02/CC_Tail_03_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Pelvis/CC_Tail_01_GRP/CC_Tail_01/CC_Tail_02_GRP/CC_Tail_02/CC_Tail_03_GRP/CC_Tail_03
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Pelvis/CC_Tail_01_GRP/CC_Tail_01/CC_Tail_02_GRP/CC_Tail_02/CC_Tail_03_GRP/CC_Tail_03/CC_Tail_04_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Pelvis/CC_Tail_01_GRP/CC_Tail_01/CC_Tail_02_GRP/CC_Tail_02/CC_Tail_03_GRP/CC_Tail_03/CC_Tail_04_GRP/CC_Tail_04
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Pelvis/CC_Tail_01_GRP/CC_Tail_01/CC_Tail_02_GRP/CC_Tail_02/CC_Tail_03_GRP/CC_Tail_03/CC_Tail_04_GRP/CC_Tail_04/CC_Tail_05_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Pelvis/CC_Tail_01_GRP/CC_Tail_01/CC_Tail_02_GRP/CC_Tail_02/CC_Tail_03_GRP/CC_Tail_03/CC_Tail_04_GRP/CC_Tail_04/CC_Tail_05_GRP/CC_Tail_05
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/CC_CDG/CC_Wings_MasterScale
+    m_Weight: 1
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/J_Expresion_GRP
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_CC/CC_MAIN/J_Expresion_GRP/J_Expresion
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_DD
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_DD/DD_Arm_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_DD/DD_Arm_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_DD/DD_Leg_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_DD/DD_Leg_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Arm_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Arm_Left/LC_Hand_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Arm_Left/LC_Shoulder_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Arm_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Arm_Right/LC_Shoulder_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Arm_Right/LC_Wrist_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Leg_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Leg_Left/LC_Ankle_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Leg_Left/LC_Hip_Left
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Leg_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Leg_Right/LC_Ankle_Right
+    m_Weight: 0
+  - m_Path: DEMON_BODY/DEMON_LC/LC_Leg_Right/LC_Hip_Right
+    m_Weight: 0
+  - m_Path: DEMON_WINGS
+    m_Weight: 1
+  - m_Path: DEMON_WINGS/J_Wings_GRP
+    m_Weight: 1
+  - m_Path: DEMON_WINGS/J_Wings_GRP/J_Wing_Left_GRP
+    m_Weight: 1
+  - m_Path: DEMON_WINGS/J_Wings_GRP/J_Wing_Left_GRP/J_Wing_001_Left
+    m_Weight: 1
+  - m_Path: DEMON_WINGS/J_Wings_GRP/J_Wing_Left_GRP/J_Wing_001_Left/J_Wing_002_Left
+    m_Weight: 1
+  - m_Path: DEMON_WINGS/J_Wings_GRP/J_Wing_Left_GRP/J_Wing_001_Left/J_Wing_002_Left/J_Wing_003_Left
+    m_Weight: 1
+  - m_Path: DEMON_WINGS/J_Wings_GRP/J_Wing_Left_GRP/J_Wing_001_Left/J_Wing_002_Left/J_Wing_003_Left/J_Wing_End_Left
+    m_Weight: 1
+  - m_Path: DEMON_WINGS/J_Wings_GRP/J_Wing_Right_GRP
+    m_Weight: 1
+  - m_Path: DEMON_WINGS/J_Wings_GRP/J_Wing_Right_GRP/J_Wing_001_Right
+    m_Weight: 1
+  - m_Path: DEMON_WINGS/J_Wings_GRP/J_Wing_Right_GRP/J_Wing_001_Right/J_Wing_002_Right
+    m_Weight: 1
+  - m_Path: DEMON_WINGS/J_Wings_GRP/J_Wing_Right_GRP/J_Wing_001_Right/J_Wing_002_Right/J_Wing_003_Right
+    m_Weight: 1
+  - m_Path: DEMON_WINGS/J_Wings_GRP/J_Wing_Right_GRP/J_Wing_001_Right/J_Wing_002_Right/J_Wing_003_Right/J_Wing_End_Right
+    m_Weight: 1
+  - m_Path: MESH_DEMON_GRP
+    m_Weight: 0
+  - m_Path: MESH_DEMON_GRP/MESH_AUREOLA_GRP
+    m_Weight: 0
+  - m_Path: MESH_DEMON_GRP/MESH_AUREOLA_GRP/Mesh_Aureola
+    m_Weight: 0
+  - m_Path: MESH_DEMON_GRP/MESH_Body_GRP
+    m_Weight: 0
+  - m_Path: MESH_DEMON_GRP/MESH_Body_GRP/Demon_Body_Low
+    m_Weight: 0
+  - m_Path: MESH_DEMON_GRP/MESH_Body_GRP/Demon_Head
+    m_Weight: 0
+  - m_Path: MESH_DEMON_GRP/MESH_Wings_GRP
+    m_Weight: 0
+  - m_Path: MESH_DEMON_GRP/MESH_Wings_GRP/Demon_Wings_Left_Low
+    m_Weight: 0
+  - m_Path: MESH_DEMON_GRP/MESH_Wings_GRP/Demon_Wings_Right_Low
+    m_Weight: 0

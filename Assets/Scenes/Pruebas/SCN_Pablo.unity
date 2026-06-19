@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &221558418 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5851223925504648892, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
+  m_PrefabInstance: {fileID: 274125044}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &256226095
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,7 +251,7 @@ PrefabInstance:
     - target: {fileID: 1911939647876660393, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
       propertyPath: objetoAlas
       value: 
-      objectReference: {fileID: 2026609666}
+      objectReference: {fileID: 221558418}
     - target: {fileID: 1911939647876660393, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
       propertyPath: estiloDeCorrer
       value: 2
@@ -303,6 +308,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: a5cf60bbd2550404582d3759c281a4e3, type: 2}
+    - target: {fileID: 5851223925504648892, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6097968918515647161, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -774,11 +783,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!1 &2026609666 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6097968918515647161, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
-  m_PrefabInstance: {fileID: 274125044}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

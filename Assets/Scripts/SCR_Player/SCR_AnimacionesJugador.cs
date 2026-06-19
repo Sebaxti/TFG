@@ -73,6 +73,8 @@ public class SCR_AnimacionesJugador : MonoBehaviour
                 int saltoElegido = Random.Range(1, 3);
                 animador.SetInteger("IndiceSalto", saltoElegido);
 
+                animador.SetTrigger("tSalto");
+
                 animador.SetBool("bIsJumping", true);
                 animador.SetBool("bIsDoubleJumping", false); // Aseguramos que el doble salto esté apagado
                 animador.SetBool("bIsRunning", false);
@@ -81,7 +83,9 @@ public class SCR_AnimacionesJugador : MonoBehaviour
                 break;
 
             case SCR_Movimiento.Estados.DoubleJump:
-                // APAGAMOS el salto normal y ENCENDEMOS el doble
+
+                animador.SetTrigger("tDobleSalto");
+
                 animador.SetBool("bIsJumping", false);
                 animador.SetBool("bIsDoubleJumping", true);
                 animador.SetBool("bIsRunning", false);
@@ -91,9 +95,38 @@ public class SCR_AnimacionesJugador : MonoBehaviour
 
             case SCR_Movimiento.Estados.Fall:
                 animador.SetBool("bIsFalling", true);
+                animador.SetBool("bIsJumping", false);
+                animador.SetBool("bIsDoubleJumping", false);
                 animador.SetBool("bIsRunning", false);
+                //if (objetoAlas) objetoAlas.SetActive(false);
+                break;
+
+            case SCR_Movimiento.Estados.Die:
+                animador.SetTrigger("tMuerte");
+
+                animador.SetBool("bIsRunning", false);
+                animador.SetBool("bIsJumping", false);
+                animador.SetBool("bIsDoubleJumping", false);
+                animador.SetBool("bIsFalling", false);
                 if (objetoAlas) objetoAlas.SetActive(false);
                 break;
         }
+    }
+
+    public void ResetearAnimaciones()
+    {
+        if (animador == null) return;
+
+        // Forzamos al Animator a regresar al estado "Idle" de golpe en el frame 0
+        animador.Play("Idle_001", 0, 0f);
+
+        // Limpiamos todos los parámetros para evitar que se queden atascados
+        animador.SetBool("bIsRunning", false);
+        animador.SetBool("bIsJumping", false);
+        animador.SetBool("bIsDoubleJumping", false);
+        animador.SetBool("bIsFalling", false);
+
+        // Sincronizamos la máquina de estados para el próximo frame
+        estadoAnterior = SCR_Movimiento.Estados.Idle;
     }
 }

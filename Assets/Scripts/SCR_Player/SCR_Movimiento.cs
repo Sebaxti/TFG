@@ -3,7 +3,7 @@
 [RequireComponent(typeof(Rigidbody))]
 public class SCR_Movimiento : MonoBehaviour
 {
-    public enum Estados { Idle, Move, Jump, DoubleJump, Fall }
+    public enum Estados { Idle, Move, Jump, DoubleJump, Fall, Die }
 
     [Header("Estado Actual")]
     public Estados estadoActual = Estados.Idle;
@@ -120,18 +120,10 @@ public class SCR_Movimiento : MonoBehaviour
         {
             estadoActual = (direccionInput.magnitude > 0.1f) ? Estados.Move : Estados.Idle;
         }
-        else
+        else if (!enSuelo)
         {
             if (rb.linearVelocity.y < -0.1f)
                 estadoActual = Estados.Fall;
-            else if (rb.linearVelocity.y > 0.1f)
-            {
-                
-                if (estadoActual != Estados.Jump && estadoActual != Estados.DoubleJump)
-                {
-                    estadoActual = Estados.Jump;
-                }
-            }
         }
     }
 
@@ -210,6 +202,7 @@ public class SCR_Movimiento : MonoBehaviour
     {
         controlesBloqueados = false;
         rb.isKinematic = false;
+        estadoActual = Estados.Idle;
     }
 
     public void BloquearMovimiento()
@@ -218,6 +211,15 @@ public class SCR_Movimiento : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
         rb.isKinematic = true;
         estadoActual = Estados.Idle;
+    }
+
+    // --- NUEVA FUNCIÓN ---
+    public void BloquearPorMuerte()
+    {
+        controlesBloqueados = true;
+        rb.linearVelocity = Vector3.zero;
+        rb.isKinematic = true;
+        estadoActual = Estados.Die; // Forzamos el estado de muerte
     }
 
     private void OnDrawGizmosSelected()
