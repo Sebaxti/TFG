@@ -53,7 +53,7 @@ public class SCR_GestorPausa : MonoBehaviour
     {
         estaPausado = true;
         Time.timeScale = 0f;
-        canvasPausaRaiz.SetActive(true);
+        if (canvasPausaRaiz != null) canvasPausaRaiz.SetActive(true);
         MostrarPanelPrincipal();
 
         Cursor.visible = true;
@@ -64,7 +64,7 @@ public class SCR_GestorPausa : MonoBehaviour
     {
         estaPausado = false;
         Time.timeScale = 1f;
-        canvasPausaRaiz.SetActive(false);
+        if (canvasPausaRaiz != null) canvasPausaRaiz.SetActive(false);
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -76,14 +76,14 @@ public class SCR_GestorPausa : MonoBehaviour
     // ==========================================
     public void MostrarPanelPrincipal()
     {
-        panelPrincipalPausa.SetActive(true);
-        panelOpcionesPausa.SetActive(false);
+        if (panelPrincipalPausa != null) panelPrincipalPausa.SetActive(true);
+        if (panelOpcionesPausa != null) panelOpcionesPausa.SetActive(false);
     }
 
     public void AbrirOpciones()
     {
-        panelPrincipalPausa.SetActive(false);
-        panelOpcionesPausa.SetActive(true);
+        if (panelPrincipalPausa != null) panelPrincipalPausa.SetActive(false);
+        if (panelOpcionesPausa != null) panelOpcionesPausa.SetActive(true);
     }
 
     public void CerrarOpciones()
@@ -96,7 +96,7 @@ public class SCR_GestorPausa : MonoBehaviour
         Time.timeScale = 1f;
         estaPausado = false;
 
-        canvasPausaRaiz.SetActive(false);
+        if (canvasPausaRaiz != null) canvasPausaRaiz.SetActive(false);
 
         if (SCR_GestorEscena.Instancia != null)
         {

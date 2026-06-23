@@ -1,8 +1,8 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class SCR_AumentoDif : MonoBehaviour
 {
-    [Header("Conexión")]
+    [Header("Conexiï¿½n")]
     [SerializeField] private SCR_EnemigoPersecucion scriptEnemigo;
 
     [Header("Ajuste de Probabilidad (Suma)")]
@@ -21,7 +21,7 @@ public class SCR_AumentoDif : MonoBehaviour
             }
             else
             {
-                Debug.LogError("¡Olvidasste asignar al Enemigo en este Trigger!");
+                Debug.LogError("ï¿½Olvidaste asignar al Enemigo en este Trigger!");
             }
         }
     }

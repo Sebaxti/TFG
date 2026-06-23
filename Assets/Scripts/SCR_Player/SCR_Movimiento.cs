@@ -160,7 +160,10 @@ public class SCR_Movimiento : MonoBehaviour
 
         if (direccionInput.magnitude >= 0.1f)
         {
-            float anguloObjetivo = Mathf.Atan2(direccionInput.x, direccionInput.z) * Mathf.Rad2Deg + camaraTransform.eulerAngles.y;
+            if (camaraTransform == null) camaraTransform = Camera.main?.transform;
+
+            float anguloObjetivo = Mathf.Atan2(direccionInput.x, direccionInput.z) * Mathf.Rad2Deg;
+            if (camaraTransform != null) anguloObjetivo += camaraTransform.eulerAngles.y;
             Vector3 direccionMov = Quaternion.Euler(0f, anguloObjetivo, 0f) * Vector3.forward;
 
             Quaternion rotacionObjetivo = Quaternion.LookRotation(direccionMov);

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.VFX;
 using System.Collections;
 
 public class SCR_EnemigoPersecucion : MonoBehaviour
@@ -35,6 +36,18 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     [Tooltip("Segundos que la roca se queda en el suelo antes de desaparecer")]
     [SerializeField] private float tiempoVidaEnSuelo = 3f;
 
+    [Header("VFX y Colores de Ataque")]
+    [Tooltip("Componente VisualEffect del hijo VFX_Orb. Arrastra el GameObject hijo aquí.")]
+    [SerializeField] private VisualEffect vfxCuerpo;
+    [Tooltip("Nombre exacto de la propiedad Vector4 expuesta en el VFX Graph")]
+    [SerializeField] private string propiedadColorVFX = "ColorTint";
+    [Tooltip("Color del VFX en estado normal (sin atacar). Blanco = colores originales del VFX.")]
+    [SerializeField] private Color colorNormal = Color.white;
+    [Tooltip("Color del VFX durante el aviso y ejecución del Corte Lateral")]
+    [SerializeField] private Color colorAvisoCorte = Color.red;
+    [Tooltip("Color del VFX durante el aviso y ejecución de la Caída de Rocas")]
+    [SerializeField] private Color colorAvisoCaida = new Color(0.3f, 0.5f, 1f);
+
     private float alturaOriginal;
     private GameObject avisoLateralActivo, indicadorActivo, trampaActiva;
 
@@ -51,7 +64,19 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     {
         alturaOriginal = transform.position.y;
         if (objetoCorte != null) objetoCorte.SetActive(false);
+        AplicarColor(colorNormal);
         StartCoroutine(BucleLogicaAtaques());
+    }
+
+    private void AplicarColor(Color c)
+    {
+        if (vfxCuerpo != null && vfxCuerpo.HasVector4(propiedadColorVFX))
+            vfxCuerpo.SetVector4(propiedadColorVFX, c);
+    }
+
+    private void RestablecerColor()
+    {
+        AplicarColor(colorNormal);
     }
 
     private void Update()
@@ -101,6 +126,8 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     {
         if (puntoReferenciaDerecha == null || puntoReferenciaIzquierda == null) yield break;
 
+        AplicarColor(colorAvisoCorte);
+
         bool esDerecha = Random.value > 0.5f;
         Transform puntoInicio = esDerecha ? puntoReferenciaDerecha : puntoReferenciaIzquierda;
         Transform puntoFin = esDerecha ? puntoReferenciaIzquierda : puntoReferenciaDerecha;
@@ -130,11 +157,15 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
 
             objetoCorte.SetActive(false);
         }
+
+        RestablecerColor();
     }
 
     private IEnumerator AtaqueCaida()
     {
         if (prefabIndicador == null || prefabObjetoCaida == null) yield break;
+
+        AplicarColor(colorAvisoCaida);
 
         int carril = Random.Range(-1, 2);
         Vector3 avance = direccionMundo.normalized;
@@ -165,6 +196,8 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
         yield return new WaitForSeconds(tiempoVidaEnSuelo);
 
         if (trampaActiva != null) Destroy(trampaActiva);
+
+        RestablecerColor();
     }
 
     private void OnTriggerEnter(Collider other)

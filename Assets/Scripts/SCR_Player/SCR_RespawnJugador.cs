@@ -12,7 +12,7 @@ public class SCR_RespawnJugador : MonoBehaviour
     private SCR_Movimiento scriptMovimiento;
     private Rigidbody rb;
 
-    [Header("Animación de Muerte")]
+    [Header("Animaciï¿½n de Muerte")]
     [Tooltip("Segundos de espera antes de teletransportar al jugador")]
     [SerializeField] private float tiempoEsperaMuerte = 2f;
 
@@ -21,12 +21,12 @@ public class SCR_RespawnJugador : MonoBehaviour
         scriptMovimiento = GetComponent<SCR_Movimiento>();
         rb = GetComponent<Rigidbody>();
 
-        // Inicializar con la posición de inicio del nivel por seguridad
+        // Inicializar con la posiciï¿½n de inicio del nivel por seguridad
         posRespawnPlayer = transform.position;
     }
     private void Start()
     {
-        // Buscamos al enemigo al iniciar el nivel y guardamos su posición original
+        // Buscamos al enemigo al iniciar el nivel y guardamos su posiciï¿½n original
         SCR_EnemigoPersecucion enemigo = FindFirstObjectByType<SCR_EnemigoPersecucion>();
         if (enemigo != null)
         {
@@ -85,8 +85,8 @@ public class SCR_RespawnJugador : MonoBehaviour
     
         if (SCR_GestorEscena.Instancia != null)
         {
+            // GestorEscena llama a FinalizarRespawn al final de su secuencia
             SCR_GestorEscena.Instancia.ProcesarMuerte(this);
-            FinalizarRespawn(); 
         }
         else
         {

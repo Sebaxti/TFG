@@ -23,7 +23,7 @@ public class SCR_AnimacionesJugador : MonoBehaviour
         if (scriptMovimiento == null) scriptMovimiento = GetComponent<SCR_Movimiento>();
         if (animador == null) animador = GetComponentInChildren<Animator>();
 
-        if (objetoAlas != null) objetoAlas.SetActive(false);
+       //if (objetoAlas != null) objetoAlas.SetActive(false);
         if (scriptMovimiento != null) estadoAnterior = scriptMovimiento.estadoActual;
 
         // Le enviamos al Animator la elección del Inspector nada más arrancar
@@ -55,7 +55,7 @@ public class SCR_AnimacionesJugador : MonoBehaviour
                 animador.SetBool("bIsJumping", false);
                 animador.SetBool("bIsDoubleJumping", false); // Apagamos doble salto
                 animador.SetBool("bIsFalling", false);
-                if (objetoAlas) objetoAlas.SetActive(false);
+                //if (objetoAlas) objetoAlas.SetActive(false);
                 break;
 
             case SCR_Movimiento.Estados.Move:
@@ -65,7 +65,7 @@ public class SCR_AnimacionesJugador : MonoBehaviour
                 animador.SetBool("bIsJumping", false);
                 animador.SetBool("bIsDoubleJumping", false); // Apagamos doble salto
                 animador.SetBool("bIsFalling", false);
-                if (objetoAlas) objetoAlas.SetActive(false);
+                //if (objetoAlas) objetoAlas.SetActive(false);
                 break;
 
             case SCR_Movimiento.Estados.Jump:
@@ -79,7 +79,7 @@ public class SCR_AnimacionesJugador : MonoBehaviour
                 animador.SetBool("bIsDoubleJumping", false); // Aseguramos que el doble salto esté apagado
                 animador.SetBool("bIsRunning", false);
                 animador.SetBool("bIsFalling", false);
-                if (objetoAlas) objetoAlas.SetActive(false);
+                //if (objetoAlas) objetoAlas.SetActive(false);
                 break;
 
             case SCR_Movimiento.Estados.DoubleJump:
@@ -90,7 +90,7 @@ public class SCR_AnimacionesJugador : MonoBehaviour
                 animador.SetBool("bIsDoubleJumping", true);
                 animador.SetBool("bIsRunning", false);
                 animador.SetBool("bIsFalling", false);
-                if (objetoAlas) objetoAlas.SetActive(true);
+                //if (objetoAlas) objetoAlas.SetActive(true);
                 break;
 
             case SCR_Movimiento.Estados.Fall:
@@ -108,7 +108,7 @@ public class SCR_AnimacionesJugador : MonoBehaviour
                 animador.SetBool("bIsJumping", false);
                 animador.SetBool("bIsDoubleJumping", false);
                 animador.SetBool("bIsFalling", false);
-                if (objetoAlas) objetoAlas.SetActive(false);
+                //if (objetoAlas) objetoAlas.SetActive(false);
                 break;
         }
     }

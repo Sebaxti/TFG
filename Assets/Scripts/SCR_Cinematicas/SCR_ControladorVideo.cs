@@ -14,7 +14,8 @@ public class SCR_ControladorVideo : MonoBehaviour
 
     void Start()
     {
-        // 1. Conseguimos el vídeo que toca desde la base de datos centralizada
+        if (SCR_GestorNiveles.Instancia == null) { FinalizarVideo(); return; }
+
         VideoClip clipActual = SCR_GestorNiveles.Instancia.ObtenerDatosNivelActual().cinematicaPrevia;
 
         if (clipActual != null)
@@ -24,7 +25,6 @@ public class SCR_ControladorVideo : MonoBehaviour
         }
         else
         {
-            // Salvavidas por si se carga la escena sin vídeo asignado
             FinalizarVideo();
         }
     }
@@ -34,7 +34,7 @@ public class SCR_ControladorVideo : MonoBehaviour
 
     void Update()
     {
-        // Permitir saltar la cinemática
+        // Permitir saltar la cinemï¿½tica
         if (Input.GetKeyDown(KeyCode.Space) && !saltando)
         {
             saltando = true;
@@ -53,7 +53,7 @@ public class SCR_ControladorVideo : MonoBehaviour
 
     void FinalizarVideo()
     {
-        // Le devolvemos el control al Gestor de Niveles para que cargue la fase
-        SCR_GestorNiveles.Instancia.CargarNivelDespuesDeVideo();
+        if (SCR_GestorNiveles.Instancia != null)
+            SCR_GestorNiveles.Instancia.CargarNivelDespuesDeVideo();
     }
 }

@@ -1,5 +1,7 @@
 using UnityEngine;
+using UnityEngine.VFX;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SCR_JefeFinal : MonoBehaviour
 {
@@ -12,9 +14,9 @@ public class SCR_JefeFinal : MonoBehaviour
         public string nombreFase;
         [Tooltip("Tiempo de respiro entre ataques del jefe")]
         public float cooldownAtaque = 1.5f;
-        [Tooltip("Número de ataques básicos antes de lanzar el proyectil maestro")]
+        [Tooltip("Nï¿½mero de ataques bï¿½sicos antes de lanzar el proyectil maestro")]
         public int ataquesParaMaestro = 3;
-        [Tooltip("Duración de la animación del corte. Valores bajos = tajo más rápido y letal")]
+        [Tooltip("Duraciï¿½n de la animaciï¿½n del corte. Valores bajos = tajo mï¿½s rï¿½pido y letal")]
         public float duracionGiroEspada = 0.4f;
         [Tooltip("Velocidad (m/s) a la que caen las rocas desde el cielo")]
         public float velocidadCaidaRocas = 15f;
@@ -22,7 +24,7 @@ public class SCR_JefeFinal : MonoBehaviour
         public Color colorFase = Color.white;
     }
 
-    [Header("Configuración de Fases")]
+    [Header("Configuraciï¿½n de Fases")]
     public AjustesFase fase0_Inicial = new AjustesFase { nombreFase = "Fase 1 (100% Vida)", cooldownAtaque = 2f, ataquesParaMaestro = 3, duracionGiroEspada = 0.5f, velocidadCaidaRocas = 10f, colorFase = Color.white };
     public AjustesFase fase1_UnGolpe = new AjustesFase { nombreFase = "Fase 2 (Tras 1 Golpe)", cooldownAtaque = 1.5f, ataquesParaMaestro = 4, duracionGiroEspada = 0.35f, velocidadCaidaRocas = 15f, colorFase = new Color(1f, 0.8f, 0.8f) };
     public AjustesFase fase2_DosGolpes = new AjustesFase { nombreFase = "Fase 3 (Tras 2 Golpes)", cooldownAtaque = 1f, ataquesParaMaestro = 5, duracionGiroEspada = 0.2f, velocidadCaidaRocas = 22f, colorFase = new Color(1f, 0.5f, 0.5f) };
@@ -45,8 +47,14 @@ public class SCR_JefeFinal : MonoBehaviour
     [SerializeField] private Renderer renderizadorCuerpo;
     private GameObject proyectilActivo;
 
-    [Header("Configuración Espada (Corte Lateral)")]
-    [Tooltip("Ajusta la posición local de la espada. Y=Altura, Z=Distancia frontal.")]
+    [Header("VFX del Cuerpo")]
+    [Tooltip("Componente VisualEffect del hijo VFX_Orb. Arrastra el GameObject hijo aquÃ­.")]
+    [SerializeField] private VisualEffect vfxCuerpo;
+    [Tooltip("Nombre exacto de la propiedad Vector4 expuesta en el VFX Graph")]
+    [SerializeField] private string propiedadColorVFX = "ColorTint";
+
+    [Header("Configuraciï¿½n Espada (Corte Lateral)")]
+    [Tooltip("Ajusta la posiciï¿½n local de la espada. Y=Altura, Z=Distancia frontal.")]
     [SerializeField] private Vector3 offsetEspada = new Vector3(0, 1.2f, 2.0f);
 
     [Header("Ataque Maestro (Proyectil)")]
@@ -54,7 +62,7 @@ public class SCR_JefeFinal : MonoBehaviour
     public float alturaSalidaProyectil = 1.8f;
     public float distanciaSalidaProyectil = 2.5f;
 
-    [Header("Ataque Caída (Rocas)")]
+    [Header("Ataque Caï¿½da (Rocas)")]
     public GameObject prefabObjetoCaida;
     public GameObject prefabAvisoSuelo;
     public float alturaSueloArena = 0f;
@@ -62,7 +70,7 @@ public class SCR_JefeFinal : MonoBehaviour
     public int cantidadObjetosCaida = 4;
     public float radioDispersionCaida = 4f;
 
-    [Header("Efecto de Flote y Rotación")]
+    [Header("Efecto de Flote y Rotaciï¿½n")]
     public float velocidadRotacion = 5f;
     [SerializeField] private float amplitudFlote = 0.3f;
     [SerializeField] private float frecuenciaFlote = 2.0f;
@@ -74,12 +82,24 @@ public class SCR_JefeFinal : MonoBehaviour
     [SerializeField] private Color colorMaestro = Color.yellow;
     [SerializeField] private Color colorAturdido = Color.gray;
 
+    [Header("Columnas del Arena")]
+    [Tooltip("Arrastra aquÃ­ las columnas reflectoras de la escena. Se eligen aleatoriamente al recibir un golpe.")]
+    [SerializeField] private List<SCR_ColumnaReflectora> columnasArena = new List<SCR_ColumnaReflectora>();
+    [Tooltip("NÃºmero de columnas que se hunden por cada golpe recibido")]
+    [SerializeField] private int columnasPorGolpe = 2;
+
+    [Header("Temblor de CÃ¡mara al Recibir Golpe")]
+    [Tooltip("DuraciÃ³n del temblor de cÃ¡mara cuando el proyectil impacta al jefe")]
+    [SerializeField] private float duracionTemblorGolpe = 0.6f;
+    [Tooltip("Intensidad del temblor de cÃ¡mara cuando el proyectil impacta al jefe")]
+    [SerializeField] private float magnitudTemblorGolpe = 0.5f;
+
     // Variables internas
     private int contadorAtaques = 0;
     private float timerCooldown;
 
     // ==========================================
-    // 3. MÉTODOS PRINCIPALES
+    // 3. Mï¿½TODOS PRINCIPALES
     // ==========================================
     private void Start()
     {
@@ -128,7 +148,7 @@ public class SCR_JefeFinal : MonoBehaviour
 
     private void DecidirSiguienteMovimiento()
     {
-        // Si ya ha hecho suficientes ataques básicos, lanza el Maestro
+        // Si ya ha hecho suficientes ataques bï¿½sicos, lanza el Maestro
         if (contadorAtaques >= faseActual.ataquesParaMaestro)
         {
             StartCoroutine(RutinaAtaqueMaestro());
@@ -199,7 +219,7 @@ public class SCR_JefeFinal : MonoBehaviour
             if (prefabObjetoCaida != null)
             {
                 GameObject roca = Instantiate(prefabObjetoCaida, posSuelo + Vector3.up * alturaCaidaObjetos, Quaternion.identity);
-                // Le pasamos la velocidad de caída de la fase actual a la roca
+                // Le pasamos la velocidad de caï¿½da de la fase actual a la roca
                 SCR_ObjetoCaida scriptRoca = roca.GetComponent<SCR_ObjetoCaida>();
                 if (scriptRoca != null) scriptRoca.velocidadDescenso = faseActual.velocidadCaidaRocas;
             }
@@ -213,7 +233,7 @@ public class SCR_JefeFinal : MonoBehaviour
     {
         estadoActual = EstadoJefe.Atacando;
         AplicarColor(colorMaestro);
-        yield return new WaitForSeconds(1.2f); // El jefe carga energía
+        yield return new WaitForSeconds(1.2f); // El jefe carga energï¿½a
 
         if (prefabProyectilMaestro != null)
         {
@@ -244,7 +264,7 @@ public class SCR_JefeFinal : MonoBehaviour
     }
 
     // ==========================================
-    // 5. SISTEMA DE DAÑO Y FASES
+    // 5. SISTEMA DE DAï¿½O Y FASES
     // ==========================================
     public void RecibirGolpe()
     {
@@ -254,7 +274,13 @@ public class SCR_JefeFinal : MonoBehaviour
         if (objetoCorteLateral != null) objetoCorteLateral.SetActive(false);
         if (proyectilActivo != null) Destroy(proyectilActivo);
 
-        // Cambio de fase según golpes
+        // Temblor de cÃ¡mara al impacto
+        SCR_TemblorCamara.Instancia?.AgitarCamaraPersonalizada(duracionTemblorGolpe, magnitudTemblorGolpe);
+
+        // Hundir columnas aleatorias (corren en sus propios MonoBehaviours, no les afecta StopAllCoroutines)
+        HundirColumnasAleatorias();
+
+        // Cambio de fase segï¿½n golpes
         if (golpesRecibidos == 1)
         {
             faseActual = fase1_UnGolpe;
@@ -273,11 +299,24 @@ public class SCR_JefeFinal : MonoBehaviour
         }
     }
 
+    private void HundirColumnasAleatorias()
+    {
+        columnasArena.RemoveAll(c => c == null);
+
+        int cantidad = Mathf.Min(columnasPorGolpe, columnasArena.Count);
+        for (int i = 0; i < cantidad; i++)
+        {
+            int indice = Random.Range(0, columnasArena.Count);
+            columnasArena[indice].IniciarHundimiento();
+            columnasArena.RemoveAt(indice);
+        }
+    }
+
     private IEnumerator RutinaAturdido()
     {
         estadoActual = EstadoJefe.Atacando;
 
-        // Efecto visual de daño
+        // Efecto visual de daï¿½o
         for (int i = 0; i < 5; i++)
         {
             if (renderizadorCuerpo) renderizadorCuerpo.enabled = false;
@@ -296,7 +335,7 @@ public class SCR_JefeFinal : MonoBehaviour
     private IEnumerator RutinaMuerte()
     {
         estadoActual = EstadoJefe.Atacando;
-        Debug.Log("¡JEFE DERROTADO!");
+        Debug.Log("ï¿½JEFE DERROTADO!");
 
         for (int i = 0; i < 15; i++)
         {
@@ -321,6 +360,10 @@ public class SCR_JefeFinal : MonoBehaviour
 
     private void AplicarColor(Color c)
     {
-        if (renderizadorCuerpo) renderizadorCuerpo.material.color = c;
+        if (vfxCuerpo != null && vfxCuerpo.HasVector4(propiedadColorVFX))
+            vfxCuerpo.SetVector4(propiedadColorVFX, c);
+
+        if (renderizadorCuerpo != null)
+            renderizadorCuerpo.material.color = c;
     }
 }
