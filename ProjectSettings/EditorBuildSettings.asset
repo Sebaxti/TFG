@@ -6,19 +6,19 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Game/Menu/SCN_Menu.unity
+    path: Assets/_ESCENAS/Game/Menu/SCN_Menu.unity
     guid: ee3d9b15fd65405488d6186a75a34597
   - enabled: 1
-    path: Assets/Scenes/Game/Niveles/Cinematicas/SCN_Cinematica.unity
+    path: Assets/_ESCENAS/Game/Niveles/Cinematicas/SCN_Cinematica.unity
     guid: 759a836d5ffa49d408a01f00006fb8c0
   - enabled: 1
-    path: Assets/Scenes/Game/Niveles/Nivel1/SCN_Nivel1Tuto.unity
+    path: Assets/_ESCENAS/Game/Niveles/Nivel1/SCN_Nivel1Tuto.unity
     guid: a6a4e25292e868243b5722a5ef87ba37
   - enabled: 1
-    path: Assets/Scenes/Game/Niveles/Nivel2/SCN_Nivel2Run.unity
+    path: Assets/_ESCENAS/Game/Niveles/Nivel2/SCN_Nivel2Run.unity
     guid: a5130527154f3bb42a246f282ee712ad
   - enabled: 1
-    path: Assets/Scenes/Game/Niveles/Nivel3/SCN_Nivel3BossFight.unity
+    path: Assets/_ESCENAS/Game/Niveles/Nivel3/SCN_Nivel3BossFight.unity
     guid: 36d6cb02ae107fe489412456b6d155a5
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
