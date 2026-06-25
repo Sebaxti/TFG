@@ -101,11 +101,11 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FoamScale: 200
+    - _FoamScale: 400
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MaskScale: 0.1
+    - _MaskScale: 0.062
     - _Max: 1
     - _Metallic: 0
     - _Min: 0.3

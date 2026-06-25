@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 51545ea664367cd4a9b368b17aeebcf4
+guid: 41a5c06af24fd89489cf340752204e45
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -7,18 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: M_Agua
-    second: {fileID: 2100000, guid: e2fc20e730f11134a8ff81da8e87974e, type: 2}
+      name: M_Pared
+    second: {fileID: 2100000, guid: e2973fe78b4efb748aa76dfe62a24e2a, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: M_AguaCorriendo
-    second: {fileID: 2100000, guid: 29a7999821e0591419f2df569a6a85f4, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Material.001
-    second: {fileID: 2100000, guid: 38fd1bdf7764e44488e5729489fcb940, type: 2}
+      name: M_Suelo
+    second: {fileID: 2100000, guid: 89b6ddd562b28de458f6441d246d30c0, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
