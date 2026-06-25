@@ -199,15 +199,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2960841748807185284, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2960841748807185284, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
-      propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2960841748807185284, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2960841748807185284, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.4
+      value: -8.8
       objectReference: {fileID: 0}
     - target: {fileID: 2960841748807185284, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2380,7 +2380,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -6601,7 +6601,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: e0e9625d8774b154c81d25883f236947, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

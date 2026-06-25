@@ -5,8 +5,8 @@ public class SCR_AnimacionesJugador : MonoBehaviour
     // Creamos una lista desplegable para el Inspector
     public enum EstiloNivel { Nivel1 = 1, Nivel2 = 2 }
 
-    [Header("Configuración de Nivel")]
-    [Tooltip("Elige qué animación de correr se usará en esta escena")]
+    [Header("Configuraciï¿½n de Nivel")]
+    [Tooltip("Elige quï¿½ animaciï¿½n de correr se usarï¿½ en esta escena")]
 
     //Esto es para elegir el correr diferente en lvl1 y diferente en lvl2
     public EstiloNivel estiloDeCorrer = EstiloNivel.Nivel1;
@@ -26,7 +26,7 @@ public class SCR_AnimacionesJugador : MonoBehaviour
        //if (objetoAlas != null) objetoAlas.SetActive(false);
         if (scriptMovimiento != null) estadoAnterior = scriptMovimiento.estadoActual;
 
-        // Le enviamos al Animator la elección del Inspector nada más arrancar
+        // Le enviamos al Animator la elecciï¿½n del Inspector nada mï¿½s arrancar
         if (animador != null)
         {
             animador.SetFloat("EstiloCorrer", (float)estiloDeCorrer);
@@ -48,6 +48,12 @@ public class SCR_AnimacionesJugador : MonoBehaviour
 
     private void CambiarAnimacion(SCR_Movimiento.Estados nuevoEstado)
     {
+        // Limpiar triggers pendientes para evitar que se acumulen y disparen en momentos incorrectos
+        animador.ResetTrigger("tSalto");
+        animador.ResetTrigger("tDobleSalto");
+        animador.ResetTrigger("tEspera");
+        animador.ResetTrigger("tMuerte");
+
         switch (nuevoEstado)
         {
             case SCR_Movimiento.Estados.Idle:
@@ -76,7 +82,7 @@ public class SCR_AnimacionesJugador : MonoBehaviour
                 animador.SetTrigger("tSalto");
 
                 animador.SetBool("bIsJumping", true);
-                animador.SetBool("bIsDoubleJumping", false); // Aseguramos que el doble salto esté apagado
+                animador.SetBool("bIsDoubleJumping", false); // Aseguramos que el doble salto estï¿½ apagado
                 animador.SetBool("bIsRunning", false);
                 animador.SetBool("bIsFalling", false);
                 //if (objetoAlas) objetoAlas.SetActive(false);
@@ -110,7 +116,17 @@ public class SCR_AnimacionesJugador : MonoBehaviour
                 animador.SetBool("bIsFalling", false);
                 //if (objetoAlas) objetoAlas.SetActive(false);
                 break;
+
+            case SCR_Movimiento.Estados.IdleWait:
+                animador.SetTrigger("tEspera"); // Lanzamos el trigger de la animaciï¿½n de aburrimiento
+
+                animador.SetBool("bIsRunning", false);
+                animador.SetBool("bIsJumping", false);
+                animador.SetBool("bIsDoubleJumping", false);
+                animador.SetBool("bIsFalling", false);
+                break;
         }
+
     }
 
     public void ResetearAnimaciones()
@@ -120,13 +136,17 @@ public class SCR_AnimacionesJugador : MonoBehaviour
         // Forzamos al Animator a regresar al estado "Idle" de golpe en el frame 0
         animador.Play("Idle_001", 0, 0f);
 
-        // Limpiamos todos los parámetros para evitar que se queden atascados
+        // Limpiamos todos los parï¿½metros para evitar que se queden atascados
+        animador.ResetTrigger("tSalto");
+        animador.ResetTrigger("tDobleSalto");
+        animador.ResetTrigger("tEspera");
+        animador.ResetTrigger("tMuerte");
         animador.SetBool("bIsRunning", false);
         animador.SetBool("bIsJumping", false);
         animador.SetBool("bIsDoubleJumping", false);
         animador.SetBool("bIsFalling", false);
 
-        // Sincronizamos la máquina de estados para el próximo frame
+        // Sincronizamos la mï¿½quina de estados para el prï¿½ximo frame
         estadoAnterior = SCR_Movimiento.Estados.Idle;
     }
 }

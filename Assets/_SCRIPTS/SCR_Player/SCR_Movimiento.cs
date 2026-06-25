@@ -3,7 +3,7 @@
 [RequireComponent(typeof(Rigidbody))]
 public class SCR_Movimiento : MonoBehaviour
 {
-    public enum Estados { Idle, Move, Jump, DoubleJump, Fall, Die }
+    public enum Estados { Idle, IdleWait, Move, Jump, DoubleJump, Fall, Die }
 
     [Header("Estado Actual")]
     public Estados estadoActual = Estados.Idle;
@@ -17,6 +17,10 @@ public class SCR_Movimiento : MonoBehaviour
     [SerializeField] private float suavizadoSuelo = 15f;
     [SerializeField] private float suavizadoAire = 5f;
     [SerializeField] private float velocidadRotacion = 20f;
+
+    [Header("Animación de Espera")]
+    [SerializeField] private float tiempoParaEspera = 5f;
+    private float contadorInactividad = 0f;
 
     [Header("Salto Físico y Game Feel")]
     [SerializeField] private float fuerzaSalto = 14f;
@@ -77,6 +81,10 @@ public class SCR_Movimiento : MonoBehaviour
         float ver = Input.GetAxisRaw("Vertical");
         direccionInput = new Vector3(hor, 0f, ver).normalized;
 
+        if (direccionInput.magnitude > 0.1f || Input.anyKey)
+        {
+            contadorInactividad = 0f;
+        }
         if (Input.GetButtonDown("Jump"))
             jumpBufferCounter = jumpBufferTime;
         else
@@ -116,14 +124,42 @@ public class SCR_Movimiento : MonoBehaviour
 
     private void ControlarEstados()
     {
-        if (enSuelo && rb.linearVelocity.y <= 0.1f)
+        if (estadoActual == Estados.Die) return;
+
+        if (enSuelo)
         {
-            estadoActual = (direccionInput.magnitude > 0.1f) ? Estados.Move : Estados.Idle;
+            // No interrumpir un salto activo: el jugador puede seguir en contacto con el suelo
+            // durante 1-2 frames tras el impulso. GestionarSalto ya fijo el estado a Jump.
+            if (estadoActual == Estados.Jump || estadoActual == Estados.DoubleJump) return;
+
+            // Aterrizaje: limpiar estado de caida
+            if (estadoActual == Estados.Fall)
+            {
+                estadoActual = Estados.Idle;
+                contadorInactividad = 0f;
+            }
+
+            if (direccionInput.magnitude > 0.1f)
+            {
+                contadorInactividad = 0f;
+                estadoActual = Estados.Move;
+            }
+            else
+            {
+                contadorInactividad += Time.deltaTime;
+                estadoActual = contadorInactividad >= tiempoParaEspera ? Estados.IdleWait : Estados.Idle;
+            }
         }
-        else if (!enSuelo)
+        else
         {
+            // En el aire: solo pasar a Fall cuando la velocidad descendente es significativa.
+            // No reseteamos contadorInactividad aqui para evitar que el micro-jitter de
+            // plataformas reinicie el temporizador de inactividad constantemente.
             if (rb.linearVelocity.y < -0.1f)
+            {
                 estadoActual = Estados.Fall;
+                contadorInactividad = 0f;
+            }
         }
     }
 
@@ -148,6 +184,7 @@ public class SCR_Movimiento : MonoBehaviour
         rb.AddForce(Vector3.up * fuerzaSalto, ForceMode.Impulse);
         jumpBufferCounter = 0f;
         coyoteTimeCounter = 0f;
+        contadorInactividad = 0f;
     }
 
     private void AplicarMovimiento()
@@ -190,9 +227,10 @@ public class SCR_Movimiento : MonoBehaviour
 
         if (rb.linearVelocity.y < 0)
             gravedadFinal *= multiplicadorCaida;
-        else if (rb.linearVelocity.y > 0 && !Input.GetButton("Jump"))
+        // Añadimos el !enSuelo para evitar que el ascensor active la gravedad de salto corto
+        else if (rb.linearVelocity.y > 0 && !Input.GetButton("Jump") && !enSuelo)
             gravedadFinal *= multiplicadorSaltoCorto;
-        else if (rb.linearVelocity.y > 0 && Input.GetButton("Jump"))
+        else if (rb.linearVelocity.y > 0 && Input.GetButton("Jump") && !enSuelo)
             gravedadFinal *= gravedadAscenso;
 
         rb.linearVelocity += Vector3.up * gravedadFinal * Time.fixedDeltaTime;
