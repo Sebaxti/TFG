@@ -136,6 +136,7 @@ MonoBehaviour:
   suavizadoSuelo: 50
   suavizadoAire: 5
   velocidadRotacion: 20
+  tiempoParaEspera: 5
   fuerzaSalto: 14
   gravedadAscenso: 2.5
   multiplicadorCaida: 4.5
@@ -278,7 +279,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SCR_Ctrl_UVFace
   materialCara: {fileID: 2100000, guid: 588ddd8998346754291b1fd3e37c8ad5, type: 2}
   nombrePropiedad: _FaceOffset
-  indiceCara: 0
+  indiceCara: 9
 --- !u!95 &4863877060837513818 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: d34b0f5aa9e367f45aeb34ff01bda90f, type: 3}

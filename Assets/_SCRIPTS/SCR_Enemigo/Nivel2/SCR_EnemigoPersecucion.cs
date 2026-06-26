@@ -20,6 +20,9 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     [SerializeField] private Vector3 corregirRotacionAviso = Vector3.zero;
     [SerializeField] private Transform puntoReferenciaIzquierda;
     [SerializeField] private Transform puntoReferenciaDerecha;
+    [Tooltip("Nombre del trigger en el Animator Controller que lanza la animación de corte")]
+    [SerializeField] private string triggerAtacar = "Atacar";
+    private Animator animadorCorte;
 
     [Header("Ataque 2: Caída (Rocas)")]
     [SerializeField] private GameObject prefabIndicador;
@@ -63,7 +66,11 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     private void Start()
     {
         alturaOriginal = transform.position.y;
-        if (objetoCorte != null) objetoCorte.SetActive(false);
+        if (objetoCorte != null)
+        {
+            animadorCorte = objetoCorte.GetComponentInChildren<Animator>();
+            objetoCorte.SetActive(false);
+        }
         AplicarColor(colorNormal);
         StartCoroutine(BucleLogicaAtaques());
     }
@@ -144,15 +151,31 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
 
         if (objetoCorte != null)
         {
-            objetoCorte.SetActive(true);
+            objetoCorte.transform.position = puntoInicio.position;
             objetoCorte.transform.rotation = puntoInicio.rotation;
 
-            float t = 0;
-            while (t < 1)
+            // Espejear horizontalmente según la dirección del corte
+            Vector3 escala = objetoCorte.transform.localScale;
+            escala.x = esDerecha ? -Mathf.Abs(escala.x) : Mathf.Abs(escala.x);
+            objetoCorte.transform.localScale = escala;
+
+            objetoCorte.SetActive(true);
+
+            if (animadorCorte != null)
             {
-                t += Time.deltaTime / duracionDelCorte;
-                objetoCorte.transform.position = Vector3.Lerp(puntoInicio.position, puntoFin.position, Mathf.SmoothStep(0, 1, t));
-                yield return null;
+                animadorCorte.SetTrigger(triggerAtacar);
+                yield return new WaitForSeconds(duracionDelCorte);
+            }
+            else
+            {
+                // Fallback procedural (placeholder cubo)
+                float t = 0;
+                while (t < 1)
+                {
+                    t += Time.deltaTime / duracionDelCorte;
+                    objetoCorte.transform.position = Vector3.Lerp(puntoInicio.position, puntoFin.position, Mathf.SmoothStep(0, 1, t));
+                    yield return null;
+                }
             }
 
             objetoCorte.SetActive(false);
