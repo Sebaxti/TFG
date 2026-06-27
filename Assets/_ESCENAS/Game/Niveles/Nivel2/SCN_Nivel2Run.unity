@@ -11045,7 +11045,7 @@ Transform:
   m_GameObject: {fileID: 894656689}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.5, y: -9, z: -1}
+  m_LocalPosition: {x: 0, y: -9, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13402,22 +13402,25 @@ MonoBehaviour:
   probabilidadCorte: 0.5
   probabilidadCaida: 0.5
   objetoCorte: {fileID: 594790494}
-  prefabAvisoLateral: {fileID: 5929831275471764022, guid: 2757f007b0fdcbc4c94303d6aa538e6c, type: 3}
-  duracionDelCorte: 1
   tiempoDeAvisoLateral: 1.2
-  corregirRotacionAviso: {x: 0, y: 0, z: 90}
-  puntoReferenciaIzquierda: {fileID: 1976013687}
-  puntoReferenciaDerecha: {fileID: 894656690}
-  triggerAtacar: Atacar
-  prefabIndicador: {fileID: 2832260717205979899, guid: b5a8569539bf9f3498a51580a395217a, type: 3}
-  prefabObjetoCaida: {fileID: 1191363900230780912, guid: 62679db312dad3d43947a7ae4bd70347, type: 3}
+  duracionDelCorte: 1
+  offsetPosicionCorte: {x: 0, y: -12, z: 0}
+  escalaCorte: {x: 0.5, y: 0.5, z: 0.5}
+  rotacionCorteIzquierda: {x: 0, y: 90, z: 0}
+  rotacionCorteDerecha: {x: 0, y: -90, z: 0}
+  duracionClipCorte: 2
+  triggerCorteIzquierda: CorteIzquierda
+  triggerCorteDerecha: CorteDerecha
+  intercambiarSentidoCorte: 0
+  prefabIndicadorCaida: {fileID: 2832260717205979899, guid: b5a8569539bf9f3498a51580a395217a, type: 3}
+  prefabLluviaEspadas: {fileID: 3276538400931717286, guid: 75a1c0e53fac19c44947c6a96cc702b2, type: 3}
   distanciaAdelante: 20
-  separacionCarriles: 5
-  alturaCaida: 15
+  anchuraTercio: 4
+  tercioIzquierda: 1
+  tercioCentro: 1
+  tercioDerecha: 1
   tiempoAvisoCaida: 1.5
-  alturaSueloRoca: 0.6
-  velocidadCaidaRoca: 30
-  tiempoVidaEnSuelo: 3
+  alturaSuelo: 0
   vfxCuerpo: {fileID: 765340185}
   propiedadColorVFX: ColorTint
   colorNormal: {r: 1, g: 1, b: 1, a: 1}
@@ -24934,7 +24937,7 @@ Transform:
   m_GameObject: {fileID: 1976013686}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.5, y: -9, z: -1}
+  m_LocalPosition: {x: 0, y: -9, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

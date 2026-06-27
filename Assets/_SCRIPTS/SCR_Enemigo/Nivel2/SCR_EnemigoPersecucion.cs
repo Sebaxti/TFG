@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections;
 
@@ -14,30 +14,43 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
 
     [Header("Ataque 1: Corte Lateral")]
     [SerializeField] private GameObject objetoCorte;
-    [SerializeField] private GameObject prefabAvisoLateral;
-    [SerializeField] private float duracionDelCorte = 0.5f;
     [SerializeField] private float tiempoDeAvisoLateral = 1.0f;
-    [SerializeField] private Vector3 corregirRotacionAviso = Vector3.zero;
-    [SerializeField] private Transform puntoReferenciaIzquierda;
-    [SerializeField] private Transform puntoReferenciaDerecha;
-    [Tooltip("Nombre del trigger en el Animator Controller que lanza la animación de corte")]
-    [SerializeField] private string triggerAtacar = "Atacar";
+    [SerializeField] private float duracionDelCorte = 0.8f;
+    [Tooltip("Posición local de la espada respecto al enemigo. Y negativo = abajo del cuerpo.")]
+    [SerializeField] private Vector3 offsetPosicionCorte = new Vector3(0f, -0.5f, 0f);
+    [Tooltip("Escala del objeto raíz de la espada. Cambia aquí en vez de en el prefab FBX hijo.")]
+    [SerializeField] private Vector3 escalaCorte = Vector3.one;
+    [Tooltip("Rotación local para el corte de IZQUIERDA")]
+    [SerializeField] private Vector3 rotacionCorteIzquierda = Vector3.zero;
+    [Tooltip("Rotación local para el corte de DERECHA")]
+    [SerializeField] private Vector3 rotacionCorteDerecha = Vector3.zero;
+    [Tooltip("Duración real del clip FBX. El Animator ajusta velocidad para encajar con Duracion Del Corte")]
+    [SerializeField] private float duracionClipCorte = 1f;
+    [SerializeField] private string triggerCorteIzquierda = "CorteIzquierda";
+    [SerializeField] private string triggerCorteDerecha = "CorteDerecha";
+    [Tooltip("Actívalo si el corte sale al lado equivocado")]
+    [SerializeField] private bool intercambiarSentidoCorte = false;
+
     private Animator animadorCorte;
+    private bool corteAnimandose = false;
 
-    [Header("Ataque 2: Caída (Rocas)")]
-    [SerializeField] private GameObject prefabIndicador;
-    [SerializeField] private GameObject prefabObjetoCaida;
+    [Header("Ataque 2: Lluvia de Espadas")]
+    [SerializeField] private GameObject prefabIndicadorCaida;
+    [SerializeField] private GameObject prefabLluviaEspadas;
+    [Tooltip("Distancia por delante del enemigo donde caen las espadas")]
     [SerializeField] private float distanciaAdelante = 15f;
-    [SerializeField] private float separacionCarriles = 4f;
-    [SerializeField] private float alturaCaida = 15f;
+    [Tooltip("Separación entre tercios del carril (eje X)")]
+    [SerializeField] private float anchuraTercio = 4f;
+    [Tooltip("Permite que caiga en el tercio izquierdo")]
+    [SerializeField] private bool tercioIzquierda = true;
+    [Tooltip("Permite que caiga en el tercio central")]
+    [SerializeField] private bool tercioCentro = true;
+    [Tooltip("Permite que caiga en el tercio derecho")]
+    [SerializeField] private bool tercioDerecha = true;
+    [Tooltip("Segundos que se muestra el aviso antes de que caigan las espadas")]
     [SerializeField] private float tiempoAvisoCaida = 1.5f;
-
-    [Header("Ajustes de Caída (Sin Físicas)")]
-    [SerializeField] private float alturaSueloRoca = 0.5f;
-    [Tooltip("Velocidad constante a la que baja la roca (matemática, sin físicas)")]
-    [SerializeField] private float velocidadCaidaRoca = 30f;
-    [Tooltip("Segundos que la roca se queda en el suelo antes de desaparecer")]
-    [SerializeField] private float tiempoVidaEnSuelo = 3f;
+    [Tooltip("Altura Y del suelo donde aparece el VFX y el collider")]
+    [SerializeField] private float alturaSuelo = 0f;
 
     [Header("VFX y Colores de Ataque")]
     [Tooltip("Componente VisualEffect del hijo VFX_Orb. Arrastra el GameObject hijo aquí.")]
@@ -52,7 +65,7 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     [SerializeField] private Color colorAvisoCaida = new Color(0.3f, 0.5f, 1f);
 
     private float alturaOriginal;
-    private GameObject avisoLateralActivo, indicadorActivo, trampaActiva;
+    private GameObject indicadorActivo;
 
     private void OnEnable()
     {
@@ -91,6 +104,7 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
         transform.Translate(direccionMundo * velocidadConstante * Time.deltaTime, Space.World);
     }
 
+
     public void SumarDificultad(float extraCorte, float extraCaida)
     {
         probabilidadCorte = Mathf.Clamp01(probabilidadCorte + extraCorte);
@@ -101,10 +115,7 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     {
         SCR_RespawnJugador respawn = FindFirstObjectByType<SCR_RespawnJugador>();
         if (respawn != null)
-        {
             transform.position = respawn.GetEnemigoRespawn();
-
-        }
     }
 
     private IEnumerator BucleLogicaAtaques()
@@ -119,106 +130,81 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
             float r = Random.value;
 
             if (r < (probabilidadCorte / totalProb))
-            {
                 yield return StartCoroutine(AtaqueCorte());
-            }
             else
-            {
                 yield return StartCoroutine(AtaqueCaida());
-            }
         }
     }
 
     private IEnumerator AtaqueCorte()
     {
-        if (puntoReferenciaDerecha == null || puntoReferenciaIzquierda == null) yield break;
+        if (objetoCorte == null) yield break;
 
         AplicarColor(colorAvisoCorte);
 
         bool esDerecha = Random.value > 0.5f;
-        Transform puntoInicio = esDerecha ? puntoReferenciaDerecha : puntoReferenciaIzquierda;
-        Transform puntoFin = esDerecha ? puntoReferenciaIzquierda : puntoReferenciaDerecha;
-
-        if (prefabAvisoLateral != null)
-        {
-            Quaternion rotacionFinal = puntoInicio.rotation * Quaternion.Euler(corregirRotacionAviso);
-            avisoLateralActivo = Instantiate(prefabAvisoLateral, puntoInicio.position, rotacionFinal, transform);
-        }
 
         yield return new WaitForSeconds(tiempoDeAvisoLateral);
 
-        if (avisoLateralActivo != null) Destroy(avisoLateralActivo);
+        bool usarDerecha = intercambiarSentidoCorte ? !esDerecha : esDerecha;
+        Vector3 rotacion = usarDerecha ? rotacionCorteDerecha : rotacionCorteIzquierda;
 
-        if (objetoCorte != null)
+        // Colocar espada relativa al enemigo y activar
+        objetoCorte.transform.SetParent(transform, worldPositionStays: false);
+        objetoCorte.transform.localPosition = offsetPosicionCorte;
+        objetoCorte.transform.localRotation = Quaternion.Euler(rotacion);
+        objetoCorte.transform.localScale = escalaCorte;
+        objetoCorte.SetActive(true);
+
+        if (animadorCorte != null)
         {
-            objetoCorte.transform.position = puntoInicio.position;
-            objetoCorte.transform.rotation = puntoInicio.rotation;
-
-            // Espejear horizontalmente según la dirección del corte
-            Vector3 escala = objetoCorte.transform.localScale;
-            escala.x = esDerecha ? -Mathf.Abs(escala.x) : Mathf.Abs(escala.x);
-            objetoCorte.transform.localScale = escala;
-
-            objetoCorte.SetActive(true);
-
-            if (animadorCorte != null)
-            {
-                animadorCorte.SetTrigger(triggerAtacar);
-                yield return new WaitForSeconds(duracionDelCorte);
-            }
-            else
-            {
-                // Fallback procedural (placeholder cubo)
-                float t = 0;
-                while (t < 1)
-                {
-                    t += Time.deltaTime / duracionDelCorte;
-                    objetoCorte.transform.position = Vector3.Lerp(puntoInicio.position, puntoFin.position, Mathf.SmoothStep(0, 1, t));
-                    yield return null;
-                }
-            }
-
-            objetoCorte.SetActive(false);
+            animadorCorte.speed = duracionClipCorte / Mathf.Max(duracionDelCorte, 0.01f);
+            animadorCorte.SetTrigger(usarDerecha ? triggerCorteDerecha : triggerCorteIzquierda);
+            yield return new WaitForSeconds(duracionDelCorte);
+            animadorCorte.speed = 1f;
         }
+
+        objetoCorte.SetActive(false);
+        if (animadorCorte != null)
+            animadorCorte.transform.localPosition = Vector3.zero;
 
         RestablecerColor();
     }
 
     private IEnumerator AtaqueCaida()
     {
-        if (prefabIndicador == null || prefabObjetoCaida == null) yield break;
-
         AplicarColor(colorAvisoCaida);
 
-        int carril = Random.Range(-1, 2);
+        // Elegir tercio disponible al azar
+        int[] tercios = new int[3];
+        int count = 0;
+        if (tercioIzquierda) tercios[count++] = -1;
+        if (tercioCentro)    tercios[count++] =  0;
+        if (tercioDerecha)   tercios[count++] =  1;
+
+        if (count == 0) { RestablecerColor(); yield break; }
+
+        int tercioElegido = tercios[Random.Range(0, count)];
+
         Vector3 avance = direccionMundo.normalized;
         Vector3 derecha = Vector3.Cross(Vector3.up, avance).normalized;
 
-        Vector3 posSuelo = transform.position + (avance * distanciaAdelante) + (derecha * (carril * separacionCarriles));
-        posSuelo.y = alturaSueloRoca;
+        Vector3 posSuelo = transform.position
+                         + avance  * distanciaAdelante
+                         + derecha * (tercioElegido * anchuraTercio);
+        posSuelo.y = alturaSuelo;
 
-        indicadorActivo = Instantiate(prefabIndicador, posSuelo, Quaternion.identity);
+        // Mostrar aviso en el suelo
+        if (prefabIndicadorCaida != null)
+            indicadorActivo = Instantiate(prefabIndicadorCaida, posSuelo, Quaternion.identity);
 
         yield return new WaitForSeconds(tiempoAvisoCaida);
 
         if (indicadorActivo != null) Destroy(indicadorActivo);
 
-        Vector3 posCielo = posSuelo + (Vector3.up * alturaCaida);
-        trampaActiva = Instantiate(prefabObjetoCaida, posCielo, Quaternion.identity);
-
-        while (trampaActiva != null && trampaActiva.transform.position.y > posSuelo.y)
-        {
-            trampaActiva.transform.position = Vector3.MoveTowards(
-                trampaActiva.transform.position,
-                posSuelo,
-                velocidadCaidaRoca * Time.deltaTime
-            );
-            yield return null;
-        }
-
-        yield return new WaitForSeconds(tiempoVidaEnSuelo);
-
-        if (trampaActiva != null) Destroy(trampaActiva);
+        // Activar VFX + collider de daño
+        if (prefabLluviaEspadas != null)
+            Instantiate(prefabLluviaEspadas, posSuelo, Quaternion.identity);
 
         RestablecerColor();
     }
@@ -226,8 +212,6 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
-        {
             other.GetComponent<SCR_RespawnJugador>()?.Respawn();
-        }
     }
 }

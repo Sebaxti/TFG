@@ -14,20 +14,18 @@ public class SCR_JefeFinal : MonoBehaviour
         public string nombreFase;
         [Tooltip("Tiempo de respiro entre ataques del jefe")]
         public float cooldownAtaque = 1.5f;
-        [Tooltip("N�mero de ataques b�sicos antes de lanzar el proyectil maestro")]
+        [Tooltip("Número de ataques básicos antes de lanzar el proyectil maestro")]
         public int ataquesParaMaestro = 3;
-        [Tooltip("Duraci�n de la animaci�n del corte. Valores bajos = tajo m�s r�pido y letal")]
+        [Tooltip("Duración del ataque de corte. Valores bajos = tajo más rápido y letal")]
         public float duracionGiroEspada = 0.4f;
-        [Tooltip("Velocidad (m/s) a la que caen las rocas desde el cielo")]
-        public float velocidadCaidaRocas = 15f;
         [Tooltip("Color base del jefe durante esta fase")]
         public Color colorFase = Color.white;
     }
 
-    [Header("Configuraci�n de Fases")]
-    public AjustesFase fase0_Inicial = new AjustesFase { nombreFase = "Fase 1 (100% Vida)", cooldownAtaque = 2f, ataquesParaMaestro = 3, duracionGiroEspada = 0.5f, velocidadCaidaRocas = 10f, colorFase = Color.white };
-    public AjustesFase fase1_UnGolpe = new AjustesFase { nombreFase = "Fase 2 (Tras 1 Golpe)", cooldownAtaque = 1.5f, ataquesParaMaestro = 4, duracionGiroEspada = 0.35f, velocidadCaidaRocas = 15f, colorFase = new Color(1f, 0.8f, 0.8f) };
-    public AjustesFase fase2_DosGolpes = new AjustesFase { nombreFase = "Fase 3 (Tras 2 Golpes)", cooldownAtaque = 1f, ataquesParaMaestro = 5, duracionGiroEspada = 0.2f, velocidadCaidaRocas = 22f, colorFase = new Color(1f, 0.5f, 0.5f) };
+    [Header("Configuración de Fases")]
+    public AjustesFase fase0_Inicial    = new AjustesFase { nombreFase = "Fase 1 (100% Vida)",      cooldownAtaque = 2f,   ataquesParaMaestro = 3, duracionGiroEspada = 0.5f,  colorFase = Color.white };
+    public AjustesFase fase1_UnGolpe    = new AjustesFase { nombreFase = "Fase 2 (Tras 1 Golpe)",   cooldownAtaque = 1.5f, ataquesParaMaestro = 4, duracionGiroEspada = 0.35f, colorFase = new Color(1f, 0.8f, 0.8f) };
+    public AjustesFase fase2_DosGolpes  = new AjustesFase { nombreFase = "Fase 3 (Tras 2 Golpes)",  cooldownAtaque = 1f,   ataquesParaMaestro = 5, duracionGiroEspada = 0.2f,  colorFase = new Color(1f, 0.5f, 0.5f) };
 
     private AjustesFase faseActual;
     private int golpesRecibidos = 0;
@@ -53,24 +51,48 @@ public class SCR_JefeFinal : MonoBehaviour
     [Tooltip("Nombre exacto de la propiedad Vector4 expuesta en el VFX Graph")]
     [SerializeField] private string propiedadColorVFX = "ColorTint";
 
-    [Header("Configuraci�n Espada (Corte Lateral)")]
-    [Tooltip("Ajusta la posici�n local de la espada. Y=Altura, Z=Distancia frontal.")]
+    [Header("Espada: Posición y Animación")]
+    [Tooltip("Posición local de la espada respecto al jefe. Y=Altura, Z=Distancia frontal.")]
     [SerializeField] private Vector3 offsetEspada = new Vector3(0, 1.2f, 2.0f);
+    [Tooltip("Arrastra aquí el Animator del modelo FBX de la espada. Si está vacío se auto-busca en los hijos de objetoCorteLateral.")]
+    [SerializeField] private Animator animadorEspada;
+    [Tooltip("Trigger para el corte desde la izquierda")]
+    [SerializeField] private string triggerCorteIzquierda = "CorteIzquierda";
+    [Tooltip("Trigger para el corte desde la derecha")]
+    [SerializeField] private string triggerCorteDerecha = "CorteDerecha";
+    [Tooltip("Duración real del clip FBX en segundos. El Animator ajusta su velocidad para encajar con la fase actual")]
+    [SerializeField] private float duracionClipCorte = 1f;
+    [Tooltip("Rotación local para el corte de IZQUIERDA")]
+    [SerializeField] private Vector3 rotacionCorteIzquierda = Vector3.zero;
+    [Tooltip("Rotación local para el corte de DERECHA")]
+    [SerializeField] private Vector3 rotacionCorteDerecha = Vector3.zero;
+    [Tooltip("Escala del objeto raíz de la espada")]
+    [SerializeField] private Vector3 escalaCorte = Vector3.one;
+    [Tooltip("Actívalo si el corte va al lado equivocado")]
+    [SerializeField] private bool intercambiarSentidoCorte = false;
 
     [Header("Ataque Maestro (Proyectil)")]
     public GameObject prefabProyectilMaestro;
     public float alturaSalidaProyectil = 1.8f;
     public float distanciaSalidaProyectil = 2.5f;
 
-    [Header("Ataque Ca�da (Rocas)")]
-    public GameObject prefabObjetoCaida;
+    [Header("Ataque Caída (Lluvia de Espadas)")]
+    [Tooltip("Prefab con PSS_Espadas + BoxCollider + SCR_LluviaEspadas")]
+    [SerializeField] private GameObject prefabLluviaEspadas;
+    [Tooltip("Prefab de aviso que aparece en el suelo antes de la lluvia")]
     public GameObject prefabAvisoSuelo;
+    [Tooltip("Altura Y del suelo del arena")]
     public float alturaSueloArena = 0f;
-    public float alturaCaidaObjetos = 15f;
+    [Tooltip("Segundos que se muestra el aviso antes de que caigan las espadas")]
+    [SerializeField] private float tiempoAvisoAntesCaida = 1f;
+    [Tooltip("Segundos de espera entre cada zona de lluvia consecutiva")]
+    [SerializeField] private float tiempoEntreLluvias = 0.4f;
+    [Tooltip("Número de zonas de lluvia por ataque")]
     public int cantidadObjetosCaida = 4;
+    [Tooltip("Radio de dispersión alrededor del jugador")]
     public float radioDispersionCaida = 4f;
 
-    [Header("Efecto de Flote y Rotaci�n")]
+    [Header("Efecto de Flote y Rotación")]
     public float velocidadRotacion = 5f;
     [SerializeField] private float amplitudFlote = 0.3f;
     [SerializeField] private float frecuenciaFlote = 2.0f;
@@ -99,12 +121,18 @@ public class SCR_JefeFinal : MonoBehaviour
     private float timerCooldown;
 
     // ==========================================
-    // 3. M�TODOS PRINCIPALES
+    // 3. MÉTODOS PRINCIPALES
     // ==========================================
     private void Start()
     {
         if (jugador == null) jugador = GameObject.FindGameObjectWithTag("Player")?.transform;
-        if (objetoCorteLateral != null) objetoCorteLateral.SetActive(false);
+
+        if (objetoCorteLateral != null)
+        {
+            if (animadorEspada == null)
+                animadorEspada = objetoCorteLateral.GetComponentInChildren<Animator>();
+            objetoCorteLateral.SetActive(false);
+        }
 
         alturaInicialY = puntoCentro != null ? puntoCentro.position.y : transform.position.y;
 
@@ -137,25 +165,17 @@ public class SCR_JefeFinal : MonoBehaviour
 
         // Temporizador de combate
         if (timerCooldown > 0f)
-        {
             timerCooldown -= Time.deltaTime;
-        }
         else
-        {
             DecidirSiguienteMovimiento();
-        }
     }
 
     private void DecidirSiguienteMovimiento()
     {
-        // Si ya ha hecho suficientes ataques b�sicos, lanza el Maestro
         if (contadorAtaques >= faseActual.ataquesParaMaestro)
-        {
             StartCoroutine(RutinaAtaqueMaestro());
-        }
         else
         {
-            // Elige aleatoriamente entre espada (0) y rocas (1)
             int aleatorio = Random.Range(0, 2);
             if (aleatorio == 0) StartCoroutine(RutinaCorteLateral());
             else StartCoroutine(RutinaAtaqueCaida());
@@ -170,32 +190,31 @@ public class SCR_JefeFinal : MonoBehaviour
         estadoActual = EstadoJefe.Atacando;
         AplicarColor(colorAvisoMelee);
 
-        // Colocar la espada donde marca el Inspector
-        if (objetoCorteLateral != null)
-        {
-            objetoCorteLateral.transform.localPosition = offsetEspada;
-            objetoCorteLateral.transform.localRotation = Quaternion.Euler(0, 60, 0);
-        }
+        bool esDerecha = Random.value > 0.5f;
+        bool usarDerecha = intercambiarSentidoCorte ? !esDerecha : esDerecha;
 
         yield return new WaitForSeconds(0.7f); // Tiempo de aviso (telegrafiado)
 
         if (objetoCorteLateral != null)
         {
+            Vector3 posLocal = offsetEspada;
+            posLocal.x = esDerecha ? Mathf.Abs(offsetEspada.x) : -Mathf.Abs(offsetEspada.x);
+            objetoCorteLateral.transform.localPosition = posLocal;
+            objetoCorteLateral.transform.localRotation = Quaternion.Euler(usarDerecha ? rotacionCorteDerecha : rotacionCorteIzquierda);
+            objetoCorteLateral.transform.localScale = escalaCorte;
             objetoCorteLateral.SetActive(true);
 
-            float t = 0f;
-            // El giro usa la velocidad configurada en la fase actual
-            while (t < faseActual.duracionGiroEspada)
+            if (animadorEspada != null)
             {
-                t += Time.deltaTime;
-                objetoCorteLateral.transform.localRotation = Quaternion.Lerp(
-                    Quaternion.Euler(0, 60, 0),
-                    Quaternion.Euler(0, -60, 0),
-                    t / faseActual.duracionGiroEspada
-                );
-                yield return null;
+                animadorEspada.speed = duracionClipCorte / Mathf.Max(faseActual.duracionGiroEspada, 0.01f);
+                animadorEspada.SetTrigger(usarDerecha ? triggerCorteDerecha : triggerCorteIzquierda);
+                yield return new WaitForSeconds(faseActual.duracionGiroEspada);
+                animadorEspada.speed = 1f;
             }
+
             objetoCorteLateral.SetActive(false);
+            if (animadorEspada != null)
+                animadorEspada.transform.localPosition = Vector3.zero;
         }
 
         FinalizarAtaque(true);
@@ -211,19 +230,19 @@ public class SCR_JefeFinal : MonoBehaviour
             Vector2 offset = Random.insideUnitCircle * radioDispersionCaida;
             Vector3 posSuelo = new Vector3(jugador.position.x + offset.x, alturaSueloArena, jugador.position.z + offset.y);
 
+            // Aviso en el suelo (se destruye solo cuando la lluvia arranca)
+            GameObject aviso = null;
             if (prefabAvisoSuelo != null)
-                Destroy(Instantiate(prefabAvisoSuelo, posSuelo + Vector3.up * 0.05f, Quaternion.identity), 1.2f);
+                aviso = Instantiate(prefabAvisoSuelo, posSuelo + Vector3.up * 0.05f, Quaternion.identity);
 
-            yield return new WaitForSeconds(0.5f); // Tiempo de aviso en el suelo
+            yield return new WaitForSeconds(tiempoAvisoAntesCaida);
 
-            if (prefabObjetoCaida != null)
-            {
-                GameObject roca = Instantiate(prefabObjetoCaida, posSuelo + Vector3.up * alturaCaidaObjetos, Quaternion.identity);
-                // Le pasamos la velocidad de ca�da de la fase actual a la roca
-                SCR_ObjetoCaida scriptRoca = roca.GetComponent<SCR_ObjetoCaida>();
-                if (scriptRoca != null) scriptRoca.velocidadDescenso = faseActual.velocidadCaidaRocas;
-            }
-            yield return new WaitForSeconds(0.3f);
+            // Quitar aviso y activar VFX + zona de daño simultáneamente
+            if (aviso != null) Destroy(aviso);
+            if (prefabLluviaEspadas != null)
+                Instantiate(prefabLluviaEspadas, posSuelo, Quaternion.identity);
+
+            yield return new WaitForSeconds(tiempoEntreLluvias);
         }
 
         FinalizarAtaque(true);
@@ -233,7 +252,7 @@ public class SCR_JefeFinal : MonoBehaviour
     {
         estadoActual = EstadoJefe.Atacando;
         AplicarColor(colorMaestro);
-        yield return new WaitForSeconds(1.2f); // El jefe carga energ�a
+        yield return new WaitForSeconds(1.2f);
 
         if (prefabProyectilMaestro != null)
         {
@@ -242,7 +261,6 @@ public class SCR_JefeFinal : MonoBehaviour
             proyectilActivo.GetComponent<SCR_ProyectilJefe>().Disparar(jugador.position, this);
         }
 
-        // Espera a que el jugador refleje el proyectil (o caduque)
         float safetyTimer = 0f;
         while (estadoActual == EstadoJefe.Atacando && safetyTimer < 8f)
         {
@@ -264,7 +282,7 @@ public class SCR_JefeFinal : MonoBehaviour
     }
 
     // ==========================================
-    // 5. SISTEMA DE DA�O Y FASES
+    // 5. SISTEMA DE DAÑO Y FASES
     // ==========================================
     public void RecibirGolpe()
     {
@@ -274,13 +292,9 @@ public class SCR_JefeFinal : MonoBehaviour
         if (objetoCorteLateral != null) objetoCorteLateral.SetActive(false);
         if (proyectilActivo != null) Destroy(proyectilActivo);
 
-        // Temblor de cámara al impacto
         SCR_TemblorCamara.Instancia?.AgitarCamaraPersonalizada(duracionTemblorGolpe, magnitudTemblorGolpe);
-
-        // Hundir columnas aleatorias (corren en sus propios MonoBehaviours, no les afecta StopAllCoroutines)
         HundirColumnasAleatorias();
 
-        // Cambio de fase seg�n golpes
         if (golpesRecibidos == 1)
         {
             faseActual = fase1_UnGolpe;
@@ -316,7 +330,6 @@ public class SCR_JefeFinal : MonoBehaviour
     {
         estadoActual = EstadoJefe.Atacando;
 
-        // Efecto visual de da�o
         for (int i = 0; i < 5; i++)
         {
             if (renderizadorCuerpo) renderizadorCuerpo.enabled = false;
@@ -327,7 +340,7 @@ public class SCR_JefeFinal : MonoBehaviour
         }
 
         AplicarColor(colorAturdido);
-        yield return new WaitForSeconds(2f); // Tiempo aturdido
+        yield return new WaitForSeconds(2f);
 
         DesbloquearJefe();
     }
@@ -335,7 +348,7 @@ public class SCR_JefeFinal : MonoBehaviour
     private IEnumerator RutinaMuerte()
     {
         estadoActual = EstadoJefe.Atacando;
-        Debug.Log("�JEFE DERROTADO!");
+        Debug.Log("¡JEFE DERROTADO!");
 
         for (int i = 0; i < 15; i++)
         {
@@ -345,11 +358,9 @@ public class SCR_JefeFinal : MonoBehaviour
         }
         if (renderizadorCuerpo) renderizadorCuerpo.enabled = false;
 
-        // Limpieza de rocas residuales
         SCR_ObjetoCaida[] rocas = FindObjectsByType<SCR_ObjetoCaida>(FindObjectsSortMode.None);
         foreach (var r in rocas) Destroy(r.gameObject);
 
-        // Falta lo que pasa cuando se gana 
         Destroy(gameObject, 1f);
     }
 
