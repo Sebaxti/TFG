@@ -16,8 +16,10 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     [SerializeField] private GameObject objetoCorte;
     [SerializeField] private float tiempoDeAvisoLateral = 1.0f;
     [SerializeField] private float duracionDelCorte = 0.8f;
-    [Tooltip("Posición local de la espada respecto al enemigo. Y negativo = abajo del cuerpo.")]
-    [SerializeField] private Vector3 offsetPosicionCorte = new Vector3(0f, -0.5f, 0f);
+    [Tooltip("Posición local de la espada para el corte de IZQUIERDA")]
+    [SerializeField] private Vector3 offsetCorteIzquierda = new Vector3(0f, -0.5f, 0f);
+    [Tooltip("Posición local de la espada para el corte de DERECHA")]
+    [SerializeField] private Vector3 offsetCorteDerecha = new Vector3(0f, -0.5f, 0f);
     [Tooltip("Escala del objeto raíz de la espada. Cambia aquí en vez de en el prefab FBX hijo.")]
     [SerializeField] private Vector3 escalaCorte = Vector3.one;
     [Tooltip("Rotación local para el corte de IZQUIERDA")]
@@ -49,8 +51,10 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     [SerializeField] private bool tercioDerecha = true;
     [Tooltip("Segundos que se muestra el aviso antes de que caigan las espadas")]
     [SerializeField] private float tiempoAvisoCaida = 1.5f;
-    [Tooltip("Altura Y del suelo donde aparece el VFX y el collider")]
-    [SerializeField] private float alturaSuelo = 0f;
+    [Tooltip("Altura Y donde aparece el aviso en el suelo (un pelín más arriba)")]
+    [SerializeField] private float alturaAviso = 0.05f;
+    [Tooltip("Altura Y donde aparece el VFX de espadas y la zona de daño")]
+    [SerializeField] private float alturaLluvia = 0f;
 
     [Header("VFX y Colores de Ataque")]
     [Tooltip("Componente VisualEffect del hijo VFX_Orb. Arrastra el GameObject hijo aquí.")]
@@ -151,7 +155,7 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
 
         // Colocar espada relativa al enemigo y activar
         objetoCorte.transform.SetParent(transform, worldPositionStays: false);
-        objetoCorte.transform.localPosition = offsetPosicionCorte;
+        objetoCorte.transform.localPosition = usarDerecha ? offsetCorteDerecha : offsetCorteIzquierda;
         objetoCorte.transform.localRotation = Quaternion.Euler(rotacion);
         objetoCorte.transform.localScale = escalaCorte;
         objetoCorte.SetActive(true);
@@ -189,14 +193,16 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
         Vector3 avance = direccionMundo.normalized;
         Vector3 derecha = Vector3.Cross(Vector3.up, avance).normalized;
 
-        Vector3 posSuelo = transform.position
-                         + avance  * distanciaAdelante
-                         + derecha * (tercioElegido * anchuraTercio);
-        posSuelo.y = alturaSuelo;
+        Vector3 posBase = transform.position
+                        + avance  * distanciaAdelante
+                        + derecha * (tercioElegido * anchuraTercio);
+
+        Vector3 posAviso  = new Vector3(posBase.x, alturaAviso,  posBase.z);
+        Vector3 posLluvia = new Vector3(posBase.x, alturaLluvia, posBase.z);
 
         // Mostrar aviso en el suelo
         if (prefabIndicadorCaida != null)
-            indicadorActivo = Instantiate(prefabIndicadorCaida, posSuelo, Quaternion.identity);
+            indicadorActivo = Instantiate(prefabIndicadorCaida, posAviso, Quaternion.identity);
 
         yield return new WaitForSeconds(tiempoAvisoCaida);
 
@@ -204,7 +210,7 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
 
         // Activar VFX + collider de daño
         if (prefabLluviaEspadas != null)
-            Instantiate(prefabLluviaEspadas, posSuelo, Quaternion.identity);
+            Instantiate(prefabLluviaEspadas, posLluvia, Quaternion.identity);
 
         RestablecerColor();
     }

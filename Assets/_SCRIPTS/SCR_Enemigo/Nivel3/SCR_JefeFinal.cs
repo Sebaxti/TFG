@@ -20,12 +20,18 @@ public class SCR_JefeFinal : MonoBehaviour
         public float duracionGiroEspada = 0.4f;
         [Tooltip("Color base del jefe durante esta fase")]
         public Color colorFase = Color.white;
+        [Tooltip("Número total de espadas que caen durante el ataque")]
+        public int cantidadLluvias = 3;
+        [Tooltip("Cuántas espadas caen al mismo tiempo en cada oleada")]
+        public int cantidadSimultanea = 1;
+        [Tooltip("Segundos de espera entre oleadas")]
+        public float tiempoEntreOleadas = 0.5f;
     }
 
     [Header("Configuración de Fases")]
-    public AjustesFase fase0_Inicial    = new AjustesFase { nombreFase = "Fase 1 (100% Vida)",      cooldownAtaque = 2f,   ataquesParaMaestro = 3, duracionGiroEspada = 0.5f,  colorFase = Color.white };
-    public AjustesFase fase1_UnGolpe    = new AjustesFase { nombreFase = "Fase 2 (Tras 1 Golpe)",   cooldownAtaque = 1.5f, ataquesParaMaestro = 4, duracionGiroEspada = 0.35f, colorFase = new Color(1f, 0.8f, 0.8f) };
-    public AjustesFase fase2_DosGolpes  = new AjustesFase { nombreFase = "Fase 3 (Tras 2 Golpes)",  cooldownAtaque = 1f,   ataquesParaMaestro = 5, duracionGiroEspada = 0.2f,  colorFase = new Color(1f, 0.5f, 0.5f) };
+    public AjustesFase fase0_Inicial   = new AjustesFase { nombreFase = "Fase 1 (100% Vida)",     cooldownAtaque = 2f,   ataquesParaMaestro = 3, duracionGiroEspada = 0.5f,  colorFase = Color.white,              cantidadLluvias = 3, cantidadSimultanea = 1, tiempoEntreOleadas = 0.5f  };
+    public AjustesFase fase1_UnGolpe   = new AjustesFase { nombreFase = "Fase 2 (Tras 1 Golpe)",  cooldownAtaque = 1.5f, ataquesParaMaestro = 4, duracionGiroEspada = 0.35f, colorFase = new Color(1f, 0.8f, 0.8f), cantidadLluvias = 5, cantidadSimultanea = 2, tiempoEntreOleadas = 0.35f };
+    public AjustesFase fase2_DosGolpes = new AjustesFase { nombreFase = "Fase 3 (Tras 2 Golpes)", cooldownAtaque = 1f,   ataquesParaMaestro = 5, duracionGiroEspada = 0.2f,  colorFase = new Color(1f, 0.5f, 0.5f), cantidadLluvias = 8, cantidadSimultanea = 3, tiempoEntreOleadas = 0.25f };
 
     private AjustesFase faseActual;
     private int golpesRecibidos = 0;
@@ -52,8 +58,10 @@ public class SCR_JefeFinal : MonoBehaviour
     [SerializeField] private string propiedadColorVFX = "ColorTint";
 
     [Header("Espada: Posición y Animación")]
-    [Tooltip("Posición local de la espada respecto al jefe. Y=Altura, Z=Distancia frontal.")]
-    [SerializeField] private Vector3 offsetEspada = new Vector3(0, 1.2f, 2.0f);
+    [Tooltip("Posición local de la espada para el corte de IZQUIERDA")]
+    [SerializeField] private Vector3 offsetEspadaIzquierda = new Vector3(0, 1.2f, 2.0f);
+    [Tooltip("Posición local de la espada para el corte de DERECHA")]
+    [SerializeField] private Vector3 offsetEspadaDerecha = new Vector3(0, 1.2f, 2.0f);
     [Tooltip("Arrastra aquí el Animator del modelo FBX de la espada. Si está vacío se auto-busca en los hijos de objetoCorteLateral.")]
     [SerializeField] private Animator animadorEspada;
     [Tooltip("Trigger para el corte desde la izquierda")]
@@ -83,12 +91,12 @@ public class SCR_JefeFinal : MonoBehaviour
     public GameObject prefabAvisoSuelo;
     [Tooltip("Altura Y del suelo del arena")]
     public float alturaSueloArena = 0f;
-    [Tooltip("Segundos que se muestra el aviso antes de que caigan las espadas")]
+    [Tooltip("Segundos que se muestra el aviso en el suelo antes de que caigan las espadas")]
     [SerializeField] private float tiempoAvisoAntesCaida = 1f;
-    [Tooltip("Segundos de espera entre cada zona de lluvia consecutiva")]
-    [SerializeField] private float tiempoEntreLluvias = 0.4f;
-    [Tooltip("Número de zonas de lluvia por ataque")]
-    public int cantidadObjetosCaida = 4;
+    [Tooltip("Altura Y donde aparece el aviso en el suelo")]
+    [SerializeField] private float alturaAviso = 0.05f;
+    [Tooltip("Altura Y donde aparece el VFX y la zona de daño")]
+    [SerializeField] private float alturaLluvia = 0f;
     [Tooltip("Radio de dispersión alrededor del jugador")]
     public float radioDispersionCaida = 4f;
 
@@ -197,9 +205,7 @@ public class SCR_JefeFinal : MonoBehaviour
 
         if (objetoCorteLateral != null)
         {
-            Vector3 posLocal = offsetEspada;
-            posLocal.x = esDerecha ? Mathf.Abs(offsetEspada.x) : -Mathf.Abs(offsetEspada.x);
-            objetoCorteLateral.transform.localPosition = posLocal;
+            objetoCorteLateral.transform.localPosition = usarDerecha ? offsetEspadaDerecha : offsetEspadaIzquierda;
             objetoCorteLateral.transform.localRotation = Quaternion.Euler(usarDerecha ? rotacionCorteDerecha : rotacionCorteIzquierda);
             objetoCorteLateral.transform.localScale = escalaCorte;
             objetoCorteLateral.SetActive(true);
@@ -225,24 +231,44 @@ public class SCR_JefeFinal : MonoBehaviour
         estadoActual = EstadoJefe.Atacando;
         AplicarColor(colorAvisoMagia);
 
-        for (int i = 0; i < cantidadObjetosCaida; i++)
-        {
-            Vector2 offset = Random.insideUnitCircle * radioDispersionCaida;
-            Vector3 posSuelo = new Vector3(jugador.position.x + offset.x, alturaSueloArena, jugador.position.z + offset.y);
+        int total      = faseActual.cantidadLluvias;
+        int porOleada  = Mathf.Max(1, faseActual.cantidadSimultanea);
 
-            // Aviso en el suelo (se destruye solo cuando la lluvia arranca)
-            GameObject aviso = null;
-            if (prefabAvisoSuelo != null)
-                aviso = Instantiate(prefabAvisoSuelo, posSuelo + Vector3.up * 0.05f, Quaternion.identity);
+        for (int i = 0; i < total; i += porOleada)
+        {
+            int enEstaOleada = Mathf.Min(porOleada, total - i);
+
+            GameObject[] avisas    = new GameObject[enEstaOleada];
+            Vector3[]    posiciones = new Vector3[enEstaOleada];
+
+            // Mostrar todos los avisas de esta oleada a la vez
+            for (int j = 0; j < enEstaOleada; j++)
+            {
+                Vector2 desplazamiento = Random.insideUnitCircle * radioDispersionCaida;
+                posiciones[j] = new Vector3(
+                    jugador.position.x + desplazamiento.x,
+                    alturaLluvia,
+                    jugador.position.z + desplazamiento.y);
+
+                if (prefabAvisoSuelo != null)
+                    avisas[j] = Instantiate(prefabAvisoSuelo,
+                        new Vector3(posiciones[j].x, alturaAviso, posiciones[j].z),
+                        Quaternion.identity);
+            }
 
             yield return new WaitForSeconds(tiempoAvisoAntesCaida);
 
-            // Quitar aviso y activar VFX + zona de daño simultáneamente
-            if (aviso != null) Destroy(aviso);
-            if (prefabLluviaEspadas != null)
-                Instantiate(prefabLluviaEspadas, posSuelo, Quaternion.identity);
+            // Caer todos al mismo tiempo
+            for (int j = 0; j < enEstaOleada; j++)
+            {
+                if (avisas[j] != null) Destroy(avisas[j]);
+                if (prefabLluviaEspadas != null)
+                    Instantiate(prefabLluviaEspadas, posiciones[j], Quaternion.identity);
+            }
 
-            yield return new WaitForSeconds(tiempoEntreLluvias);
+            // Pausa entre oleadas (no esperar tras la última)
+            if (i + porOleada < total)
+                yield return new WaitForSeconds(faseActual.tiempoEntreOleadas);
         }
 
         FinalizarAtaque(true);

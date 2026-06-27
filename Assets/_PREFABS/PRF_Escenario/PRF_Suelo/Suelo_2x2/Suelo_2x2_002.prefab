@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6650171462403401232}
   - component: {fileID: 8414968815183595640}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Suelo_2x2_002
   m_TagString: Untagged
   m_Icon: {fileID: 0}

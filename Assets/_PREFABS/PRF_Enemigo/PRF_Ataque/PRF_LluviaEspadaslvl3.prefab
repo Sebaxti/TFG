@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 726633703501985652}
   - component: {fileID: -2151353549008588431}
   m_Layer: 0
-  m_Name: PRF_LluviaEspadas
+  m_Name: PRF_LluviaEspadaslvl3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -121,7 +121,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4.5, y: 1, z: 145}
+  m_Size: {x: 10, y: 1, z: 10}
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &1448529617530679870
 MonoBehaviour:
@@ -185,22 +185,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2448234090117851508, guid: d8614f217c52d3944b3f73b906290b74, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.45
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2448234090117851508, guid: d8614f217c52d3944b3f73b906290b74, type: 3}
       propertyPath: m_LocalScale.y
-      value: 24.95885
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5787475698280295013, guid: d8614f217c52d3944b3f73b906290b74, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7830207150191164957, guid: d8614f217c52d3944b3f73b906290b74, type: 3}
       propertyPath: m_Name
       value: PRF_VFX_LluviaEspadas
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5787475698280295013, guid: d8614f217c52d3944b3f73b906290b74, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

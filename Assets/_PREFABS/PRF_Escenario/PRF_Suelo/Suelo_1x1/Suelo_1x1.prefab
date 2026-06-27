@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8324269638095977047}
   - component: {fileID: 3625747892117974316}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Suelo_1x1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

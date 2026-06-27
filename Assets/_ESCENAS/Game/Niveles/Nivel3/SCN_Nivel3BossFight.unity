@@ -807,20 +807,29 @@ MonoBehaviour:
     nombreFase: Fase 1
     cooldownAtaque: 2
     ataquesParaMaestro: 3
-    duracionGiroEspada: 0.5
+    duracionGiroEspada: 3
     colorFase: {r: 1, g: 1, b: 1, a: 1}
+    cantidadLluvias: 4
+    cantidadSimultanea: 1
+    tiempoEntreOleadas: 0.5
   fase1_UnGolpe:
     nombreFase: Fase 2
     cooldownAtaque: 1.5
     ataquesParaMaestro: 4
-    duracionGiroEspada: 0.35
+    duracionGiroEspada: 2
     colorFase: {r: 1, g: 0.8, b: 0.8, a: 1}
+    cantidadLluvias: 5
+    cantidadSimultanea: 2
+    tiempoEntreOleadas: 0.35
   fase2_DosGolpes:
     nombreFase: Fase 3
     cooldownAtaque: 1
     ataquesParaMaestro: 5
-    duracionGiroEspada: 0.2
+    duracionGiroEspada: 1
     colorFase: {r: 1, g: 0.5, b: 0.5, a: 1}
+    cantidadLluvias: 8
+    cantidadSimultanea: 3
+    tiempoEntreOleadas: 0.25
   estadoActual: 0
   jugador: {fileID: 1757842986}
   puntoCentro: {fileID: 94522541}
@@ -828,24 +837,25 @@ MonoBehaviour:
   renderizadorCuerpo: {fileID: 1020310768}
   vfxCuerpo: {fileID: 1020310769}
   propiedadColorVFX: ColorTint
-  offsetEspada: {x: 0, y: -4.5, z: 0}
+  offsetEspadaIzquierda: {x: 0, y: 0, z: 3}
+  offsetEspadaDerecha: {x: 0, y: 0, z: 3}
   animadorEspada: {fileID: 575128794}
   triggerCorteIzquierda: CorteIzquierda
   triggerCorteDerecha: CorteDerecha
-  duracionClipCorte: 3.5
-  rotacionCorteIzquierda: {x: 0, y: -120, z: 0}
-  rotacionCorteDerecha: {x: 0, y: 90, z: 0}
-  escalaCorte: {x: 1, y: 1, z: 1}
+  duracionClipCorte: 4
+  rotacionCorteIzquierda: {x: 0, y: 180, z: 0}
+  rotacionCorteDerecha: {x: 0, y: 180, z: 0}
+  escalaCorte: {x: 0.9, y: 0.9, z: 0.9}
   intercambiarSentidoCorte: 0
   prefabProyectilMaestro: {fileID: 2604467473505433860, guid: 0da6d0e1c1556ad499998bbd45c2a591, type: 3}
   alturaSalidaProyectil: 7
   distanciaSalidaProyectil: 2.5
-  prefabLluviaEspadas: {fileID: 0}
+  prefabLluviaEspadas: {fileID: 3276538400931717286, guid: 7eee3046e587d3848864daa315618744, type: 3}
   prefabAvisoSuelo: {fileID: 4947703805418190068, guid: fb8b642fb6cedf948b1fa668edc47d9b, type: 3}
-  alturaSueloArena: 2.5
+  alturaSueloArena: 2
   tiempoAvisoAntesCaida: 1
-  tiempoEntreLluvias: 0.4
-  cantidadObjetosCaida: 4
+  alturaAviso: 3
+  alturaLluvia: 2
   radioDispersionCaida: 4
   velocidadRotacion: 6
   amplitudFlote: 0.5

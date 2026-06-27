@@ -13,9 +13,5 @@ public class SCR_LluviaEspadas : MonoBehaviour
         Destroy(gameObject, tiempoDeVida);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-            other.GetComponent<SCR_RespawnJugador>()?.Respawn();
-    }
+
 }

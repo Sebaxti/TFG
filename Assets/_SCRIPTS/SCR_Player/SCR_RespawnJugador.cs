@@ -3,8 +3,11 @@ using System;
 
 public class SCR_RespawnJugador : MonoBehaviour
 {
-    // El evento global ahora vive en este componente especializado
     public static event Action OnGlobalRespawn;
+
+    // True desde que empieza la muerte hasta que FinalizarRespawn() termina.
+    // Evita que varias zonas de daño encadenen muertes.
+    public static bool EstaMuerto { get; private set; }
 
     private Vector3 posRespawnPlayer;
     private Vector3 posRespawnEnemigo;
@@ -18,10 +21,9 @@ public class SCR_RespawnJugador : MonoBehaviour
 
     private void Awake()
     {
+        EstaMuerto = false;
         scriptMovimiento = GetComponent<SCR_Movimiento>();
         rb = GetComponent<Rigidbody>();
-
-        // Inicializar con la posici�n de inicio del nivel por seguridad
         posRespawnPlayer = transform.position;
     }
     private void Start()
@@ -41,8 +43,9 @@ public class SCR_RespawnJugador : MonoBehaviour
 
     public void Respawn()
     {
+        if (EstaMuerto) return;
+        EstaMuerto = true;
         StartCoroutine(SecuenciaDeMuerte());
-    
     }
 
     public void EjecutarTeletransporte()
@@ -56,6 +59,7 @@ public class SCR_RespawnJugador : MonoBehaviour
 
     public void FinalizarRespawn()
     {
+        EstaMuerto = false;
         if (scriptMovimiento != null) scriptMovimiento.DesbloquearMovimiento();
 
         // Buscamos el script de animaciones y lo devolvemos a la vida limpio

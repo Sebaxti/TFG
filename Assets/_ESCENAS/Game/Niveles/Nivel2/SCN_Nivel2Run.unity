@@ -3826,7 +3826,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2960841748807185284, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 19
+      value: 11.71
       objectReference: {fileID: 0}
     - target: {fileID: 2960841748807185284, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7277,6 +7277,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7200929135909194950, guid: 0b5b8f398b07e1f44a1b17f9808665b6, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: a2d6c7782413dd84cb6dff185b3fe725, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13404,11 +13408,12 @@ MonoBehaviour:
   objetoCorte: {fileID: 594790494}
   tiempoDeAvisoLateral: 1.2
   duracionDelCorte: 1
-  offsetPosicionCorte: {x: 0, y: -12, z: 0}
-  escalaCorte: {x: 0.5, y: 0.5, z: 0.5}
-  rotacionCorteIzquierda: {x: 0, y: 90, z: 0}
-  rotacionCorteDerecha: {x: 0, y: -90, z: 0}
-  duracionClipCorte: 2
+  offsetCorteIzquierda: {x: 0, y: -8, z: -5}
+  offsetCorteDerecha: {x: 0, y: -8, z: -5}
+  escalaCorte: {x: 0.7, y: 0.7, z: 0.7}
+  rotacionCorteIzquierda: {x: 0, y: 0, z: 0}
+  rotacionCorteDerecha: {x: 0, y: 0, z: 0}
+  duracionClipCorte: 4
   triggerCorteIzquierda: CorteIzquierda
   triggerCorteDerecha: CorteDerecha
   intercambiarSentidoCorte: 0
@@ -13420,7 +13425,8 @@ MonoBehaviour:
   tercioCentro: 1
   tercioDerecha: 1
   tiempoAvisoCaida: 1.5
-  alturaSuelo: 0
+  alturaAviso: 1
+  alturaLluvia: -0.1
   vfxCuerpo: {fileID: 765340185}
   propiedadColorVFX: ColorTint
   colorNormal: {r: 1, g: 1, b: 1, a: 1}
