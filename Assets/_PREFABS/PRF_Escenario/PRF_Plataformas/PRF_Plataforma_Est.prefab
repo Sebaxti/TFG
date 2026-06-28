@@ -80,6 +80,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5754084199372789682, guid: 46558fdb2dadf8841b93b3bd5e5feb93, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -2268354201223792306, guid: b9d1e81c5ce70894584fce5e29cb4cd4, type: 3}
     - target: {fileID: 919132149155446097, guid: 46558fdb2dadf8841b93b3bd5e5feb93, type: 3}
       propertyPath: m_Name
       value: Plataforma

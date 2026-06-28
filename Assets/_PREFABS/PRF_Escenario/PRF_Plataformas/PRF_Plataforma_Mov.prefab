@@ -77,7 +77,6 @@ MonoBehaviour:
   puntoA: {fileID: 5086049049171645726}
   puntoB: {fileID: 4736391088542170006}
   velocidad: 3
-  tiempoDeEspera: 0.5
   comenzarHacia: 1
 --- !u!65 &7444343927416613043
 BoxCollider:
@@ -308,6 +307,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: -6478536213147159724, guid: b9d1e81c5ce70894584fce5e29cb4cd4, type: 3}
+    - target: {fileID: -5754084199372789682, guid: b9d1e81c5ce70894584fce5e29cb4cd4, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 1423349589027353620, guid: 46558fdb2dadf8841b93b3bd5e5feb93, type: 3}
     - target: {fileID: 919132149155446097, guid: b9d1e81c5ce70894584fce5e29cb4cd4, type: 3}
       propertyPath: m_Name
       value: Plataforma_Mov
