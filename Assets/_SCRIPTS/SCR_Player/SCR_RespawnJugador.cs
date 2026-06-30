@@ -6,7 +6,6 @@ public class SCR_RespawnJugador : MonoBehaviour
     public static event Action OnGlobalRespawn;
 
     // True desde que empieza la muerte hasta que FinalizarRespawn() termina.
-    // Evita que varias zonas de daño encadenen muertes.
     public static bool EstaMuerto { get; private set; }
 
     private Vector3 posRespawnPlayer;

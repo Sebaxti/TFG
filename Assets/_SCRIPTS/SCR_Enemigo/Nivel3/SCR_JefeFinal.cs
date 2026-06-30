@@ -171,10 +171,10 @@ public class SCR_JefeFinal : MonoBehaviour
         if (dirJugador != Vector3.zero)
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dirJugador), velocidadRotacion * Time.deltaTime);
 
-        // Temporizador de combate
+        // Temporizador de combate (se pausa si el jugador ya está muerto)
         if (timerCooldown > 0f)
             timerCooldown -= Time.deltaTime;
-        else
+        else if (!SCR_RespawnJugador.EstaMuerto)
             DecidirSiguienteMovimiento();
     }
 
@@ -251,9 +251,9 @@ public class SCR_JefeFinal : MonoBehaviour
                     jugador.position.z + desplazamiento.y);
 
                 if (prefabAvisoSuelo != null)
-                    avisas[j] = Instantiate(prefabAvisoSuelo,
-                        new Vector3(posiciones[j].x, alturaAviso, posiciones[j].z),
-                        Quaternion.identity);
+                avisas[j] = Instantiate(prefabAvisoSuelo,
+                    new Vector3(posiciones[j].x, alturaAviso, posiciones[j].z),
+                    Quaternion.identity);
             }
 
             yield return new WaitForSeconds(tiempoAvisoAntesCaida);

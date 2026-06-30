@@ -117,9 +117,24 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
 
     private void ResetearPosicion()
     {
+        StopAllCoroutines();
+        corteAnimandose = false;
+
+        if (objetoCorte != null) objetoCorte.SetActive(false);
+        if (animadorCorte != null) animadorCorte.transform.localPosition = Vector3.zero;
+
+        if (indicadorActivo != null) { Destroy(indicadorActivo); indicadorActivo = null; }
+
+        foreach (var lluvia in FindObjectsByType<SCR_LluviaEspadas>(FindObjectsSortMode.None))
+            Destroy(lluvia.gameObject);
+
+        RestablecerColor();
+
         SCR_RespawnJugador respawn = FindFirstObjectByType<SCR_RespawnJugador>();
         if (respawn != null)
             transform.position = respawn.GetEnemigoRespawn();
+
+        StartCoroutine(BucleLogicaAtaques());
     }
 
     private IEnumerator BucleLogicaAtaques()
