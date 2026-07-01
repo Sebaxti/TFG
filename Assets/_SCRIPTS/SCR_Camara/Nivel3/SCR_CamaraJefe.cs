@@ -7,19 +7,14 @@ public class SCR_CamaraJefe : MonoBehaviour
     public Transform puntoCentro;
 
     [Header("Rangos de Distancia (Zoom)")]
-    [Tooltip("Distancia cuando el jugador está pegado al centro")]
     public float radioMinimo = 12f;
-    [Tooltip("Distancia cuando el jugador está en el borde de la arena")]
     public float radioMaximo = 22f;
 
     [Header("Rangos de Altura")]
-    [Tooltip("Altura cuando la cámara está cerca")]
     public float alturaMinima = 5f;
-    [Tooltip("Altura cuando la cámara está lejos")]
     public float alturaMaxima = 12f;
 
-    [Header("Configuración de Arena")]
-    [Tooltip("¿A qué distancia del centro consideras que el jugador está en el 'borde'?")]
+    [Header("Configuraciï¿½n de Arena")]
     public float radioDeLaArena = 15f;
     public float alturaDeMira = 2f;
 

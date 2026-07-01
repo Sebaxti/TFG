@@ -6,14 +6,13 @@ public class SCR_CamaraOrbital : MonoBehaviour
     [SerializeField] private Transform jugador;
     [SerializeField] private float alturaObjetivo = 1.5f;
 
-    [Header("Configuración de Órbita")]
+    [Header("Configuraciï¿½n de ï¿½rbita")]
     [SerializeField] private float distanciaMaxima = 5f;
     [SerializeField] private float sensibilidadRaton = 3f;
 
-    [Tooltip("Cuanto más bajo, más rápida y rígida. Cuanto más alto, más chicle (0.1f es ideal)")]
     [SerializeField] private float tiempoSuavizadoCamara = 0.1f;
 
-    [Header("Límites Verticales")]
+    [Header("Lï¿½mites Verticales")]
     [SerializeField] private float anguloMinimoY = -15f;
     [SerializeField] private float anguloMaximoY = 60f;
 
@@ -58,7 +57,7 @@ public class SCR_CamaraOrbital : MonoBehaviour
         float inputRatonY = Input.GetAxis("Mouse Y");
         float inputMovimiento = Mathf.Abs(Input.GetAxis("Horizontal")) + Mathf.Abs(Input.GetAxis("Vertical"));
 
-        // --- 1. LÓGICA DE CONTROL ---
+        // --- 1. Lï¿½GICA DE CONTROL ---
         if (Mathf.Abs(inputRatonX) > 0.05f || Mathf.Abs(inputRatonY) > 0.05f)
         {
             temporizadorCentrado = 0f;
@@ -92,13 +91,13 @@ public class SCR_CamaraOrbital : MonoBehaviour
             distanciaObjetivo = hit.distance;
         }
 
-        // Reacción asimétrica de la distancia (instantánea al chocar, suave al alejarse)
+        // Reacciï¿½n asimï¿½trica de la distancia (instantï¿½nea al chocar, suave al alejarse)
         if (distanciaObjetivo < distanciaActual)
             distanciaActual = distanciaObjetivo;
         else
             distanciaActual = Mathf.Lerp(distanciaActual, distanciaObjetivo, Time.deltaTime * 5f);
 
-        // --- 3. APLICAR MOVIMIENTO CON SMOOTHDAMP (LA MAGIA AQUÍ) ---
+        // --- 3. APLICAR MOVIMIENTO CON SMOOTHDAMP (LA MAGIA AQUï¿½) ---
         Vector3 posicionFinal = puntoMira + (direccionDeseada * distanciaActual);
 
         // Sustituimos Lerp por SmoothDamp. Absorbe vibraciones como un muelle real.

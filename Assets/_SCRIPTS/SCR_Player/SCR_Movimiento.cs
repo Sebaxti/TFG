@@ -18,11 +18,11 @@ public class SCR_Movimiento : MonoBehaviour
     [SerializeField] private float suavizadoAire = 5f;
     [SerializeField] private float velocidadRotacion = 20f;
 
-    [Header("Animación de Espera")]
+    [Header("Animacion de Espera")]
     [SerializeField] private float tiempoParaEspera = 5f;
     private float contadorInactividad = 0f;
 
-    [Header("Salto Físico y Game Feel")]
+    [Header("Salto Fisico y Game Feel")]
     [SerializeField] private float fuerzaSalto = 14f;
     [SerializeField] private float gravedadAscenso = 2.5f;
     [SerializeField] private float multiplicadorCaida = 4.5f;
@@ -32,10 +32,16 @@ public class SCR_Movimiento : MonoBehaviour
     [SerializeField] private float coyoteTime = 0.1f;
     [SerializeField] private float jumpBufferTime = 0.1f;
 
-    [Header("Detección de Suelo")]
+    [Header("Deteccion de Suelo")]
     [SerializeField] private Transform puntoSuelo;
     [SerializeField] private float radioSuelo = 0.3f;
     [SerializeField] private LayerMask capaSuelo;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip clipSalto;
+    [SerializeField] private AudioClip clipDobleSalto;
+    [SerializeField] private AudioSource fuentePasos;
+    [SerializeField] private AudioClip clipCaminar;
 
     private int saltosRestantes;
     private bool controlesBloqueados = false;
@@ -45,7 +51,7 @@ public class SCR_Movimiento : MonoBehaviour
     private float jumpBufferCounter;
     private Vector3 direccionInput;
 
-    // --- NUEVO: Control de Inercia de Plataformas ---
+
     private Rigidbody rbPlataformaActual;
 
     private void Awake()
@@ -65,6 +71,7 @@ public class SCR_Movimiento : MonoBehaviour
         ComprobarSuelo();
         ControlarEstados();
         GestionarSalto();
+        GestionarSonidoPasos();
     }
 
     private void FixedUpdate()
@@ -95,7 +102,6 @@ public class SCR_Movimiento : MonoBehaviour
     {
         if (puntoSuelo == null) return;
 
-        // Usamos OverlapSphere para saber EXACTAMENTE qué objeto estamos pisando
         Collider[] colisiones = Physics.OverlapSphere(puntoSuelo.position, radioSuelo, capaSuelo);
         enSuelo = colisiones.Length > 0;
 
@@ -104,7 +110,6 @@ public class SCR_Movimiento : MonoBehaviour
             coyoteTimeCounter = coyoteTime;
             saltosRestantes = saltosExtraMaximos;
 
-            // Buscamos si alguno de los suelos es una plataforma móvil
             rbPlataformaActual = null;
             foreach (Collider col in colisiones)
             {
@@ -128,11 +133,8 @@ public class SCR_Movimiento : MonoBehaviour
 
         if (enSuelo)
         {
-            // No interrumpir un salto activo: el jugador puede seguir en contacto con el suelo
-            // durante 1-2 frames tras el impulso. GestionarSalto ya fijo el estado a Jump.
             if (estadoActual == Estados.Jump || estadoActual == Estados.DoubleJump) return;
 
-            // Aterrizaje: limpiar estado de caida
             if (estadoActual == Estados.Fall)
             {
                 estadoActual = Estados.Idle;
@@ -152,9 +154,6 @@ public class SCR_Movimiento : MonoBehaviour
         }
         else
         {
-            // En el aire: solo pasar a Fall cuando la velocidad descendente es significativa.
-            // No reseteamos contadorInactividad aqui para evitar que el micro-jitter de
-            // plataformas reinicie el temporizador de inactividad constantemente.
             if (rb.linearVelocity.y < -0.1f)
             {
                 estadoActual = Estados.Fall;
@@ -167,15 +166,31 @@ public class SCR_Movimiento : MonoBehaviour
     {
         if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
         {
+            SCR_GestorAudio.Instancia?.ReproducirSFX(clipSalto);
             EjecutarSalto();
             estadoActual = Estados.Jump;
         }
         else if (Input.GetButtonDown("Jump") && !enSuelo && saltosRestantes > 0)
         {
+            SCR_GestorAudio.Instancia?.ReproducirSFX(clipDobleSalto);
             EjecutarSalto();
             saltosRestantes--;
             estadoActual = Estados.DoubleJump;
         }
+    }
+
+    private void GestionarSonidoPasos()
+    {
+        if (fuentePasos == null || clipCaminar == null) return;
+        bool debeCaminar = enSuelo && estadoActual == Estados.Move;
+        if (debeCaminar && !fuentePasos.isPlaying)
+        {
+            fuentePasos.clip = clipCaminar;
+            fuentePasos.loop = true;
+            fuentePasos.Play();
+        }
+        else if (!debeCaminar && fuentePasos.isPlaying)
+            fuentePasos.Stop();
     }
 
     private void EjecutarSalto()
@@ -227,7 +242,6 @@ public class SCR_Movimiento : MonoBehaviour
 
         if (rb.linearVelocity.y < 0)
             gravedadFinal *= multiplicadorCaida;
-        // Añadimos el !enSuelo para evitar que el ascensor active la gravedad de salto corto
         else if (rb.linearVelocity.y > 0 && !Input.GetButton("Jump") && !enSuelo)
             gravedadFinal *= multiplicadorSaltoCorto;
         else if (rb.linearVelocity.y > 0 && Input.GetButton("Jump") && !enSuelo)
@@ -254,13 +268,12 @@ public class SCR_Movimiento : MonoBehaviour
         estadoActual = Estados.Idle;
     }
 
-    // --- NUEVA FUNCIÓN ---
     public void BloquearPorMuerte()
     {
         controlesBloqueados = true;
         rb.linearVelocity = Vector3.zero;
         rb.isKinematic = true;
-        estadoActual = Estados.Die; // Forzamos el estado de muerte
+        estadoActual = Estados.Die; 
     }
 
     private void OnDrawGizmosSelected()

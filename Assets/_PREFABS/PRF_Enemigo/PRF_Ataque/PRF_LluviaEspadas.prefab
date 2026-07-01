@@ -69,6 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SCR_LluviaEspadas
   tiempoDeVida: 2
+  clipLluvia: {fileID: 8300000, guid: 192a62e5fbe9a2149b971c8146178d4e, type: 3}
 --- !u!1 &6508292832166983291
 GameObject:
   m_ObjectHideFlags: 0

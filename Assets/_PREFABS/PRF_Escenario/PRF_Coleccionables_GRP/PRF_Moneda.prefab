@@ -49,6 +49,7 @@ MonoBehaviour:
   velocidadRotacion: 100
   amplitudOscilacion: 0.2
   velocidadOscilacion: 2
+  clipRecogida: {fileID: 8300000, guid: b0d151ae82b6aad49a1fc57e78e7eda9, type: 3}
 --- !u!65 &1373348152706966967
 BoxCollider:
   m_ObjectHideFlags: 0

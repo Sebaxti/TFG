@@ -6,7 +6,6 @@ public class SCR_AnimacionesJugador : MonoBehaviour
     public enum EstiloNivel { Nivel1 = 1, Nivel2 = 2 }
 
     [Header("Configuraci�n de Nivel")]
-    [Tooltip("Elige qu� animaci�n de correr se usar� en esta escena")]
 
     //Esto es para elegir el correr diferente en lvl1 y diferente en lvl2
     public EstiloNivel estiloDeCorrer = EstiloNivel.Nivel1;

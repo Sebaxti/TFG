@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,19 +12,12 @@ public class SCR_JefeFinal : MonoBehaviour
     public class AjustesFase
     {
         public string nombreFase;
-        [Tooltip("Tiempo de respiro entre ataques del jefe")]
         public float cooldownAtaque = 1.5f;
-        [Tooltip("Número de ataques básicos antes de lanzar el proyectil maestro")]
         public int ataquesParaMaestro = 3;
-        [Tooltip("Duración del ataque de corte. Valores bajos = tajo más rápido y letal")]
         public float duracionGiroEspada = 0.4f;
-        [Tooltip("Color base del jefe durante esta fase")]
         public Color colorFase = Color.white;
-        [Tooltip("Número total de espadas que caen durante el ataque")]
         public int cantidadLluvias = 3;
-        [Tooltip("Cuántas espadas caen al mismo tiempo en cada oleada")]
         public int cantidadSimultanea = 1;
-        [Tooltip("Segundos de espera entre oleadas")]
         public float tiempoEntreOleadas = 0.5f;
     }
 
@@ -52,31 +45,19 @@ public class SCR_JefeFinal : MonoBehaviour
     private GameObject proyectilActivo;
 
     [Header("VFX del Cuerpo")]
-    [Tooltip("Componente VisualEffect del hijo VFX_Orb. Arrastra el GameObject hijo aquí.")]
     [SerializeField] private VisualEffect vfxCuerpo;
-    [Tooltip("Nombre exacto de la propiedad Vector4 expuesta en el VFX Graph")]
     [SerializeField] private string propiedadColorVFX = "ColorTint";
 
     [Header("Espada: Posición y Animación")]
-    [Tooltip("Posición local de la espada para el corte de IZQUIERDA")]
     [SerializeField] private Vector3 offsetEspadaIzquierda = new Vector3(0, 1.2f, 2.0f);
-    [Tooltip("Posición local de la espada para el corte de DERECHA")]
     [SerializeField] private Vector3 offsetEspadaDerecha = new Vector3(0, 1.2f, 2.0f);
-    [Tooltip("Arrastra aquí el Animator del modelo FBX de la espada. Si está vacío se auto-busca en los hijos de objetoCorteLateral.")]
     [SerializeField] private Animator animadorEspada;
-    [Tooltip("Trigger para el corte desde la izquierda")]
     [SerializeField] private string triggerCorteIzquierda = "CorteIzquierda";
-    [Tooltip("Trigger para el corte desde la derecha")]
     [SerializeField] private string triggerCorteDerecha = "CorteDerecha";
-    [Tooltip("Duración real del clip FBX en segundos. El Animator ajusta su velocidad para encajar con la fase actual")]
     [SerializeField] private float duracionClipCorte = 1f;
-    [Tooltip("Rotación local para el corte de IZQUIERDA")]
     [SerializeField] private Vector3 rotacionCorteIzquierda = Vector3.zero;
-    [Tooltip("Rotación local para el corte de DERECHA")]
     [SerializeField] private Vector3 rotacionCorteDerecha = Vector3.zero;
-    [Tooltip("Escala del objeto raíz de la espada")]
     [SerializeField] private Vector3 escalaCorte = Vector3.one;
-    [Tooltip("Actívalo si el corte va al lado equivocado")]
     [SerializeField] private bool intercambiarSentidoCorte = false;
 
     [Header("Ataque Maestro (Proyectil)")]
@@ -85,19 +66,12 @@ public class SCR_JefeFinal : MonoBehaviour
     public float distanciaSalidaProyectil = 2.5f;
 
     [Header("Ataque Caída (Lluvia de Espadas)")]
-    [Tooltip("Prefab con PSS_Espadas + BoxCollider + SCR_LluviaEspadas")]
     [SerializeField] private GameObject prefabLluviaEspadas;
-    [Tooltip("Prefab de aviso que aparece en el suelo antes de la lluvia")]
     public GameObject prefabAvisoSuelo;
-    [Tooltip("Altura Y del suelo del arena")]
     public float alturaSueloArena = 0f;
-    [Tooltip("Segundos que se muestra el aviso en el suelo antes de que caigan las espadas")]
     [SerializeField] private float tiempoAvisoAntesCaida = 1f;
-    [Tooltip("Altura Y donde aparece el aviso en el suelo")]
     [SerializeField] private float alturaAviso = 0.05f;
-    [Tooltip("Altura Y donde aparece el VFX y la zona de daño")]
     [SerializeField] private float alturaLluvia = 0f;
-    [Tooltip("Radio de dispersión alrededor del jugador")]
     public float radioDispersionCaida = 4f;
 
     [Header("Efecto de Flote y Rotación")]
@@ -113,16 +87,18 @@ public class SCR_JefeFinal : MonoBehaviour
     [SerializeField] private Color colorAturdido = Color.gray;
 
     [Header("Columnas del Arena")]
-    [Tooltip("Arrastra aquí las columnas reflectoras de la escena. Se eligen aleatoriamente al recibir un golpe.")]
     [SerializeField] private List<SCR_ColumnaReflectora> columnasArena = new List<SCR_ColumnaReflectora>();
-    [Tooltip("Número de columnas que se hunden por cada golpe recibido")]
     [SerializeField] private int columnasPorGolpe = 2;
 
     [Header("Temblor de Cámara al Recibir Golpe")]
-    [Tooltip("Duración del temblor de cámara cuando el proyectil impacta al jefe")]
     [SerializeField] private float duracionTemblorGolpe = 0.6f;
-    [Tooltip("Intensidad del temblor de cámara cuando el proyectil impacta al jefe")]
     [SerializeField] private float magnitudTemblorGolpe = 0.5f;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip clipGolpeRecibido;
+    [SerializeField] private AudioClip clipLanzamientoMaestro;
+    [SerializeField] private AudioClip clipAtaqueEspada;
+    [SerializeField] private AudioSource fuenteEspada;
 
     // Variables internas
     private int contadorAtaques = 0;
@@ -140,6 +116,12 @@ public class SCR_JefeFinal : MonoBehaviour
             if (animadorEspada == null)
                 animadorEspada = objetoCorteLateral.GetComponentInChildren<Animator>();
             objetoCorteLateral.SetActive(false);
+        }
+
+        if (fuenteEspada == null)
+        {
+            fuenteEspada = gameObject.AddComponent<AudioSource>();
+            fuenteEspada.playOnAwake = false;
         }
 
         alturaInicialY = puntoCentro != null ? puntoCentro.position.y : transform.position.y;
@@ -214,6 +196,12 @@ public class SCR_JefeFinal : MonoBehaviour
             {
                 animadorEspada.speed = duracionClipCorte / Mathf.Max(faseActual.duracionGiroEspada, 0.01f);
                 animadorEspada.SetTrigger(usarDerecha ? triggerCorteDerecha : triggerCorteIzquierda);
+                if (fuenteEspada != null && clipAtaqueEspada != null)
+                {
+                    float speedBase = duracionClipCorte / Mathf.Max(fase0_Inicial.duracionGiroEspada, 0.01f);
+                    fuenteEspada.pitch = Mathf.Clamp(animadorEspada.speed / speedBase, 0.5f, 3f);
+                    fuenteEspada.PlayOneShot(clipAtaqueEspada);
+                }
                 yield return new WaitForSeconds(faseActual.duracionGiroEspada);
                 animadorEspada.speed = 1f;
             }
@@ -282,6 +270,7 @@ public class SCR_JefeFinal : MonoBehaviour
 
         if (prefabProyectilMaestro != null)
         {
+            SCR_GestorAudio.Instancia?.ReproducirSFX(clipLanzamientoMaestro);
             Vector3 spawnPos = transform.position + (transform.forward * distanciaSalidaProyectil) + (Vector3.up * alturaSalidaProyectil);
             proyectilActivo = Instantiate(prefabProyectilMaestro, spawnPos, transform.rotation);
             proyectilActivo.GetComponent<SCR_ProyectilJefe>().Disparar(jugador.position, this);
@@ -314,6 +303,8 @@ public class SCR_JefeFinal : MonoBehaviour
     {
         golpesRecibidos++;
         StopAllCoroutines();
+
+        SCR_GestorAudio.Instancia?.ReproducirSFX(clipGolpeRecibido);
 
         if (objetoCorteLateral != null) objetoCorteLateral.SetActive(false);
         if (proyectilActivo != null) Destroy(proyectilActivo);

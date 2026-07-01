@@ -3,9 +3,13 @@
 [RequireComponent(typeof(Rigidbody))] 
 public class SCR_ProyectilJefe : MonoBehaviour
 {
-    [Header("Configuración de Vuelo")]
+    [Header("Configuracion de Vuelo")]
     public float velocidad = 15f;
     public float rotacionHoming = 10f;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip clipImpactoColumna;
+    [SerializeField] private AudioClip clipImpactoJugador;
 
     private SCR_JefeFinal scriptJefe;
     private bool esReflejado = false;
@@ -47,6 +51,7 @@ public class SCR_ProyectilJefe : MonoBehaviour
         if (other.CompareTag("PilarReflector") && !esReflejado)
         {
             esReflejado = true;
+            SCR_GestorAudio.Instancia?.ReproducirSFX(clipImpactoColumna);
             Debug.Log("Rebote contra Pilar");
 
             Renderer renderHijo = GetComponentInChildren<Renderer>();
@@ -54,13 +59,14 @@ public class SCR_ProyectilJefe : MonoBehaviour
         }
         else if (other.CompareTag("Player") && !esReflejado)
         {
+            SCR_GestorAudio.Instancia?.ReproducirSFX(clipImpactoJugador);
             other.GetComponent<SCR_RespawnJugador>()?.Respawn();
-            Destroy(gameObject); // OnDestroy se encarga de llamar DesbloquearJefe
+            Destroy(gameObject);
         }
         else if (other.CompareTag("Jefe") && esReflejado)
         {
             scriptJefe?.RecibirGolpe();
-            scriptJefe = null; // evitar doble llamada desde OnDestroy
+            scriptJefe = null;
             Destroy(gameObject);
         }
     }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections;
 
@@ -16,21 +16,14 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     [SerializeField] private GameObject objetoCorte;
     [SerializeField] private float tiempoDeAvisoLateral = 1.0f;
     [SerializeField] private float duracionDelCorte = 0.8f;
-    [Tooltip("Posición local de la espada para el corte de IZQUIERDA")]
     [SerializeField] private Vector3 offsetCorteIzquierda = new Vector3(0f, -0.5f, 0f);
-    [Tooltip("Posición local de la espada para el corte de DERECHA")]
     [SerializeField] private Vector3 offsetCorteDerecha = new Vector3(0f, -0.5f, 0f);
-    [Tooltip("Escala del objeto raíz de la espada. Cambia aquí en vez de en el prefab FBX hijo.")]
     [SerializeField] private Vector3 escalaCorte = Vector3.one;
-    [Tooltip("Rotación local para el corte de IZQUIERDA")]
     [SerializeField] private Vector3 rotacionCorteIzquierda = Vector3.zero;
-    [Tooltip("Rotación local para el corte de DERECHA")]
     [SerializeField] private Vector3 rotacionCorteDerecha = Vector3.zero;
-    [Tooltip("Duración real del clip FBX. El Animator ajusta velocidad para encajar con Duracion Del Corte")]
     [SerializeField] private float duracionClipCorte = 1f;
     [SerializeField] private string triggerCorteIzquierda = "CorteIzquierda";
     [SerializeField] private string triggerCorteDerecha = "CorteDerecha";
-    [Tooltip("Actívalo si el corte sale al lado equivocado")]
     [SerializeField] private bool intercambiarSentidoCorte = false;
 
     private Animator animadorCorte;
@@ -39,34 +32,24 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     [Header("Ataque 2: Lluvia de Espadas")]
     [SerializeField] private GameObject prefabIndicadorCaida;
     [SerializeField] private GameObject prefabLluviaEspadas;
-    [Tooltip("Distancia por delante del enemigo donde caen las espadas")]
     [SerializeField] private float distanciaAdelante = 15f;
-    [Tooltip("Separación entre tercios del carril (eje X)")]
     [SerializeField] private float anchuraTercio = 4f;
-    [Tooltip("Permite que caiga en el tercio izquierdo")]
     [SerializeField] private bool tercioIzquierda = true;
-    [Tooltip("Permite que caiga en el tercio central")]
     [SerializeField] private bool tercioCentro = true;
-    [Tooltip("Permite que caiga en el tercio derecho")]
     [SerializeField] private bool tercioDerecha = true;
-    [Tooltip("Segundos que se muestra el aviso antes de que caigan las espadas")]
     [SerializeField] private float tiempoAvisoCaida = 1.5f;
-    [Tooltip("Altura Y donde aparece el aviso en el suelo (un pelín más arriba)")]
     [SerializeField] private float alturaAviso = 0.05f;
-    [Tooltip("Altura Y donde aparece el VFX de espadas y la zona de daño")]
     [SerializeField] private float alturaLluvia = 0f;
 
     [Header("VFX y Colores de Ataque")]
-    [Tooltip("Componente VisualEffect del hijo VFX_Orb. Arrastra el GameObject hijo aquí.")]
     [SerializeField] private VisualEffect vfxCuerpo;
-    [Tooltip("Nombre exacto de la propiedad Vector4 expuesta en el VFX Graph")]
     [SerializeField] private string propiedadColorVFX = "ColorTint";
-    [Tooltip("Color del VFX en estado normal (sin atacar). Blanco = colores originales del VFX.")]
     [SerializeField] private Color colorNormal = Color.white;
-    [Tooltip("Color del VFX durante el aviso y ejecución del Corte Lateral")]
     [SerializeField] private Color colorAvisoCorte = Color.red;
-    [Tooltip("Color del VFX durante el aviso y ejecución de la Caída de Rocas")]
     [SerializeField] private Color colorAvisoCaida = new Color(0.3f, 0.5f, 1f);
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip clipAtaqueEspada;
 
     private float alturaOriginal;
     private GameObject indicadorActivo;
@@ -108,8 +91,7 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
         transform.Translate(direccionMundo * velocidadConstante * Time.deltaTime, Space.World);
     }
 
-
-    public void SumarDificultad(float extraCorte, float extraCaida)
+        public void SumarDificultad(float extraCorte, float extraCaida)
     {
         probabilidadCorte = Mathf.Clamp01(probabilidadCorte + extraCorte);
         probabilidadCaida = Mathf.Clamp01(probabilidadCaida + extraCaida);
@@ -168,12 +150,13 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
         bool usarDerecha = intercambiarSentidoCorte ? !esDerecha : esDerecha;
         Vector3 rotacion = usarDerecha ? rotacionCorteDerecha : rotacionCorteIzquierda;
 
-        // Colocar espada relativa al enemigo y activar
         objetoCorte.transform.SetParent(transform, worldPositionStays: false);
         objetoCorte.transform.localPosition = usarDerecha ? offsetCorteDerecha : offsetCorteIzquierda;
         objetoCorte.transform.localRotation = Quaternion.Euler(rotacion);
         objetoCorte.transform.localScale = escalaCorte;
         objetoCorte.SetActive(true);
+
+        SCR_GestorAudio.Instancia?.ReproducirSFX(clipAtaqueEspada);
 
         if (animadorCorte != null)
         {
@@ -194,7 +177,6 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
     {
         AplicarColor(colorAvisoCaida);
 
-        // Elegir tercio disponible al azar
         int[] tercios = new int[3];
         int count = 0;
         if (tercioIzquierda) tercios[count++] = -1;
@@ -215,7 +197,6 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
         Vector3 posAviso  = new Vector3(posBase.x, alturaAviso,  posBase.z);
         Vector3 posLluvia = new Vector3(posBase.x, alturaLluvia, posBase.z);
 
-        // Mostrar aviso en el suelo
         if (prefabIndicadorCaida != null)
             indicadorActivo = Instantiate(prefabIndicadorCaida, posAviso, Quaternion.identity);
 
@@ -223,7 +204,6 @@ public class SCR_EnemigoPersecucion : MonoBehaviour
 
         if (indicadorActivo != null) Destroy(indicadorActivo);
 
-        // Activar VFX + collider de daño
         if (prefabLluviaEspadas != null)
             Instantiate(prefabLluviaEspadas, posLluvia, Quaternion.identity);
 

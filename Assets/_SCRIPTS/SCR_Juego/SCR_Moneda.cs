@@ -1,11 +1,14 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class SCR_Moneda : MonoBehaviour
 {
-    [Header("Animación Visual")]
+    [Header("Animacion Visual")]
     [SerializeField] private float velocidadRotacion = 100f;
     [SerializeField] private float amplitudOscilacion = 0.5f;
     [SerializeField] private float velocidadOscilacion = 2f;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip clipRecogida;
 
     private float posicionInicialY;
 
@@ -25,6 +28,7 @@ public class SCR_Moneda : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            SCR_GestorAudio.Instancia?.ReproducirSFX(clipRecogida);
             if (SCR_GestorMonedas.Instancia != null)
             {
                 SCR_GestorMonedas.Instancia.SumarMoneda(1);

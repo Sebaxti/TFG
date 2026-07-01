@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 
 public class SCR_RespawnJugador : MonoBehaviour
@@ -14,9 +14,11 @@ public class SCR_RespawnJugador : MonoBehaviour
     private SCR_Movimiento scriptMovimiento;
     private Rigidbody rb;
 
-    [Header("Animaci�n de Muerte")]
-    [Tooltip("Segundos de espera antes de teletransportar al jugador")]
+    [Header("Animacion de Muerte")]
     [SerializeField] private float tiempoEsperaMuerte = 2f;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip clipMuerte;
 
     private void Awake()
     {
@@ -27,7 +29,6 @@ public class SCR_RespawnJugador : MonoBehaviour
     }
     private void Start()
     {
-        // Buscamos al enemigo al iniciar el nivel y guardamos su posici�n original
         SCR_EnemigoPersecucion enemigo = FindFirstObjectByType<SCR_EnemigoPersecucion>();
         if (enemigo != null)
         {
@@ -52,7 +53,6 @@ public class SCR_RespawnJugador : MonoBehaviour
         transform.position = posRespawnPlayer;
         if (rb != null) rb.linearVelocity = Vector3.zero;
 
-        // Notificar a los oyentes globales (enemigos, trampas)
         OnGlobalRespawn?.Invoke();
     }
 
@@ -61,7 +61,6 @@ public class SCR_RespawnJugador : MonoBehaviour
         EstaMuerto = false;
         if (scriptMovimiento != null) scriptMovimiento.DesbloquearMovimiento();
 
-        // Buscamos el script de animaciones y lo devolvemos a la vida limpio
         SCR_AnimacionesJugador animaciones = GetComponent<SCR_AnimacionesJugador>();
         if (animaciones != null)
         {
@@ -76,6 +75,8 @@ public class SCR_RespawnJugador : MonoBehaviour
 
     private System.Collections.IEnumerator SecuenciaDeMuerte()
     {
+        SCR_GestorAudio.Instancia?.ReproducirSFX(clipMuerte);
+
         if (scriptMovimiento != null) scriptMovimiento.BloquearPorMuerte();
 
         if (SCR_TemblorCamara.Instancia != null)
@@ -88,7 +89,6 @@ public class SCR_RespawnJugador : MonoBehaviour
     
         if (SCR_GestorEscena.Instancia != null)
         {
-            // GestorEscena llama a FinalizarRespawn al final de su secuencia
             SCR_GestorEscena.Instancia.ProcesarMuerte(this);
         }
         else

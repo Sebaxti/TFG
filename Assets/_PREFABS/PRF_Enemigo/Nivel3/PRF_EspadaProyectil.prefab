@@ -49,6 +49,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SCR_ProyectilJefe
   velocidad: 15
   rotacionHoming: 10
+  clipImpactoColumna: {fileID: 8300000, guid: 4d1a3315e2bee784ba584c4a3352535b, type: 3}
+  clipImpactoJugador: {fileID: 8300000, guid: c551628567e75a94b975467bdc1f37f2, type: 3}
 --- !u!65 &3356688316589916996
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class SCR_TriggerCambioEscena : MonoBehaviour
 {
-    [Header("Configuración de Meta")]
-    [Tooltip("El índice de este nivel en la lista del Gestor de Niveles")]
+    [Header("Configuraciï¿½n de Meta")]
     [SerializeField] private int indiceDeEsteNivel;
     private bool tocado = false;
 

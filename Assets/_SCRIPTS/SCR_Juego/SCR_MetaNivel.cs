@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class SCR_MetaNivel : MonoBehaviour
 {
-    [Tooltip("Índice de este nivel (Nivel 1 = 0, Nivel 2 = 1...)")]
     public int indiceNivelActual = 0;
     private bool tocado = false;
 

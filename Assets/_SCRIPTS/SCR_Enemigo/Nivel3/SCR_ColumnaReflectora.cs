@@ -4,21 +4,15 @@ using System.Collections;
 public class SCR_ColumnaReflectora : MonoBehaviour
 {
     [Header("Temblor de la Columna")]
-    [Tooltip("Segundos que tiembla la columna antes de hundirse")]
     [SerializeField] private float duracionTemblor = 0.8f;
-    [Tooltip("Amplitud del desplazamiento horizontal del temblor (metros)")]
     [SerializeField] private float intensidadTemblor = 0.08f;
 
     [Header("Hundimiento")]
-    [Tooltip("Pausa entre el fin del temblor y el inicio del hundimiento")]
     [SerializeField] private float retardoHundimiento = 0.2f;
-    [Tooltip("Velocidad en m/s a la que se hunde la columna")]
     [SerializeField] private float velocidadHundimiento = 4f;
-    [Tooltip("Distancia total que baja la columna antes de desaparecer")]
     [SerializeField] private float distanciaHundimiento = 6f;
 
     [Header("Desaparición")]
-    [Tooltip("Segundos de espera en el fondo antes de destruirse")]
     [SerializeField] private float tiempoTrasHundirse = 0.3f;
 
     private bool hundiendo = false;

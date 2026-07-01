@@ -6,10 +6,8 @@ public class SCR_TemblorCamara : MonoBehaviour
     public static SCR_TemblorCamara Instancia;
 
     [Header("Ajustes por Defecto")]
-    [Tooltip("Tiempo en segundos que durará la vibración estándar")]
     [SerializeField] private float duracionDefecto = 0.3f;
 
-    [Tooltip("Fuerza del temblor (cuánto se desplaza la cámara)")]
     [SerializeField] private float magnitudDefecto = 0.4f;
 
     private Vector3 posicionOriginal;
@@ -20,13 +18,13 @@ public class SCR_TemblorCamara : MonoBehaviour
         if (Instancia == null) Instancia = this;
     }
 
-    // OPCIÓN 1: Llamas a esto sin poner números, y usará lo que hayas puesto en el Inspector
+    // OPCIï¿½N 1: Llamas a esto sin poner nï¿½meros, y usarï¿½ lo que hayas puesto en el Inspector
     public void AgitarCamara()
     {
         IniciarTemblor(duracionDefecto, magnitudDefecto);
     }
 
-    // OPCIÓN 2: Llamas a esto pasándole números distintos si quieres un golpe especial (ej: explosión)
+    // OPCIï¿½N 2: Llamas a esto pasï¿½ndole nï¿½meros distintos si quieres un golpe especial (ej: explosiï¿½n)
     public void AgitarCamaraPersonalizada(float duracionEspecial, float magnitudEspecial)
     {
         IniciarTemblor(duracionEspecial, magnitudEspecial);

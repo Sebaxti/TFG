@@ -7,7 +7,7 @@ public class SCR_GestorEscena : MonoBehaviour
 {
     public static SCR_GestorEscena Instancia;
 
-    [Header("Configuración de Escenas")]
+    [Header("Configuraciï¿½n de Escenas")]
     public string nombreEscenaMenu = "MainMenu";
     public string nombreEscenaJefe = "Nivel_3_Jefe";
 
@@ -17,8 +17,51 @@ public class SCR_GestorEscena : MonoBehaviour
 
     private void Awake()
     {
-        if (Instancia == null) { Instancia = this; DontDestroyOnLoad(gameObject); }
+        if (Instancia == null)
+        {
+            Instancia = this;
+            DontDestroyOnLoad(gameObject);
+            AsegurarCanvasFundido();
+        }
         else { Destroy(gameObject); return; }
+    }
+
+    private void AsegurarCanvasFundido()
+    {
+        if (imagenFundido != null)
+        {
+            // Re-parentar el canvas a este objeto DontDestroyOnLoad para que
+            // sobreviva a todos los cambios de escena. Sin esto, si el canvas
+            // estaba en la escena se destruye al cargar una nueva y el fade-in
+            // no puede ejecutarse.
+            Canvas c = imagenFundido.GetComponentInParent<Canvas>();
+            if (c != null)
+            {
+                if (c.transform.parent != transform)
+                    c.transform.SetParent(transform, false);
+                c.sortingOrder = 999;
+            }
+            return;
+        }
+
+        // No habÃ­a imagen asignada: crear canvas + imagen negra como hijo propio
+        GameObject canvasGO = new GameObject("GE_CanvasFundido");
+        canvasGO.transform.SetParent(transform);
+        Canvas canvas = canvasGO.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 999;
+        canvasGO.AddComponent<CanvasScaler>();
+
+        GameObject imgGO = new GameObject("GE_ImagenFundido");
+        imgGO.transform.SetParent(canvasGO.transform, false);
+        imagenFundido = imgGO.AddComponent<Image>();
+        imagenFundido.color = new Color(0f, 0f, 0f, 0f);
+        imagenFundido.raycastTarget = false;
+
+        RectTransform rt = imgGO.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.sizeDelta = Vector2.zero;
     }
 
     private void OnEnable() { SceneManager.sceneLoaded += AlCargarEscena; }
@@ -90,7 +133,7 @@ public class SCR_GestorEscena : MonoBehaviour
         Color color = imagenFundido.color;
         while (Mathf.Abs(color.a - opacidadObjetivo) > 0.01f)
         {
-            color.a = Mathf.MoveTowards(color.a, opacidadObjetivo, velocidadFade * Time.deltaTime);
+            color.a = Mathf.MoveTowards(color.a, opacidadObjetivo, velocidadFade * Time.unscaledDeltaTime);
             imagenFundido.color = color;
             yield return null;
         }
