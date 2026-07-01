@@ -30,7 +30,6 @@ public class SCR_CamaraOrbital : MonoBehaviour
     private float distanciaActual;
     private float temporizadorCentrado = 0f;
 
-    // Variables de referencia que necesita SmoothDamp para funcionar
     private Vector3 velocidadMovimiento = Vector3.zero;
 
     private void Start()
@@ -57,7 +56,6 @@ public class SCR_CamaraOrbital : MonoBehaviour
         float inputRatonY = Input.GetAxis("Mouse Y");
         float inputMovimiento = Mathf.Abs(Input.GetAxis("Horizontal")) + Mathf.Abs(Input.GetAxis("Vertical"));
 
-        // --- 1. L�GICA DE CONTROL ---
         if (Mathf.Abs(inputRatonX) > 0.05f || Mathf.Abs(inputRatonY) > 0.05f)
         {
             temporizadorCentrado = 0f;
@@ -84,23 +82,19 @@ public class SCR_CamaraOrbital : MonoBehaviour
         Quaternion rotacionDeseada = Quaternion.Euler(rotacionActualY, rotacionActualX, 0);
         Vector3 direccionDeseada = rotacionDeseada * -Vector3.forward;
 
-        // --- 2. COLISIONES ---
         float distanciaObjetivo = distanciaMaxima;
         if (Physics.SphereCast(puntoMira, radioCamara, direccionDeseada, out RaycastHit hit, distanciaMaxima, capasColision))
         {
             distanciaObjetivo = hit.distance;
         }
 
-        // Reacci�n asim�trica de la distancia (instant�nea al chocar, suave al alejarse)
         if (distanciaObjetivo < distanciaActual)
             distanciaActual = distanciaObjetivo;
         else
             distanciaActual = Mathf.Lerp(distanciaActual, distanciaObjetivo, Time.deltaTime * 5f);
 
-        // --- 3. APLICAR MOVIMIENTO CON SMOOTHDAMP (LA MAGIA AQU�) ---
         Vector3 posicionFinal = puntoMira + (direccionDeseada * distanciaActual);
 
-        // Sustituimos Lerp por SmoothDamp. Absorbe vibraciones como un muelle real.
         transform.position = Vector3.SmoothDamp(transform.position, posicionFinal, ref velocidadMovimiento, tiempoSuavizadoCamara);
 
         transform.LookAt(puntoMira);

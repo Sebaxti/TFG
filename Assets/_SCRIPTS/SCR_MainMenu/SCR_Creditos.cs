@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
@@ -39,7 +39,6 @@ public class SCR_Creditos : MonoBehaviour
         canvas.sortingOrder = 50;
         canvasGO.AddComponent<CanvasScaler>();
 
-        // Fondo negro
         GameObject fondoGO = new GameObject("Fondo");
         fondoGO.transform.SetParent(canvasGO.transform, false);
         Image fondo = fondoGO.AddComponent<Image>();
@@ -49,7 +48,6 @@ public class SCR_Creditos : MonoBehaviour
         rtFondo.anchorMax = Vector2.one;
         rtFondo.sizeDelta = Vector2.zero;
 
-        // Textos
         AnadirTexto(canvasGO.transform, textoPrevio, 0f,  200f, 28f, FontStyles.Normal, new Color(0.75f, 0.75f, 0.75f));
         AnadirTexto(canvasGO.transform, nombre1,      0f,   90f, 60f, FontStyles.Bold,   Color.white);
         AnadirTexto(canvasGO.transform, nombre2,      0f,  -90f, 60f, FontStyles.Bold,   Color.white);

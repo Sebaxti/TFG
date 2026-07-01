@@ -1,11 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 
 public class SCR_RespawnJugador : MonoBehaviour
 {
     public static event Action OnGlobalRespawn;
 
-    // True desde que empieza la muerte hasta que FinalizarRespawn() termina.
     public static bool EstaMuerto { get; private set; }
 
     private Vector3 posRespawnPlayer;
@@ -86,7 +85,6 @@ public class SCR_RespawnJugador : MonoBehaviour
 
         yield return new WaitForSeconds(tiempoEsperaMuerte);
 
-    
         if (SCR_GestorEscena.Instancia != null)
         {
             SCR_GestorEscena.Instancia.ProcesarMuerte(this);

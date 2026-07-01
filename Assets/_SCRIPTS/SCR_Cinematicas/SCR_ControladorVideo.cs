@@ -34,7 +34,6 @@ public class SCR_ControladorVideo : MonoBehaviour
 
     void Update()
     {
-        // Permitir saltar la cinem�tica
         if (Input.GetKeyDown(KeyCode.Space) && !saltando)
         {
             saltando = true;

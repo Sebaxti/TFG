@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SCR_GestorPausa : MonoBehaviour
@@ -38,7 +38,6 @@ public class SCR_GestorPausa : MonoBehaviour
         {
             string escenaActual = SceneManager.GetActiveScene().name;
 
-            // Evitar pausar en el menú principal o en cinemáticas
             if (escenaActual == nombreEscenaMenu || escenaActual == nombreEscenaVideo)
             {
                 return;
@@ -70,10 +69,6 @@ public class SCR_GestorPausa : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-
-    // ==========================================
-    // FUNCIONES PARA LOS BOTONES DEL CANVAS
-    // ==========================================
     public void MostrarPanelPrincipal()
     {
         if (panelPrincipalPausa != null) panelPrincipalPausa.SetActive(true);

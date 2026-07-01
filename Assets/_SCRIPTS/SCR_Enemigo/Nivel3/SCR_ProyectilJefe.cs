@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))] 
+[RequireComponent(typeof(Rigidbody))]
 public class SCR_ProyectilJefe : MonoBehaviour
 {
     [Header("Configuracion de Vuelo")]

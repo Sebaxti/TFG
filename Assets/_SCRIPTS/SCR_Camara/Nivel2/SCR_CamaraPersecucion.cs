@@ -27,7 +27,6 @@ public class SCR_CamaraPersecucion : MonoBehaviour
     {
         if (jugador == null) jugador = GameObject.FindGameObjectWithTag("Player").transform;
 
-
         offsetInicial = transform.position - jugador.position;
         alturaOriginal = transform.position.y;
     }
@@ -54,7 +53,6 @@ public class SCR_CamaraPersecucion : MonoBehaviour
 
         
         float alturaDeseada = alturaOriginal + (jugador.position.y * 0.3f);
-
 
         alturaDeseada = Mathf.Clamp(alturaDeseada, alturaOriginal, alturaOriginal + limiteSaltoCamara);
 

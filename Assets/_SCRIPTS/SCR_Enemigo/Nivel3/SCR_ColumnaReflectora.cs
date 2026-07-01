@@ -29,7 +29,6 @@ public class SCR_ColumnaReflectora : MonoBehaviour
         Vector3 posOriginal = transform.position;
         float timer = 0f;
 
-        // Fase 1: Temblar horizontalmente
         while (timer < duracionTemblor)
         {
             timer += Time.deltaTime;
@@ -42,7 +41,6 @@ public class SCR_ColumnaReflectora : MonoBehaviour
 
         yield return new WaitForSeconds(retardoHundimiento);
 
-        // Fase 2: Hundirse verticalmente
         Vector3 posDestino = posOriginal + Vector3.down * distanciaHundimiento;
         while (transform.position.y > posDestino.y)
         {

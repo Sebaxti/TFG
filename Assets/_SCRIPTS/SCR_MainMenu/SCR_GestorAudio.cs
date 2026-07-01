@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Audio;
 
 public class SCR_GestorAudio : MonoBehaviour
@@ -68,8 +68,6 @@ public class SCR_GestorAudio : MonoBehaviour
     {
         if (fuenteMusica != null) fuenteMusica.Stop();
     }
-
-    // --- FUNCIONES PARA LOS SLIDERS ---
 
     public void SetVolumenMaster(float valorSlider)
     {

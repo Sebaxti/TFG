@@ -28,7 +28,6 @@ public class SCR_GestorNiveles : MonoBehaviour
         else { Destroy(gameObject); }
     }
 
-
     public int ObtenerNivelMaximo()
     {
         return PlayerPrefs.GetInt("NivelMaximoDesbloqueado", 0);
@@ -60,7 +59,6 @@ public class SCR_GestorNiveles : MonoBehaviour
         }
         else
         {
-            // Juego completado
             if (SCR_GestorEscena.Instancia != null)
                 SCR_GestorEscena.Instancia.CargarEscenaConFade(escenaMenuPrincipal);
         }

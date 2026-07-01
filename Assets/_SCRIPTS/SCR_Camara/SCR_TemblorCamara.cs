@@ -18,13 +18,11 @@ public class SCR_TemblorCamara : MonoBehaviour
         if (Instancia == null) Instancia = this;
     }
 
-    // OPCI�N 1: Llamas a esto sin poner n�meros, y usar� lo que hayas puesto en el Inspector
     public void AgitarCamara()
     {
         IniciarTemblor(duracionDefecto, magnitudDefecto);
     }
 
-    // OPCI�N 2: Llamas a esto pas�ndole n�meros distintos si quieres un golpe especial (ej: explosi�n)
     public void AgitarCamaraPersonalizada(float duracionEspecial, float magnitudEspecial)
     {
         IniciarTemblor(duracionEspecial, magnitudEspecial);

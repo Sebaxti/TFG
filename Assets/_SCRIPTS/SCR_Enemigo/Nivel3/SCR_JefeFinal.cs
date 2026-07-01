@@ -1,13 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.VFX;
 using System.Collections;
 using System.Collections.Generic;
 
 public class SCR_JefeFinal : MonoBehaviour
 {
-    // ==========================================
-    // 1. ESTRUCTURA DE FASES (DIFICULTAD EVOLUTIVA)
-    // ==========================================
     [System.Serializable]
     public class AjustesFase
     {
@@ -29,9 +26,6 @@ public class SCR_JefeFinal : MonoBehaviour
     private AjustesFase faseActual;
     private int golpesRecibidos = 0;
 
-    // ==========================================
-    // 2. REFERENCIAS Y VARIABLES GENERALES
-    // ==========================================
     public enum EstadoJefe { Persiguiendo, Atacando }
 
     [Header("Estado Actual")]
@@ -103,13 +97,9 @@ public class SCR_JefeFinal : MonoBehaviour
     [SerializeField] private AudioClip clipAtaqueEspada;
     [SerializeField] private AudioSource fuenteEspada;
 
-    // Variables internas
     private int contadorAtaques = 0;
     private float timerCooldown;
 
-    // ==========================================
-    // 3. MÉTODOS PRINCIPALES
-    // ==========================================
     private void Start()
     {
         if (jugador == null) jugador = GameObject.FindGameObjectWithTag("Player")?.transform;
@@ -144,19 +134,16 @@ public class SCR_JefeFinal : MonoBehaviour
     {
         if (jugador == null || puntoCentro == null) return;
 
-        // Anclaje al centro + Flote vertical
         float desfaseY = Mathf.Sin(Time.time * frecuenciaFlote) * amplitudFlote;
         transform.position = new Vector3(puntoCentro.position.x, alturaInicialY + desfaseY, puntoCentro.position.z);
 
         if (estadoActual == EstadoJefe.Atacando) return;
 
-        // Rotar constantemente hacia el jugador
         Vector3 dirJugador = (jugador.position - transform.position).normalized;
         dirJugador.y = 0;
         if (dirJugador != Vector3.zero)
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dirJugador), velocidadRotacion * Time.deltaTime);
 
-        // Temporizador de combate (se pausa si el jugador ya está muerto)
         if (timerCooldown > 0f)
             timerCooldown -= Time.deltaTime;
         else if (!SCR_RespawnJugador.EstaMuerto)
@@ -175,9 +162,6 @@ public class SCR_JefeFinal : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // 4. RUTINAS DE ATAQUE
-    // ==========================================
     private IEnumerator RutinaCorteLateral()
     {
         estadoActual = EstadoJefe.Atacando;
@@ -186,7 +170,7 @@ public class SCR_JefeFinal : MonoBehaviour
         bool esDerecha = Random.value > 0.5f;
         bool usarDerecha = intercambiarSentidoCorte ? !esDerecha : esDerecha;
 
-        yield return new WaitForSeconds(0.7f); // Tiempo de aviso (telegrafiado)
+        yield return new WaitForSeconds(0.7f);
 
         if (objetoCorteLateral != null)
         {
@@ -232,7 +216,6 @@ public class SCR_JefeFinal : MonoBehaviour
             GameObject[] avisas    = new GameObject[enEstaOleada];
             Vector3[]    posiciones = new Vector3[enEstaOleada];
 
-            // Mostrar todos los avisas de esta oleada a la vez
             for (int j = 0; j < enEstaOleada; j++)
             {
                 Vector2 desplazamiento = Random.insideUnitCircle * radioDispersionCaida;
@@ -249,7 +232,6 @@ public class SCR_JefeFinal : MonoBehaviour
 
             yield return new WaitForSeconds(tiempoAvisoAntesCaida);
 
-            // Caer todos al mismo tiempo
             for (int j = 0; j < enEstaOleada; j++)
             {
                 if (avisas[j] != null) Destroy(avisas[j]);
@@ -257,7 +239,6 @@ public class SCR_JefeFinal : MonoBehaviour
                     Instantiate(prefabLluviaEspadas, posiciones[j], Quaternion.identity);
             }
 
-            // Pausa entre oleadas (no esperar tras la última)
             if (i + porOleada < total)
                 yield return new WaitForSeconds(faseActual.tiempoEntreOleadas);
         }
@@ -299,9 +280,6 @@ public class SCR_JefeFinal : MonoBehaviour
         estadoActual = EstadoJefe.Persiguiendo;
     }
 
-    // ==========================================
-    // 5. SISTEMA DE DAÑO Y FASES
-    // ==========================================
     public void RecibirGolpe()
     {
         golpesRecibidos++;

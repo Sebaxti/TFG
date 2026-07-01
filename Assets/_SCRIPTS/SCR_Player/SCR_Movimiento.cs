@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class SCR_Movimiento : MonoBehaviour
@@ -50,7 +50,6 @@ public class SCR_Movimiento : MonoBehaviour
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
     private Vector3 direccionInput;
-
 
     private Rigidbody rbPlataformaActual;
 
@@ -273,7 +272,7 @@ public class SCR_Movimiento : MonoBehaviour
         controlesBloqueados = true;
         rb.linearVelocity = Vector3.zero;
         rb.isKinematic = true;
-        estadoActual = Estados.Die; 
+        estadoActual = Estados.Die;
     }
 
     private void OnDrawGizmosSelected()

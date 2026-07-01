@@ -33,10 +33,6 @@ public class SCR_GestorEscena : MonoBehaviour
     {
         if (imagenFundido != null)
         {
-            // Re-parentar el canvas a este objeto DontDestroyOnLoad para que
-            // sobreviva a todos los cambios de escena. Sin esto, si el canvas
-            // estaba en la escena se destruye al cargar una nueva y el fade-in
-            // no puede ejecutarse.
             Canvas c = imagenFundido.GetComponentInParent<Canvas>();
             if (c != null)
             {
@@ -47,7 +43,6 @@ public class SCR_GestorEscena : MonoBehaviour
             return;
         }
 
-        // No había imagen asignada: crear canvas + imagen negra como hijo propio
         GameObject canvasGO = new GameObject("GE_CanvasFundido");
         canvasGO.transform.SetParent(transform);
         Canvas canvas = canvasGO.AddComponent<Canvas>();
@@ -98,7 +93,6 @@ public class SCR_GestorEscena : MonoBehaviour
         SceneManager.LoadScene(nombre);
     }
 
-    // AHORA SOLICITA EL SCRIPT DE RESPAWN ESPECIALIZADO
     public void ProcesarMuerte(SCR_RespawnJugador respawnJugador)
     {
         StartCoroutine(RutinaMuerte(respawnJugador));
