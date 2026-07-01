@@ -21,6 +21,9 @@ public class SCR_GestorEscena : MonoBehaviour
         {
             Instancia = this;
             DontDestroyOnLoad(gameObject);
+            Resolution nativeRes = Screen.currentResolution;
+            if (nativeRes.width > 0 && nativeRes.height > 0)
+                Screen.SetResolution(nativeRes.width, nativeRes.height, FullScreenMode.FullScreenWindow);
             AsegurarCanvasFundido();
         }
         else { Destroy(gameObject); return; }
@@ -70,7 +73,12 @@ public class SCR_GestorEscena : MonoBehaviour
     private void AlCargarEscena(Scene escena, LoadSceneMode modo)
     {
         StopAllCoroutines();
-        if (escena.name == nombreEscenaMenu) FijarOpacidad(0f);
+        if (escena.name == nombreEscenaMenu)
+        {
+            FijarOpacidad(0f);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
         else StartCoroutine(RutinaFade(0f));
     }
 

@@ -3917,6 +3917,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1911939647876660393, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
+      propertyPath: estiloDeCorrer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2960841748807185284, guid: 963ef55fec1e2ee47939e2d08a4081de, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

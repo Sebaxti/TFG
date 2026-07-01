@@ -94,6 +94,9 @@ public class SCR_JefeFinal : MonoBehaviour
     [SerializeField] private float duracionTemblorGolpe = 0.6f;
     [SerializeField] private float magnitudTemblorGolpe = 0.5f;
 
+    [Header("Final del Juego")]
+    [SerializeField] private string nombreEscenaCreditos = "SCN_Creditos";
+
     [Header("Audio")]
     [SerializeField] private AudioClip clipGolpeRecibido;
     [SerializeField] private AudioClip clipLanzamientoMaestro;
@@ -378,7 +381,8 @@ public class SCR_JefeFinal : MonoBehaviour
         SCR_ObjetoCaida[] rocas = FindObjectsByType<SCR_ObjetoCaida>(FindObjectsSortMode.None);
         foreach (var r in rocas) Destroy(r.gameObject);
 
-        Destroy(gameObject, 1f);
+        yield return new WaitForSeconds(1f);
+        SCR_GestorEscena.Instancia?.CargarEscenaConFade(nombreEscenaCreditos);
     }
 
     public void DesbloquearJefe()
